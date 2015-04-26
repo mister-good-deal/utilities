@@ -36,7 +36,7 @@ $func2 = function ($array) {
     return array_sum($array);
 };
 
-$functions = array($func1, $func2);
+$functions = array($func1);
 
 try {
     $logger    = new Logger(array(Logger::CONSOLE, Logger::FILE));

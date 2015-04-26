@@ -13,3 +13,8 @@
 2015-04-26 19:08:27		ERROR::The section FileLogger doesn't exist in the ini conf file
 2015-04-26 19:14:39		ERROR::Array must contain at least 2 functions
 2015-04-26 19:20:09		OK
+2015-04-26 19:45:23		OK
+2015-04-26 19:49:43		OK
+2015-04-26 19:57:00		ERROR::Array must contain at least 2 functions
+2015-04-26 19:57:10		ERROR::Array must contain at least 2 functions
+2015-04-26 20:04:27		ERROR::Array must contain at least 2 functions

@@ -3,7 +3,7 @@
 namespace utilities\classes\logger;
 
 use \utilities\classes\logger\LogLevel as LogLevel;
-use \utilities\interfaces\LoggerInterface as LoggerInterface;
+use \utilities\interfaces\logger\LoggerInterface as LoggerInterface;
 
 /**
 * ConsoleLogger class
@@ -29,127 +29,127 @@ class ConsoleLogger implements LoggerInterface
     }
 
     /**
-     * Le système est inutilisable.
+     * System is unusable.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function emergency($message, array $context = array())
     {
         echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
+            $message,
             'white',
             'red'
-        );
+        )
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Des mesures doivent être prises immédiatement.
+     * Action must be taken immediately.
      *
-     * Exemple: Tout le site est hors service, la base de données est
-     * indisponible, etc. Cela devrait déclencher des alertes par SMS et vous
-     * réveiller.
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function alert($message, array $context = array())
     {
         echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
+            $message,
             'light_gray',
             'red'
-        );
+        )
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Conditions critiques.
+     * Critical conditions.
      *
-     * Exemple: Composant d'application indisponible, exception inattendue.
+     * Example: Application component unavailable, unexpected exception.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function critical($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'red',
-            'light_gray'
-        );
+        echo $this->colors->getColoredString($message, 'red', 'light_gray')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Erreurs d'exécution qui ne nécessitent pas une action immédiate mais doit
-     * normalement être journalisée et contrôlée.
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function error($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'light_red',
-            'light_gray'
-        );
+        echo $this->colors->getColoredString($message, 'light_red', 'light_gray')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Événements exceptionnels qui ne sont pas des erreurs.
+     * Exceptional occurrences that are not errors.
      *
-     * Exemple: Utilisation des API obsolètes, mauvaise utilisation d'une API,
-     * indésirables élements qui ne sont pas nécessairement mauvais.
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function warning($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'yellow',
-            'black'
-        );
+        echo $this->colors->getColoredString($message, 'yellow', 'black')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Événements normaux mais significatifs.
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function notice($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'light_gray',
-            'black'
-        );
+        echo $this->colors->getColoredString($message, 'light_gray', 'black')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Événements intéressants.
-     *
-     * Exemple: Connexion utilisateur, journaux SQL.
+     * Detailed debug information.
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function info($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'light_green',
-            'black'
-        );
+        echo $this->colors->getColoredString($message, 'light_green', 'black')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
@@ -161,19 +161,18 @@ class ConsoleLogger implements LoggerInterface
      */
     public function debug($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message . "\n" . $this->formatContext($context),
-            'cyan',
-            'black'
-        );
+        echo $this->colors->getColoredString($message, 'cyan', 'black')
+        . "\n"
+        . $this->formatContext($context);
     }
 
     /**
-     * Logs avec un niveau arbitraire.
+     * Logs with an arbitrary level.
      *
-     * @param int $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
+     *
      * @return null
      */
     public function log($level, $message, array $context = array())
