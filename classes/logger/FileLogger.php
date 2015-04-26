@@ -3,6 +3,7 @@
 namespace utilities\classes\logger;
 
 use \utilities\classes\logger\LogLevel as LogLevel;
+use \utilities\classes\ini\IniManager as Ini;
 use \utilities\interfaces\LoggerInterface as LoggerInterface;
 
 /**
@@ -12,9 +13,13 @@ class FileLogger implements LoggerInterface
 {
     private $filePath;
 
-    public function __construct($filePath = 'C:\prog\utilities\log.txt')
+    public function __construct($filePath = null)
     {
-        $this->filePath = $filePath;
+        if ($filePath !== null && is_string($filePath)) {
+            $this->filePath = $filePath;
+        } else {
+            $this->filePath = Ini::getParamFromSection('FileLogger', 'filePath');
+        }
     }
 
     /**

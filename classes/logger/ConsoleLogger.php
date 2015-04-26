@@ -114,7 +114,7 @@ class ConsoleLogger implements LoggerInterface
         echo $this->colors->getColoredString(
             $message . "\n" . $this->formatContext($context),
             'yellow',
-            'light_gray'
+            'black'
         );
     }
 

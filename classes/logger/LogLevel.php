@@ -15,4 +15,5 @@ class LogLevel
     const NOTICE    = 5;
     const INFO      = 6;
     const DEBUG     = 7;
+    const PARAMETER = self::ERROR;
 }
