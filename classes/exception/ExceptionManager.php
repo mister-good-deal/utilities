@@ -8,8 +8,8 @@ namespace utilities\classes\exception;
 class ExceptionManager extends \Exception
 {
     
-    public function __construct()
+    public function __construct($message, $code = 0, Exception $previous = null)
     {
-        
+        parent::__construct($message, $code, $previous);
     }
 }
