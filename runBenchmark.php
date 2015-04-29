@@ -2,7 +2,6 @@
 
 use \utilities\classes\Benchmark as Benchmark;
 use \utilities\classes\logger\LoggerManager as Logger;
-use \utilities\classes\logger\LogLevel as LogLevel;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
 spl_autoload_register(function($className) {
@@ -43,7 +42,7 @@ try {
     $logger    = new Logger(array(Logger::CONSOLE, Logger::FILE));
     $benchmark = new Benchmark($functions);
 
-    $logger->log(LogLevel::DEBUG, 'OK');
+    $logger->log(Exception::$DEBUG, 'OK');
 } catch (Exception $e) {
     $logger->log($e->getCode(), $e->getMessage(), $e->getTrace());
 } finally {
