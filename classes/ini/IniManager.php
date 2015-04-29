@@ -2,7 +2,6 @@
 
 namespace utilities\classes\ini;
 
-use \utilities\classes\logger\LogLevel as LogLevel;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
 /**
@@ -42,13 +41,13 @@ class IniManager
                     } else {
                         throw new Exception(
                             'ERROR::The section ' . $sectionLevel . ' doesn\'t exist in the ini conf file',
-                            LogLevel::WARNING
+                            Exception::$WARNING
                         );
                     }
                 } else {
                     throw new Exception(
                         'ERROR::Parameter section must be a String or an array of String',
-                        LogLevel::PARAMETER
+                        Exception::$PARAMETER
                     );
                 }
             }
@@ -58,13 +57,16 @@ class IniManager
             } else {
                 throw new Exception(
                     'ERROR::The section ' . $section . ' doesn\'t exist in the ini conf file',
-                    LogLevel::WARNING
+                    Exception::$WARNING
                 );
             }
 
             $return = self::$iniValues[$section];
         } else {
-            throw new Exception('ERROR::Parameter section must be a String or an array of String', LogLevel::PARAMETER);
+            throw new Exception(
+                'ERROR::Parameter section must be a String or an array of String',
+                Exception::$PARAMETER
+            );
         }
 
         return $return;
@@ -82,11 +84,11 @@ class IniManager
             } else {
                 throw new Exception(
                     'ERROR::The section ' . $section . ' doesn\'t contain the parameter ' . $param,
-                    LogLevel::WARNING
+                    Exception::$WARNING
                 );
             }
         } else {
-            throw new Exception('ERROR::Second parameter must be a String (the param name)', LogLevel::PARAMETER);
+            throw new Exception('ERROR::Second parameter must be a String (the param name)', Exception::$PARAMETER);
         }
     }
 
