@@ -1,6 +1,6 @@
 <?php
 
-use \utilities\classes\Benchmark as Benchmark;
+use \utilities\classes\ini\IniManager as Ini;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
 spl_autoload_register(function($className) {
@@ -19,26 +19,18 @@ spl_autoload_register(function($className) {
     require_once $fileName;
 });
 
-$func1 = function ($array) {
-    $sum = 0;
-
-    foreach ($array as $value) {
-        $sum += $value;
-    }
-
-    return $sum;
-};
-
-$func2 = function ($array) {
-    $sum = 0;
-
-    return array_sum($array);
-};
-
-$functions = array($func1);
-
 try {
-    $benchmark = new Benchmark($functions);
+    Ini::setParam('FileLogger', 'filePath', 'C:\prog\utilities\log2.txt');
+    Ini::setParam('FileLogger', 'test', 2);
+    Ini::setParam('test', 'param', 3);
+    Ini::setParam('test2', 'param', 4);
+    Ini::setParam('test2', 'array', array(
+        'key1' => 'val1',
+        'key2' => 'val2',
+        'key3' => 'val3')
+    );
+
+    var_dump(Ini::getParam('test2', 'array'));
 } catch (Exception $e) {
 } finally {
     exit(0);

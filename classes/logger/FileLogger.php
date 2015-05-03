@@ -19,7 +19,7 @@ class FileLogger extends AbstractLogger implements LoggerInterface
         if ($filePath !== null && is_string($filePath)) {
             $this->filePath = $filePath;
         } else {
-            $this->filePath = Ini::getParamFromSection('FileLogger', 'filePath');
+            $this->filePath = Ini::getParam('FileLogger', 'filePath');
         }
     }
 

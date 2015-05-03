@@ -2,6 +2,7 @@
 
 namespace utilities\classes\exception;
 
+use \utilities\classes\logger\LoggerManager as Logger;
 use \utilities\classes\logger\LogLevel as LogLevel;
 
 /**
@@ -18,9 +19,14 @@ class ExceptionManager extends \Exception
     public static $INFO      =  LogLevel::INFO;
     public static $DEBUG     =  LogLevel::DEBUG;
     public static $PARAMETER =  LogLevel::PARAMETER;
+
+    private $logger;
     
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
+
+        $logger = new Logger(array(Logger::FILE));
+        $logger->log($code, $message, parent::getTrace());
     }
 }
