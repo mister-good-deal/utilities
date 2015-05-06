@@ -334,6 +334,42 @@ class IniManager
     }
 
     /**
+     * Get the max characters length parameters name
+     *
+     * @param  array $attributes parameters as associativ array
+     * @return int               The max length parameter name
+     */
+    private static function getMaxLength($attributes)
+    {
+        $max    = 0;
+        $length = 0;
+
+        foreach ($attributes as $name => $value) {
+            $length = strlen($name);
+
+            if ($length > $max) {
+                $max = $length;
+            }
+        }
+
+        return $max;
+    }
+
+    /**
+     * Return the spaces needed to align the value with others
+     *
+     * @param  string $attribute parameter name
+     * @param  int    $maxLength the max length parameter name
+     * @return string            The spaces needed to align the value
+     */
+    private static function alignValues($attribute, $maxLength)
+    {
+        $spaces = array_fill(0, $maxLength - strlen($attribute), ' ');
+
+        return implode($spaces);
+    }
+
+    /**
      * Helper to parse an ini array conf to an ini string (ini file content)
      *
      * @return string The ini file content
@@ -348,14 +384,18 @@ class IniManager
             }
 
             $iniString .= "[" . $section . "]\n";
+            $maxLength = self::getMaxLength($sectionValue);
 
             foreach ($sectionValue as $param => $value) {
                 if (is_array($value)) {
+                    $maxLength = self::getMaxLength($sectionValue);
+
                     foreach ($value as $subSectionLevel => $subSectionValue) {
                         $iniString .= $param
                         . "["
                         . $subSectionLevel
                         ."] = "
+                        . self::alignValues($subSectionLevel, $maxLength)
                         . (is_numeric($subSectionValue) ? $subSectionValue : '"' . $subSectionValue . '"');
 
                         if (isset(self::$iniParamsComments[$section][$subSectionLevel])) {
@@ -366,7 +406,10 @@ class IniManager
                         $iniString .= "\n";
                     }
                 } else {
-                    $iniString .= $param ." = " . (is_numeric($value) ? $value : '"' . $value . '"');
+                    $iniString .= $param
+                        . self::alignValues($param, $maxLength)
+                        ." = "
+                        . (is_numeric($value) ? $value : '"' . $value . '"');
 
                     if (isset(self::$iniParamsComments[$section][$param])) {
                         $iniString .= ' ' . self::formatComment(self::$iniParamsComments[$section][$param]);
