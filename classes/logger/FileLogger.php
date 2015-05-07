@@ -42,7 +42,7 @@ class FileLogger extends AbstractLogger implements LoggerInterface
         $string = date('Y-m-d H:i:s')
             . "\t\t"
             . $message
-            . "\n";
+            . PHP_EOL;
 
         file_put_contents($this->filePath, $string, FILE_APPEND);
     }

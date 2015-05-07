@@ -325,12 +325,12 @@ class IniManager
     /**
      * Helper format a commentary
      *
-     * @param  string $comment The litteral comment (can contain line break "\n")
+     * @param  string $comment The litteral comment (can contain line break PHP_EOL)
      * @return string          The formated comment (each line start with a ; followed by a space)
      */
     private static function formatComment($comment)
     {
-        return '; ' . str_replace("\n", "\n; ", trim($comment));
+        return '; ' . str_replace(PHP_EOL, PHP_EOL . "; ", trim($comment));
     }
 
     /**
@@ -380,22 +380,23 @@ class IniManager
 
         foreach (self::$iniValues as $section => $sectionValue) {
             if (isset(self::$iniSectionsComments[$section])) {
-                $iniString .= self::formatComment(self::$iniSectionsComments[$section]) . "\n";
+                $iniString .= self::formatComment(self::$iniSectionsComments[$section]) . PHP_EOL;
             }
 
-            $iniString .= "[" . $section . "]\n";
+            $iniString .= "[" . $section . "]" . PHP_EOL;
             $maxLength = self::getMaxLength($sectionValue);
 
             foreach ($sectionValue as $param => $value) {
                 if (is_array($value)) {
-                    $maxLength = self::getMaxLength($sectionValue);
+                    $maxLength = self::getMaxLength($value);
 
                     foreach ($value as $subSectionLevel => $subSectionValue) {
                         $iniString .= $param
                         . "["
                         . $subSectionLevel
-                        ."] = "
+                        ."]"
                         . self::alignValues($subSectionLevel, $maxLength)
+                        . " = "
                         . (is_numeric($subSectionValue) ? $subSectionValue : '"' . $subSectionValue . '"');
 
                         if (isset(self::$iniParamsComments[$section][$subSectionLevel])) {
@@ -403,7 +404,7 @@ class IniManager
                             . self::formatComment(self::$iniParamsComments[$section][$subSectionLevel]);
                         }
 
-                        $iniString .= "\n";
+                        $iniString .= PHP_EOL;
                     }
                 } else {
                     $iniString .= $param
@@ -415,11 +416,11 @@ class IniManager
                         $iniString .= ' ' . self::formatComment(self::$iniParamsComments[$section][$param]);
                     }
 
-                    $iniString .= "\n";
+                    $iniString .= PHP_EOL;
                 }
             }
 
-            $iniString .= "\n";
+            $iniString .= PHP_EOL;
         }
 
         return trim($iniString);
@@ -435,7 +436,7 @@ class IniManager
         $iniSectionsComments = array();
 
         preg_match_all(
-            '/(?P<comment>(;.*\n)+)\[(?P<section>[A-Za-z0-9_]*)\]/',
+            '/(?P<comment>(;.*\R)+)\[(?P<section>[A-Za-z0-9_]*)\]/',
             file_get_contents(self::INI_FILE_NAME, true),
             $matches,
             PREG_SET_ORDER
@@ -458,7 +459,7 @@ class IniManager
         $paramsComments = array();
 
         preg_match_all(
-            '/\[(?P<name>[A-Za-z0-9_]*)\](?<content>(\n.+)*)/',
+            '/\[(?P<name>[A-Za-z0-9_]*)\](?<content>(\R.+)*)/',
             file_get_contents(self::INI_FILE_NAME, true),
             $sections,
             PREG_SET_ORDER
