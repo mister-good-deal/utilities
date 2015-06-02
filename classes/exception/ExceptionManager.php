@@ -4,6 +4,7 @@ namespace utilities\classes\exception;
 
 use \utilities\classes\logger\LoggerManager as Logger;
 use \utilities\classes\logger\LogLevel as LogLevel;
+use \utilities\classes\ini\IniManager as Ini;
 
 /**
 * ExceptionManager
@@ -26,7 +27,27 @@ class ExceptionManager extends \Exception
     {
         parent::__construct($message, $code, $previous);
 
-        $logger = new Logger(array(Logger::FILE));
+        $logger = new Logger(Ini::getParam('Exception', 'implementedLogger'));
         $logger->log($code, $message, parent::getTrace());
+    }
+
+    /**
+     * Add a logger to the implemented logger
+     *
+     * @param int $loggerType The logger type
+     */
+    public function addLogger($loggerType)
+    {
+        $this->logger->addLogger($loggerType);
+    }
+
+    /**
+     * Remove a logger to the implemented logger
+     *
+     * @param  int $loggerType The logger type
+     */
+    public function removeLogger($loggerType)
+    {
+        $this->logger->removeLogger($loggerType);
     }
 }

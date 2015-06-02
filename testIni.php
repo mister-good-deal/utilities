@@ -1,6 +1,6 @@
 <?php
 
-use \utilities\classes\ini\IniManager as Ini;
+use \utilities\classes\Benchmark as Benchmark;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
 spl_autoload_register(function($className) {
@@ -19,21 +19,26 @@ spl_autoload_register(function($className) {
     require_once $fileName;
 });
 
-try {
-    // Ini::setParam('FileLogger', 'filePath', 'C:\prog\utilities\log2.txt');
-    // Ini::setParam('FileLogger', 'test', 2);
-    // Ini::setParam('test', 'param', 3);
-    // Ini::setParam('test2', 'param', 4);
-    // Ini::setParam('test2', 'array', array(
-    //     'key1' => 'val1',
-    //     'key2' => 'val2',
-    //     'key3' => 'val3')
-    // );
+$func1 = function ($array) {
+    $sum = 0;
 
-    Ini::setSectionComment('test2', 'mon commentaire de test2');
-    Ini::setSectionComment('test', 'mon nouveau commentaire de test');
-    Ini::setParamComment('test2', 'param', 'mon commentaire du paramètre param section test2');
-    Ini::setParamComment('test2', 'array[key2]', 'array[key2] test'); //todo not working
+    foreach ($array as $value) {
+        $sum += $value;
+    }
+
+    return $sum;
+};
+
+$func2 = function ($array) {
+    $sum = 0;
+
+    return array_sum($array);
+};
+
+$functions = array($func1);
+
+try {
+    $benchmark = new Benchmark($functions);
 } catch (Exception $e) {
 } finally {
     exit(0);

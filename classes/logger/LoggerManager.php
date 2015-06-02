@@ -10,20 +10,16 @@ use \utilities\classes\logger\FileLogger as FileLogger;
 */
 class LoggerManager
 {
-    const FILE    = 0;
-    const CONSOLE = 1;
+    const FILE    = 1;
+    const CONSOLE = 2;
 
     private $implementedLoggers = array();
 
     public function __construct($loggerTypes = array(self::FILE))
     {
         if (is_array($loggerTypes)) {
-            foreach ($loggerTypes as $logger) {
-                if ($logger === self::FILE) {
-                    $this->implementedLoggers[] = new FileLogger();
-                } elseif ($logger === self::CONSOLE) {
-                    $this->implementedLoggers[] = new ConsoleLogger();
-                }
+            foreach ($loggerTypes as $loggerType) {
+                $this->addLogger($loggerType);
             }
         }
     }
@@ -38,8 +34,49 @@ class LoggerManager
      */
     public function log($level, $message, array $context = array())
     {
-        foreach ($this->implementedLoggers as $logger) {
+        foreach ($this->implementedLoggers as $loggerName => $logger) {
             $logger->log($level, $message, $context);
         }
+    }
+
+    /**
+     * Add a logger to the implemented logger
+     *
+     * @param int $loggerType The logger type
+     */
+    public function addLogger($loggerType)
+    {
+        $loggerType = (int) $loggerType;
+
+        if (!$this->hasLogger($loggerType)) {
+            if ($loggerType === self::FILE) {
+                $this->implementedLoggers[self::FILE] = new FileLogger();
+            } elseif ($loggerType === self::CONSOLE) {
+                $this->implementedLoggers[self::CONSOLE] = new ConsoleLogger();
+            }
+        }
+    }
+    
+    /**
+     * Remove a logger to the implemented logger
+     *
+     * @param  int $loggerType The logger type
+     */
+    public function removeLogger($loggerType)
+    {
+        if ($this->hasLogger($loggerType)) {
+            unset($this->implementedLoggers[$loggerType]);
+        }
+    }
+
+    /**
+     * Check if a logger is already implemented
+     *
+     * @param  int  $loggerType The logger type
+     * @return boolean          Logger already implemented
+     */
+    private function hasLogger($loggerType)
+    {
+        return array_key_exists($loggerType, $this->implementedLoggers);
     }
 }

@@ -22,7 +22,7 @@ class IniManager
     /**
      * ini file path (can be only the file name if the path is under the include_path of php ini conf)
      */
-    const INI_FILE_NAME = 'confTest.ini';
+    const INI_FILE_NAME = 'conf.ini';
 
     private static $iniValues;
     private static $iniSectionsComments;
@@ -263,7 +263,13 @@ class IniManager
      */
     private static function paramExists($section, $param)
     {
-        return array_key_exists($param, self::$iniValues[$section]);
+        if (preg_match('/^(?P<subsection>.*)\[(?P<key>.*)\]$/', $param, $matches) === 1) {
+            $exist = array_key_exists($matches['key'], self::$iniValues[$section][$matches['subsection']]);
+        } else {
+            $exist = array_key_exists($param, self::$iniValues[$section]);
+        }
+
+        return $exist;
     }
 
     /**
@@ -392,16 +398,18 @@ class IniManager
 
                     foreach ($value as $subSectionLevel => $subSectionValue) {
                         $iniString .= $param
-                        . "["
-                        . $subSectionLevel
-                        ."]"
-                        . self::alignValues($subSectionLevel, $maxLength)
-                        . " = "
-                        . (is_numeric($subSectionValue) ? $subSectionValue : '"' . $subSectionValue . '"');
+                            . "["
+                            . $subSectionLevel
+                            ."]"
+                            . self::alignValues($subSectionLevel, $maxLength)
+                            . " = "
+                            . (is_numeric($subSectionValue) ? $subSectionValue : '"' . $subSectionValue . '"');
 
-                        if (isset(self::$iniParamsComments[$section][$subSectionLevel])) {
+                        if (isset(self::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']'])) {
                             $iniString .= ' '
-                            . self::formatComment(self::$iniParamsComments[$section][$subSectionLevel]);
+                            . self::formatComment(
+                                self::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']']
+                            );
                         }
 
                         $iniString .= PHP_EOL;
@@ -436,7 +444,7 @@ class IniManager
         $iniSectionsComments = array();
 
         preg_match_all(
-            '/(?P<comment>(;.*\R)+)\[(?P<section>[A-Za-z0-9_]*)\]/',
+            '/(?P<comment>(;.*\R)+)\[(?P<section>[A-Za-z0-9_ ]*)\]/',
             file_get_contents(self::INI_FILE_NAME, true),
             $matches,
             PREG_SET_ORDER
@@ -459,22 +467,31 @@ class IniManager
         $paramsComments = array();
 
         preg_match_all(
-            '/\[(?P<name>[A-Za-z0-9_]*)\](?<content>(\R.+)*)/',
+            '/\[(?P<name>[A-Za-z0-9_ ]*)\](?<content>\n.+)*/',
             file_get_contents(self::INI_FILE_NAME, true),
-            $sections,
-            PREG_SET_ORDER
+            $sections
         );
+        // var_dump($sections);
+        // echo "\n.....................................\n";
 
-        foreach ($sections as $section) {
-            preg_match_all(
-                '/(?P<param>.*) = .*; (?P<content>.*)/',
-                $section['content'],
-                $comments,
-                PREG_SET_ORDER
-            );
+        foreach ($sections as $key => $section) {
+            // echo $key . "\n";
+            // var_dump($section);
+            // echo "\n.....................................\n";
+            if (isset($section['name'])) {
+                // var_dump($section['name']);
+                preg_match_all(
+                    '/(?P<param>.*) = .*; (?P<content>.*)/',
+                    $section['content'],
+                    $comments,
+                    PREG_SET_ORDER
+                );
 
-            foreach ($comments as $comment) {
-                $paramsComments[$section['name']][$comment['param']] = $comment['content'];
+                foreach ($comments as $comment) {
+                    $paramsComments[$section['name']][trim($comment['param'])] = trim($comment['content']);
+                }
+
+                unset($comments);
             }
         }
 

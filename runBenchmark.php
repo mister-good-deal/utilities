@@ -35,7 +35,7 @@ $func2 = function ($array) {
     return array_sum($array);
 };
 
-$functions = array($func1);
+$functions = array();
 
 try {
     $benchmark = new Benchmark($functions);
