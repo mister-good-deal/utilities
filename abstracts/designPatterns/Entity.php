@@ -8,10 +8,12 @@ use \utilities\classes\ini\IniManager as Ini;
 class Entity
 {
     const ENTITIES_CONF_PATH = 'database/entities/';
+    const HASH_ALGO          = 'MD5';
 
     private $conf;
     private $tableName;
     private $entityName;
+    private $id;
     private $maxColumnNameSize = 0;
     private $maxColumnTypeSize = 0;
 
@@ -80,6 +82,11 @@ class Entity
         return $this->columnsValue;
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     private function parseConf()
     {
         $columnsValue = array();
@@ -90,6 +97,12 @@ class Entity
                 $columnsAttributes[$columnName] = $columnAttributes;
             } else {
                 $this->tableName = $columnAttributes['name'];
+
+                if (is_array($columnAttributes['primaryKey'])) {
+                    $this->id = hash(self::HASH_ALGO, implode($columnAttributes['primaryKey']));
+                } else {
+                    $this->id = $columnAttributes['primaryKey'];
+                }
             }
         }
 

@@ -1,0 +1,22 @@
+<?php
+
+namespace utilities\abstracts\designPatterns;
+
+use \utilities\classes\exception\ExceptionManager as Exception;
+use \utilities\classes\ini\IniManager as Ini;
+use \utilities\abstracts\designPatterns\Entity as Entity;
+
+class EntityManager
+{
+    private $entity;
+
+    public function __construct($entityName)
+    {
+        $this->entity = new Entity($entityName);
+    }
+
+    public function getAll()
+    {
+        
+    }
+}
