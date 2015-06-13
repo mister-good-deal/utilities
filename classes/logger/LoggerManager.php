@@ -10,6 +10,9 @@ use \utilities\classes\logger\FileLogger as FileLogger;
 */
 class LoggerManager
 {
+    /**
+     * @notice if you add a Logger in const there, add it in globalConstDefine method aswell
+     */
     const FILE    = 1;
     const CONSOLE = 2;
 
@@ -66,6 +69,20 @@ class LoggerManager
     {
         if ($this->hasLogger($loggerType)) {
             unset($this->implementedLoggers[$loggerType]);
+        }
+    }
+
+    /**
+     * Add the const definition in a global scope to use it in an INI file
+     */
+    public static function globalConstDefine()
+    {
+        if (!defined('FILE_LOGGER')) {
+            define('FILE_LOGGER', self::FILE);
+        }
+
+        if (!defined('CONSOLE_LOGGER')) {
+            define('CONSOLE_LOGGER', self::CONSOLE);
         }
     }
 

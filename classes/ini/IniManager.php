@@ -7,6 +7,7 @@
 namespace utilities\classes\ini;
 
 use \utilities\classes\exception\ExceptionManager as Exception;
+use \utilities\classes\logger\LoggerManager as Logger;
 
 /**
 * IniManager
@@ -22,7 +23,7 @@ class IniManager
     /**
      * ini file path (can be only the file name if the path is under the include_path of php ini conf)
      */
-    const INI_FILE_NAME = 'conf.ini';
+    private static $INI_FILE_NAME = 'conf.ini';
 
     private static $iniValues;
     private static $iniSectionsComments;
@@ -41,15 +42,38 @@ class IniManager
      */
     private static function initialize()
     {
+        /* To use constants in INI conf file */
+        Logger::globalConstDefine();
+
         if (!self::$initialized) {
-            self::$iniValues           = parse_ini_file(self::INI_FILE_NAME, true);
+            self::$iniValues           = parse_ini_file(self::$INI_FILE_NAME, true);
             self::$iniSectionsComments = self::parseSectionsComments();
             self::$iniParamsComments   = self::parseParamsComments();
             self::$initialized         = true;
         }
+
+        if (self::$iniValues === false) {
+            throw new Exception(
+                'ERROR::The INI file ' . self::$INI_FILE_NAME . ' cannot be found',
+                Exception::$WARNING
+            );
+        }
     }
 
     /*==========  Public methods  ==========*/
+
+    /**
+     * Set the ini file name
+     *
+     * @param string $iniFileName The ini file name string
+     */
+    public static function setIniFileName($iniFileName)
+    {
+        self::$INI_FILE_NAME = $iniFileName;
+        self::$initialized   = false;
+
+        self::initialize();
+    }
 
     /**
      * Get the param value of the specified section
@@ -115,6 +139,7 @@ class IniManager
             if (self::sectionExists($section)) {
                 $return[$section] = self::$iniValues[$section];
             } else {
+                echo 'ERROR::The section ' . $section . ' doesn\'t exist in the ini conf file' . PHP_EOL;
                 throw new Exception(
                     'ERROR::The section ' . $section . ' doesn\'t exist in the ini conf file',
                     Exception::$WARNING
@@ -285,7 +310,7 @@ class IniManager
         self::$iniValues[$section][$param] = $value;
 
         file_put_contents(
-            self::INI_FILE_NAME,
+            self::$INI_FILE_NAME,
             self::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
@@ -303,7 +328,7 @@ class IniManager
         self::$iniSectionsComments[$section] = $comment;
 
         file_put_contents(
-            self::INI_FILE_NAME,
+            self::$INI_FILE_NAME,
             self::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
@@ -322,7 +347,7 @@ class IniManager
         self::$iniParamsComments[$section][$param] = $comment;
 
         file_put_contents(
-            self::INI_FILE_NAME,
+            self::$INI_FILE_NAME,
             self::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
@@ -445,7 +470,7 @@ class IniManager
 
         preg_match_all(
             '/(?P<comment>(;.*\R)+)\[(?P<section>[A-Za-z0-9_ ]*)\]/',
-            file_get_contents(self::INI_FILE_NAME, true),
+            file_get_contents(self::$INI_FILE_NAME, true),
             $matches,
             PREG_SET_ORDER
         );
@@ -468,7 +493,7 @@ class IniManager
 
         preg_match_all(
             '/\[(?P<name>[A-Za-z0-9_ ]*)\](?<content>\n.+)*/',
-            file_get_contents(self::INI_FILE_NAME, true),
+            file_get_contents(self::$INI_FILE_NAME, true),
             $sections
         );
         // var_dump($sections);

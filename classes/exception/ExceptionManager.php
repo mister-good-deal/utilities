@@ -26,7 +26,8 @@ class ExceptionManager extends \Exception
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-
+        Ini::setIniFileName('conf.ini');
+        
         $logger = new Logger(Ini::getParam('Exception', 'implementedLogger'));
         $logger->log($code, $message, parent::getTrace());
     }

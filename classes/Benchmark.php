@@ -9,8 +9,10 @@ use \utilities\classes\exception\ExceptionManager as Exception;
 class Benchmark
 {
     private $functionsArray = array();
+    private $t1;
+    private $t2;
     
-    public function __construct($functions = null)
+    public function __construct($functions = null, $params = null)
     {
         if ($functions === null) {
             throw new Exception("ERROR::There is no parameter", Exception::$PARAMETER);
@@ -28,6 +30,13 @@ class Benchmark
             if (!is_callable($function)) {
                 throw new Exception("ERROR::Array values must be functions", Exception::$PARAMETER);
             }
+        }
+    }
+
+    public function runByIteration($iterations)
+    {
+        for ($i = 0; $i < $iterations; $i++) {
+            # code...
         }
     }
 }
