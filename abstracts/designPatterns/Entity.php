@@ -77,16 +77,29 @@ class Entity
         return $this->columnsValue;
     }
 
+    /**
+     * Return the entity in an array format
+     *
+     * @return array Array with columns name on keys and columns value on values
+     */
     public function toArray()
     {
         return $this->columnsValue;
     }
 
+    /**
+     * Get the id of an entitys
+     *
+     * @return int|string The entity id (if multiple keys, a hash is generated)
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * Parse an entity conf to extract attributes
+     */
     private function parseConf()
     {
         $columnsValue = array();
@@ -110,6 +123,9 @@ class Entity
         $this->columnsAttributes = $columnsAttributes;
     }
 
+    /**
+     * Utility method to process and set the max size of name and type
+     */
     private function setBeautifullIndent()
     {
         $maxColumnNameSize = 0;
@@ -132,11 +148,24 @@ class Entity
         $this->maxColumnTypeSize = $maxColumnTypeSize;
     }
 
+    /**
+     * Indent a string nicely to align "=" sign
+     *
+     * @param  string $value   The string to indent
+     * @param  int    $maxSize The max size of all the string to indent with
+     * @return string          The indented string
+     */
     private function smartIndent($value, $maxSize)
     {
         return str_pad($value, $maxSize, ' ', STR_PAD_RIGHT);
     }
 
+    /**
+     * Cast a SQL return value to a string value
+     *
+     * @param  mixed $value The typed value
+     * @return string       The string value
+     */
     private function formatValue($value)
     {
         $formatedValue;
