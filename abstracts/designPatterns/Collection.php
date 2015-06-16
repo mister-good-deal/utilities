@@ -6,7 +6,7 @@ use \utilities\classes\ini\IniManager as Ini;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\abstracts\designPatterns\Entity as Entity;
 
-class Collection implements Iterator, ArrayAccess, Countable, SeekableIterator
+abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableIterator
 {
     /**
      * @var Entity[]       $collection An array of entity object

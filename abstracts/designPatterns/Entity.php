@@ -5,7 +5,7 @@ namespace utilities\abstracts\designPatterns;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
 
-class Entity
+abstract class Entity
 {
     const ENTITIES_CONF_PATH = 'database/entities/';
     const HASH_ALGO          = 'MD5';
