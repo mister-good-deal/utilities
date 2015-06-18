@@ -19,4 +19,12 @@ abstract class EntityManager
     {
         
     }
+
+    /**
+     * Save the entity in database
+     */
+    public function save()
+    {
+        # code...
+    }
 }

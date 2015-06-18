@@ -2,7 +2,6 @@
 
 namespace utilities\abstracts\designPatterns;
 
-use \utilities\classes\ini\IniManager as Ini;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\abstracts\designPatterns\Entity as Entity;
 
@@ -164,8 +163,8 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
     /**
      * Seeks to a position
      *
-     * @param  int $position The position to seek to
-     * @throws Exception     If the position is not seekable
+     * @param  int       $position The position to seek to
+     * @throws Exception           If the position is not seekable
      */
     public function seek($position)
     {
