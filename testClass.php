@@ -9,9 +9,10 @@ try {
     $user = new User();
 
     echo $user;
-    $user->id   = 15;
+    $user->id   = array('id_user' => 15, 'id_user2' => 20);
     $user->name = 'Romain';
     echo $user;
+    print_r($user->id);
 
 } catch (Exception $e) {
 } finally {

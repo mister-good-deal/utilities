@@ -137,7 +137,7 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
     }
 
     /**
-     * Unsets an offset
+     * Unset an offset
      *
      * @param int|string $offset The offset to unset
      */

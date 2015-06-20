@@ -7,6 +7,9 @@ use \utilities\classes\ini\IniManager as Ini;
 
 abstract class Entity
 {
+    /**
+     * @var array $columnsValue An assosiative array with colum name on key and its value on value
+     */
     const ENTITIES_CONF_PATH = 'database/entities/';
     const HASH_ALGO          = 'MD5';
 
@@ -36,20 +39,30 @@ abstract class Entity
 
     public function __get($columnName)
     {
-        if (!$this->__isset($columnName)) {
-            throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
+        if (strtolower($columnName) === 'id') {
+            $value = $this->getId();
+        } else {
+            if (!$this->__isset($columnName)) {
+                throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
+            }
+
+            $value = $this->columnsValue[$columnName];
         }
 
-        return $this->columnsValue[$columnName];
+        return $value;
     }
 
     public function __set($columnName, $value)
     {
-        if (!$this->__isset($columnName)) {
-            throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
-        }
+        if (strtolower($columnName) === 'id') {
+            $this->setId($value);
+        } else {
+            if (!$this->__isset($columnName)) {
+                throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
+            }
         
-        $this->columnsValue[$columnName] = $value;
+            $this->columnsValue[$columnName] = $value;
+        }
     }
 
     public function __toString()
@@ -88,13 +101,61 @@ abstract class Entity
     }
 
     /**
-     * Get the id of an entitys
+     * Get the key id of an entity
      *
-     * @return int|string The entity id (if multiple keys, a hash is generated)
+     * @return int|string The entity key id (if multiple keys, a hash is generated)
+     */
+    public function getIdKey()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get the id value of the entity (can be an array if several primary keys)
+     *
+     * @return int|array The id value
      */
     public function getId()
     {
-        return $this->id;
+        if (is_array($this->id)) {
+            foreach ($this->id as $entityColumn) {
+                $value[$entityColumn] = $this->__get($entityColumn);
+            }
+        } else {
+            $value = $this->__get($this->id);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Set the id value of the entity (can be an array if several primary keys)
+     *
+     * @param int|array The id value
+     */
+    public function setId($value)
+    {
+        if (is_array($this->id)) {
+            if (!is_array($value)) {
+                throw new Exception(
+                    'The id is on several columns you must passed an assosiative array with keys (' .
+                    implode(', ', $this->id) . ')',
+                    Exception::$PARAMETER
+                );
+            }
+
+            foreach ($value as $key => $val) {
+                if (!array_key_exists($key, $this->columnsValue)) {
+                    throw new Exception(
+                        'The keys of the assosiative array must be one of these : ' . implode(', ', $this->id),
+                        Exception::$PARAMETER
+                    );
+                }
+                $this->__set($key, $val);
+            }
+        } else {
+            $this->__set($this->id, $val);
+        }
     }
 
     /**
@@ -111,9 +172,7 @@ abstract class Entity
             } else {
                 $this->tableName = $columnAttributes['name'];
 
-                if (is_array($columnAttributes['primaryKey'])) {
-                    $this->id = hash(self::HASH_ALGO, implode($columnAttributes['primaryKey']));
-                } else {
+                if (isset($columnAttributes['primaryKey'])) {
                     $this->id = $columnAttributes['primaryKey'];
                 }
             }
