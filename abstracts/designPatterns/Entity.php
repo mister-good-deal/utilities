@@ -4,6 +4,7 @@ namespace utilities\abstracts\designPatterns;
 
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
+use \utilities\classes\DataBase as DB;
 
 abstract class Entity
 {
@@ -11,7 +12,6 @@ abstract class Entity
      * @var array $columnsValue An assosiative array with colum name on key and its value on value
      */
     const ENTITIES_CONF_PATH = 'database/entities/';
-    const HASH_ALGO          = 'MD5';
 
     private $conf;
     private $tableName;
@@ -156,6 +156,11 @@ abstract class Entity
         } else {
             $this->__set($this->id, $val);
         }
+    }
+
+    public function save()
+    {
+        // DB::prepare('')->execute();
     }
 
     /**
