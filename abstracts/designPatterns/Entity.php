@@ -23,6 +23,10 @@ abstract class Entity
     protected $columnsValue      = array();
     protected $columnsAttributes = array();
 
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
+
     public function __construct($entityName)
     {
         Ini::setIniFileName(self::ENTITIES_CONF_PATH . $entityName . '.ini');
@@ -85,20 +89,26 @@ abstract class Entity
         return $string;
     }
 
-    public function __debugInfo()
-    {
-        return $this->columnsValue;
-    }
-
     /**
      * Return the entity in an array format
      *
      * @return array Array with columns name on keys and columns value on values
      */
-    public function toArray()
+    public function __toArray()
     {
         return $this->columnsValue;
     }
+
+    public function __debugInfo()
+    {
+        return $this->columnsValue;
+    }
+
+    /*-----  End of Magic methods  ------*/
+
+    /*==========================================
+    =            Getters and setter            =
+    ==========================================*/
 
     /**
      * Get the key id of an entity
@@ -158,9 +168,80 @@ abstract class Entity
         }
     }
 
+    /**
+     * Get the entity table name
+     *
+     * @return string The entity table name
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    /*-----  End of Getters and setter  ------*/
+
+    /**
+     * Save the entity in the database
+     *
+     * @todo Exception and return true / false
+     */
     public function save()
     {
-        // DB::prepare('')->execute();
+        if ($this->alreadyExists()) {
+            $this->updateInDatabase();
+        } else {
+            $this->saveInDatabase();
+        }
+    }
+
+    /**
+     * Save the entity in the database
+     *
+     * @todo check SQL syntax to handle multiple SGBD
+     */
+    private function saveInDatabase()
+    {
+        DB::prepare('INSERT INTO ' . $this->tableName . ' VALUES ' . $this->getAttributesMarks())
+           ->execute(array_values($this->columnsAttributes));
+
+           // todo return the number of row affected (1 if ok else 0 (bool success ?))
+    }
+
+    /**
+     * Delete the entity from the database
+     *
+     * @return boolean True if the entity has beed deleted else false
+     */
+    private function deleteInDatabse()
+    {
+        return (int) DB::exec(
+            'DELETE FROM ' . $this->tableName . '
+             WHERE ' .$this->getIdKey() . ' = ' . DB::quote($this->getId())
+        ) === 1;
+    }
+
+    /**
+     * Update an entity from the database
+     *
+     * @throws Exception if the deletion failed
+     */
+    private function updateInDatabase()
+    {
+        if (!$this->deleteInDatabse()) {
+            throw new Exception('Entity was not deleted', Exception::$ERROR);
+        }
+
+        $this->saveInDatabase();
+    }
+
+    /**
+     * Get the "?" markers of the Entity
+     *
+     * @return string The string markers (?, ?, ?)
+     */
+    private function getAttributesMarks()
+    {
+        return '(' . implode(array_fill(0, count($this->columnsAttributes), '?')) . ')';
     }
 
     /**
