@@ -7,11 +7,9 @@ include_once 'autoloader.php';
 
 try {
     $user = new User();
-
     $user->id   = 1;
     $user->name = 'Romain';
     $user->save();
-
 } catch (Exception $e) {
 } finally {
     exit(0);
