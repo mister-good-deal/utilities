@@ -4,9 +4,11 @@ namespace utilities\classes;
 
 use \utilities\classes\exception\ExceptionManager as Exception;
 
+/**
+ * @todo Sigleton to handle one connection by one
+ */
 class DataBase extends \PDO
 {
-    
     public function __construct($dsn, $username = null, $password = null, $options = null)
     {
         if ($username !== null && $password !== null) {

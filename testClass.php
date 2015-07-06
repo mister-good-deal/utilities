@@ -8,11 +8,9 @@ include_once 'autoloader.php';
 try {
     $user = new User();
 
-    echo $user;
-    $user->id   = array('id_user' => 15, 'id_user2' => 20);
+    $user->id   = 1;
     $user->name = 'Romain';
-    echo $user;
-    print_r($user->id);
+    $user->save();
 
 } catch (Exception $e) {
 } finally {

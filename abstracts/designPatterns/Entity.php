@@ -113,29 +113,63 @@ abstract class Entity
     /**
      * Get the key id of an entity
      *
-     * @return int|string The entity key id (if multiple keys, a hash is generated)
+     * @return string[] The entity key id
      */
     public function getIdKey()
     {
-        return $this->id;
+        $idKey = array();
+
+        if (is_array($this->id)) {
+            foreach ($this->id as $columnName) {
+                $idKey[] = $columnName;
+            }
+        } else {
+            $idKey[] = $this->id;
+        }
+
+        return $idKey;
     }
 
     /**
-     * Get the id value of the entity (can be an array if several primary keys)
+     * Get the id value of the entity
      *
-     * @return int|array The id value
+     * @return int[] The id value
      */
-    public function getId()
+    public function getIdValue()
     {
+        $idValue = array();
+
         if (is_array($this->id)) {
-            foreach ($this->id as $entityColumn) {
-                $value[$entityColumn] = $this->__get($entityColumn);
+
+            foreach ($this->id as $columnName) {
+                $idValue[] = $this->__get($columnName);
             }
         } else {
-            $value = $this->__get($this->id);
+            $idValue[] = $this->__get($this->id);
         }
 
-        return $value;
+        return $idValue;
+    }
+
+    /**
+     * Get the associative array idKey => idValue
+     *
+     * @return array The associative array idKey => idValue
+     */
+    public function getIdKeyValue()
+    {
+        $idKeyValue = array();
+
+        if (is_array($this->id)) {
+
+            foreach ($this->id as $columnName) {
+                $idKeyValue[$columnName] = $this->__get($columnName);
+            }
+        } else {
+            $idKeyValue[$this->id] = $this->__get($this->id);
+        }
+
+        return $idKeyValue;
     }
 
     /**
@@ -178,71 +212,17 @@ abstract class Entity
         return $this->tableName;
     }
 
+    public function getColumnsAttributes()
+    {
+        return $this->columnsAttributes;
+    }
+
+    public function getColumsValue()
+    {
+        return $this->columnsValue;
+    }
+
     /*-----  End of Getters and setter  ------*/
-
-    /**
-     * Save the entity in the database
-     *
-     * @todo Exception and return true / false
-     */
-    public function save()
-    {
-        if ($this->alreadyExists()) {
-            $this->updateInDatabase();
-        } else {
-            $this->saveInDatabase();
-        }
-    }
-
-    /**
-     * Save the entity in the database
-     *
-     * @todo check SQL syntax to handle multiple SGBD
-     */
-    private function saveInDatabase()
-    {
-        DB::prepare('INSERT INTO ' . $this->tableName . ' VALUES ' . $this->getAttributesMarks())
-           ->execute(array_values($this->columnsAttributes));
-
-           // todo return the number of row affected (1 if ok else 0 (bool success ?))
-    }
-
-    /**
-     * Delete the entity from the database
-     *
-     * @return boolean True if the entity has beed deleted else false
-     */
-    private function deleteInDatabse()
-    {
-        return (int) DB::exec(
-            'DELETE FROM ' . $this->tableName . '
-             WHERE ' .$this->getIdKey() . ' = ' . DB::quote($this->getId())
-        ) === 1;
-    }
-
-    /**
-     * Update an entity from the database
-     *
-     * @throws Exception if the deletion failed
-     */
-    private function updateInDatabase()
-    {
-        if (!$this->deleteInDatabse()) {
-            throw new Exception('Entity was not deleted', Exception::$ERROR);
-        }
-
-        $this->saveInDatabase();
-    }
-
-    /**
-     * Get the "?" markers of the Entity
-     *
-     * @return string The string markers (?, ?, ?)
-     */
-    private function getAttributesMarks()
-    {
-        return '(' . implode(array_fill(0, count($this->columnsAttributes), '?')) . ')';
-    }
 
     /**
      * Parse an entity conf to extract attributes
