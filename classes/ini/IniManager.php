@@ -30,9 +30,7 @@ class IniManager
     private static $iniParamsComments;
     private static $initialized = false;
     
-    /*==========  Private constructor (singleton pattern)  ==========*/
-    
-    private function __construct()
+    public function __construct()
     {
 
     }

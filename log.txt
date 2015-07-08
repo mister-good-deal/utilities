@@ -50,3 +50,12 @@
 2015-06-19 22:23:09		The id is on several columns you must passed an assosiative array with keys (id_user, id_user2)
 2015-06-19 22:23:59		The attribute 0 is undefined
 2015-06-19 22:29:03		The keys of the assosiative array must be one of these : id_user, id_user2
+2015-07-08 23:18:10		The first parameter must be a string
+2015-07-08 23:18:36		The first parameter must be a string
+2015-07-08 23:19:09		The first parameter must be a string
+2015-07-08 23:26:57		ERROR::Parameter section must be a String or an array of String
+2015-07-09 01:19:05		The attribute id_user is undefined
+2015-07-09 01:25:56		The attribute columnAttributes is undefined
+2015-07-09 01:27:40		The attribute columnAttributes is undefined
+2015-07-09 01:28:33		The attribute columnAttributes is undefined
+2015-07-09 01:30:13		The attribute columnAttributes is undefined

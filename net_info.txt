@@ -1,0 +1,52 @@
+Configuration IP de Windows
+
+   Nom de l’hôte . . . . . . . . . . : GT60-2QD
+   Suffixe DNS principal . . . . . . :
+   Type de noeud. . . . . . . . . .  : Hybride
+   Routage IP activé . . . . . . . . : Non
+   Proxy WINS activé . . . . . . . . : Non
+   Liste de recherche du suffixe DNS.: emilie.u-psud.fr
+
+Carte Ethernet Connexion au réseau local :
+
+   Suffixe DNS propre à la connexion. . . : emilie.u-psud.fr
+   Description. . . . . . . . . . . . . . : Killer e2200 Gigabit Ethernet Controller (NDIS 6.30)
+   Adresse physique . . . . . . . . . . . : 44-8A-5B-EE-CC-7D
+   DHCP activé. . . . . . . . . . . . . . : Oui
+   Configuration automatique activée. . . : Oui
+   Adresse IPv6 de liaison locale. . . . .: fe80::cda1:ce05:ae79:8934%17(préféré)
+   Adresse IPv4. . . . . . . . . . . . . .: 172.17.14.57(préféré)
+   Masque de sous-réseau. . . . . . . . . : 255.255.252.0
+   Bail obtenu. . . . . . . . . . . . . . : lundi 6 juillet 2015 20:36:11
+   Bail expirant. . . . . . . . . . . . . : lundi 6 juillet 2015 21:09:31
+   Passerelle par défaut. . . . . . . . . : 172.17.12.14
+   Serveur DHCP . . . . . . . . . . . . . : 172.17.12.2
+   IAID DHCPv6 . . . . . . . . . . . . . .: 423922267
+   DUID de client DHCPv6. . . . . . . . . : 00-01-00-01-1C-40-C5-9B-80-19-34-78-C3-32
+   Serveurs DNS. . .  . . . . . . . . . . : 172.17.12.2
+   NetBIOS sur Tcpip. . . . . . . . . . . : Activé
+
+Carte Tunnel isatap.emilie.u-psud.fr :
+
+   Statut du média. . . . . . . . . . . . : Média déconnecté
+   Suffixe DNS propre à la connexion. . . : emilie.u-psud.fr
+   Description. . . . . . . . . . . . . . : Carte Microsoft ISATAP #3
+   Adresse physique . . . . . . . . . . . : 00-00-00-00-00-00-00-E0
+   DHCP activé. . . . . . . . . . . . . . : Non
+   Configuration automatique activée. . . : Oui
+
+Carte Tunnel Teredo Tunneling Pseudo-Interface :
+
+   Statut du média. . . . . . . . . . . . : Média déconnecté
+   Suffixe DNS propre à la connexion. . . :
+   Description. . . . . . . . . . . . . . : Teredo Tunneling Pseudo-Interface
+   Adresse physique . . . . . . . . . . . : 00-00-00-00-00-00-00-E0
+   DHCP activé. . . . . . . . . . . . . . : Non
+   Configuration automatique activée. . . : Oui
+
+
+
+
+Your IP Address:                        194.199.165.10
+Your IP address - WebRTC detection :    172.17.14.57
+DNS Address detection                   129.175.34.11

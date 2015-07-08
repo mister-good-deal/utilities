@@ -9,14 +9,15 @@ use \utilities\classes\DataBase as DB;
 abstract class Entity
 {
     /**
-     * @var array $columnsValue An assosiative array with colum name on key and its value on value
+     * @var array  $columnsValue An assosiative array with colum name on key and its value on value
+     * @var string $idKey Id key name
      */
     const ENTITIES_CONF_PATH = 'database/entities/';
 
     private $conf;
     private $tableName;
     private $entityName;
-    private $id;
+    private $idKey;
     private $maxColumnNameSize = 0;
     private $maxColumnTypeSize = 0;
 
@@ -55,18 +56,23 @@ abstract class Entity
 
         return $value;
     }
-
+    /**
+     * @todo fix the setIdValue mess up
+     * [__set description]
+     * @param [type] $columnName [description]
+     * @param [type] $value      [description]
+     */
     public function __set($columnName, $value)
     {
-        if (strtolower($columnName) === 'id') {
-            $this->setId($value);
-        } else {
+        // if (strtolower($columnName) === 'id') {
+        //     $this->setIdValue($value);
+        // } else {
             if (!$this->__isset($columnName)) {
                 throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
             }
         
             $this->columnsValue[$columnName] = $value;
-        }
+        // }
     }
 
     public function __toString()
@@ -119,12 +125,12 @@ abstract class Entity
     {
         $idKey = array();
 
-        if (is_array($this->id)) {
-            foreach ($this->id as $columnName) {
+        if (is_array($this->idKey)) {
+            foreach ($this->idKey as $columnName) {
                 $idKey[] = $columnName;
             }
         } else {
-            $idKey[] = $this->id;
+            $idKey[] = $this->idKey;
         }
 
         return $idKey;
@@ -139,13 +145,12 @@ abstract class Entity
     {
         $idValue = array();
 
-        if (is_array($this->id)) {
-
-            foreach ($this->id as $columnName) {
+        if (is_array($this->idKey)) {
+            foreach ($this->idKey as $columnName) {
                 $idValue[] = $this->__get($columnName);
             }
         } else {
-            $idValue[] = $this->__get($this->id);
+            $idValue[] = $this->__get($this->idKey);
         }
 
         return $idValue;
@@ -160,13 +165,12 @@ abstract class Entity
     {
         $idKeyValue = array();
 
-        if (is_array($this->id)) {
-
-            foreach ($this->id as $columnName) {
+        if (is_array($this->idKey)) {
+            foreach ($this->idKey as $columnName) {
                 $idKeyValue[$columnName] = $this->__get($columnName);
             }
         } else {
-            $idKeyValue[$this->id] = $this->__get($this->id);
+            $idKeyValue[$this->idKey] = $this->__get($this->idKey);
         }
 
         return $idKeyValue;
@@ -177,13 +181,14 @@ abstract class Entity
      *
      * @param int|array The id value
      */
-    public function setId($value)
+    public function setIdValue($value)
     {
-        if (is_array($this->id)) {
+        var_dump($this->idKey);
+        if (is_array($this->idKey)) {
             if (!is_array($value)) {
                 throw new Exception(
                     'The id is on several columns you must passed an assosiative array with keys (' .
-                    implode(', ', $this->id) . ')',
+                    implode(', ', $this->idKey) . ')',
                     Exception::$PARAMETER
                 );
             }
@@ -191,14 +196,15 @@ abstract class Entity
             foreach ($value as $key => $val) {
                 if (!array_key_exists($key, $this->columnsValue)) {
                     throw new Exception(
-                        'The keys of the assosiative array must be one of these : ' . implode(', ', $this->id),
+                        'The keys of the assosiative array must be one of these : ' . implode(', ', $this->idKey),
                         Exception::$PARAMETER
                     );
                 }
-                $this->__set($key, $val);
+
+                $this->columnAttributes[$key] = $val;
             }
         } else {
-            $this->__set($this->id, $val);
+            $this->columnAttributes[$this->idKey] = $value;
         }
     }
 
@@ -239,7 +245,7 @@ abstract class Entity
                 $this->tableName = $columnAttributes['name'];
 
                 if (isset($columnAttributes['primaryKey'])) {
-                    $this->id = $columnAttributes['primaryKey'];
+                    $this->idKey = $columnAttributes['primaryKey'];
                 }
             }
         }
