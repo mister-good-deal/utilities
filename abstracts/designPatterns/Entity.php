@@ -44,35 +44,22 @@ class Entity
 
     public function __get($columnName)
     {
-        // if (strtolower($columnName) === 'id') {
-        //     $value = $this->getId();
-        // } else {
-            if (!$this->__isset($columnName)) {
-                throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
-            }
+        if (!$this->__isset($columnName)) {
+            throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
+        }
 
-            $value = $this->columnsValue[$columnName];
-        // }
+        $value = $this->columnsValue[$columnName];
 
         return $value;
     }
-    /**
-     * @todo fix the setIdValue mess up
-     * [__set description]
-     * @param [type] $columnName [description]
-     * @param [type] $value      [description]
-     */
+
     public function __set($columnName, $value)
     {
-        // if (strtolower($columnName) === 'id') {
-        //     $this->setIdValue($value);
-        // } else {
-            if (!$this->__isset($columnName)) {
-                throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
-            }
-            // @todo fix here 
-            $this->columnsValue[$columnName] = $value;
-        // }
+        if (!$this->__isset($columnName)) {
+            throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
+        }
+        // @todo fix here
+        $this->columnsValue[$columnName] = $value;
     }
 
     public function __toString()
@@ -305,7 +292,7 @@ class Entity
             case 'boolean':
                 $formatedValue = $value ? 'TRUE' : 'FALSE';
                 break;
-            
+
             case 'integer':
                 $formatedValue = (int) $value;
                 break;
