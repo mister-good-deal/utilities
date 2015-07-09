@@ -59,3 +59,6 @@
 2015-07-09 01:27:40		The attribute columnAttributes is undefined
 2015-07-09 01:28:33		The attribute columnAttributes is undefined
 2015-07-09 01:30:13		The attribute columnAttributes is undefined
+2015-07-09 01:48:54		ERROR::The section Database doesn't exist in the ini conf file
+2015-07-09 01:52:23		ERROR::The INI file config.ini cannot be found
+2015-07-09 01:53:39		ERROR::The section Database doesn't exist in the ini conf file

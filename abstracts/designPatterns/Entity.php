@@ -6,7 +6,7 @@ use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
 use \utilities\classes\DataBase as DB;
 
-abstract class Entity
+class Entity
 {
     /**
      * @var array  $columnsValue An assosiative array with colum name on key and its value on value
@@ -44,15 +44,15 @@ abstract class Entity
 
     public function __get($columnName)
     {
-        if (strtolower($columnName) === 'id') {
-            $value = $this->getId();
-        } else {
+        // if (strtolower($columnName) === 'id') {
+        //     $value = $this->getId();
+        // } else {
             if (!$this->__isset($columnName)) {
                 throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
             }
 
             $value = $this->columnsValue[$columnName];
-        }
+        // }
 
         return $value;
     }
@@ -70,7 +70,7 @@ abstract class Entity
             if (!$this->__isset($columnName)) {
                 throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
             }
-        
+            // @todo fix here 
             $this->columnsValue[$columnName] = $value;
         // }
     }
@@ -223,7 +223,7 @@ abstract class Entity
         return $this->columnsAttributes;
     }
 
-    public function getColumsValue()
+    public function getColumnsValue()
     {
         return $this->columnsValue;
     }

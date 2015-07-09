@@ -19,6 +19,7 @@ try {
     // echo $user;
 
     $entityManager->entity = $user;
+    $entityManager->save();
     
     // DB::query('SELECT * FROM users');
 } catch (Exception $e) {

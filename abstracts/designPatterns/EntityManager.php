@@ -5,6 +5,7 @@ namespace utilities\abstracts\designPatterns;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
 use \utilities\abstracts\designPatterns\Entity as Entity;
+use \utilities\classes\DataBase as DB;
 
 abstract class EntityManager
 {
@@ -111,7 +112,7 @@ abstract class EntityManager
             implode($columnsValue, 'AND ')
         );
 
-        return (int) DB::exec($sql)->fetchColumn() === 1;
+        return (int) DB::exec($sql) === 1;
     }
 
     /**
@@ -122,7 +123,7 @@ abstract class EntityManager
     private function saveInDatabase()
     {
         DB::prepare('INSERT INTO ' . $this->entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks())
-           ->execute(array_values($this->columnsAttributes));
+           ->execute(array_values($this->entity->getColumnsValue()));
 
            // todo return the number of row affected (1 if ok else 0 (bool success ?))
     }
@@ -161,6 +162,6 @@ abstract class EntityManager
      */
     private function getEntityAttributesMarks()
     {
-        return '(' . implode(array_fill(0, count($this->entity->getcolumnsAttributes()), '?')) . ')';
+        return '(' . implode(array_fill(0, count($this->entity->getcolumnsAttributes()), '?'), ', ') . ')';
     }
 }

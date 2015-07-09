@@ -49,6 +49,7 @@ class DataBase
             } elseif ($dsn === null) {
                 // Load default parameters using reflection trick to pass params
                 $reflectionClass = new \ReflectionClass('PDO');
+                Ini::setIniFileName('conf.ini');
                 self::$PDO = $reflectionClass->newInstanceArgs(Ini::getSectionParams('Database'));
             } else {
                 throw new Exception('The first parameter must be a string', Exception::$PARAMETER);
