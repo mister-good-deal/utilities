@@ -58,7 +58,7 @@ class Entity
         if (!$this->__isset($columnName)) {
             throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
         }
-        // @todo fix here
+
         $this->columnsValue[$columnName] = $value;
     }
 
@@ -126,18 +126,18 @@ class Entity
     /**
      * Get the id value of the entity
      *
-     * @return int[] The id value
+     * @return int|int[] The id value(s)
      */
     public function getIdValue()
     {
-        $idValue = array();
-
         if (is_array($this->idKey)) {
+            $idValue = array();
+
             foreach ($this->idKey as $columnName) {
                 $idValue[] = $this->__get($columnName);
             }
         } else {
-            $idValue[] = $this->__get($this->idKey);
+            $idValue = $this->__get($this->idKey);
         }
 
         return $idValue;
@@ -157,7 +157,7 @@ class Entity
                 $idKeyValue[$columnName] = $this->__get($columnName);
             }
         } else {
-            $idKeyValue[$this->idKey] = $this->__get($this->idKey);
+            $idKeyValue[$this->idKey] = $this->getIdValue();
         }
 
         return $idKeyValue;
@@ -170,7 +170,6 @@ class Entity
      */
     public function setIdValue($value)
     {
-        var_dump($this->idKey);
         if (is_array($this->idKey)) {
             if (!is_array($value)) {
                 throw new Exception(

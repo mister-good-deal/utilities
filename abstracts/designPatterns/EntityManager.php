@@ -78,12 +78,19 @@ abstract class EntityManager
      *
      * @todo Exception and return true / false
      */
-    public function save()
+    public function saveEntity($entity = null)
     {
-        if ($this->entityAlreadyExists()) {
-            $this->updateInDatabase();
+        if ($this->entityAlreadyExists($entity)) {
+            $this->updateInDatabase($entity);
         } else {
-            $this->saveInDatabase();
+            $this->saveInDatabase($entity);
+        }
+    }
+
+    public function saveCollection()
+    {
+        foreach ($this->entityCollection as $entity) {
+            $this->saveEntity($entity);
         }
     }
 
@@ -92,8 +99,12 @@ abstract class EntityManager
      *
      * @return bool True if the entity exists else false
      */
-    private function entityAlreadyExists()
+    private function entityAlreadyExists($entity = null)
     {
+        if ($entity === null) {
+            $this->entity;
+        }
+
         $sql = 'SELECT COUNT(*)
                 FROM %s
                 WHERE %s';
@@ -101,18 +112,17 @@ abstract class EntityManager
         $columnsValue = array();
 
         // Handle multiple primary keys
-
-        foreach ($this->entity->getIdKeyValue() as $columnName => $columnValue) {
+        foreach ($entity->getIdKeyValue() as $columnName => $columnValue) {
             $columnsValue[] = $columnName . ' = ' . DB::quote($columnValue);
         }
 
         $sql = sprintf(
             $sql,
-            $this->entity->getTableName(),
+            $entity->getTableName(),
             implode($columnsValue, 'AND ')
         );
 
-        return (int) DB::exec($sql) === 1;
+        return ((int) DB::query($sql)->fetchColumn() >= 1);
     }
 
     /**
@@ -120,10 +130,16 @@ abstract class EntityManager
      *
      * @todo check SQL syntax to handle multiple SGBD
      */
-    private function saveInDatabase()
+    private function saveInDatabase($entity = null)
     {
-        DB::prepare('INSERT INTO ' . $this->entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks())
-           ->execute(array_values($this->entity->getColumnsValue()));
+        if ($entity === null) {
+            $this->entity;
+        }
+
+        $query = 'INSERT INTO ' . $entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks();
+
+        DB::prepare($query)
+           ->execute(array_values($entity->getColumnsValue()));
 
            // todo return the number of row affected (1 if ok else 0 (bool success ?))
     }
@@ -133,12 +149,29 @@ abstract class EntityManager
      *
      * @return boolean True if the entity has beed deleted else false
      */
-    private function deleteInDatabse()
+    private function deleteInDatabse($entity = null)
     {
-        return (int) DB::exec(
-            'DELETE FROM ' . $this->tableName . '
-             WHERE ' .$this->getIdKey() . ' = ' . DB::quote($this->getId())
-        ) === 1;
+        if ($entity === null) {
+            $this->entity;
+        }
+
+        $sql = 'DELETE FROM %s
+                WHERE %s';
+
+        $columnsValue = array();
+
+        // Handle multiple primary keys
+        foreach ($entity->getIdKeyValue() as $columnName => $columnValue) {
+            $columnsValue[] = $columnName . ' = ' . DB::quote($columnValue);
+        }
+
+        $sql = sprintf(
+            $sql,
+            $entity->getTableName(),
+            implode($columnsValue, 'AND ')
+        );
+
+        return ((int) DB::exec($sql) === 1);
     }
 
     /**
@@ -146,13 +179,17 @@ abstract class EntityManager
      *
      * @throws Exception if the deletion failed
      */
-    private function updateInDatabase()
+    private function updateInDatabase($entity = null)
     {
-        if (!$this->deleteInDatabse()) {
+        if ($entity === null) {
+            $this->entity;
+        }
+
+        if (!$this->deleteInDatabse($entity)) {
             throw new Exception('Entity was not deleted', Exception::$ERROR);
         }
 
-        $this->saveInDatabase();
+        $this->saveInDatabase($entity);
     }
 
     /**
@@ -160,8 +197,12 @@ abstract class EntityManager
      *
      * @return string The string markers (?, ?, ?)
      */
-    private function getEntityAttributesMarks()
+    private function getEntityAttributesMarks($entity = null)
     {
+        if ($entity === null) {
+            $this->entity;
+        }
+
         return '(' . implode(array_fill(0, count($this->entity->getcolumnsAttributes()), '?'), ', ') . ')';
     }
 }

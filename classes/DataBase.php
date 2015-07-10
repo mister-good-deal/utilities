@@ -12,7 +12,8 @@ use \utilities\classes\ini\IniManager as Ini;
  */
 class DataBase
 {
-    private static $PDO = null;
+    private static $PDO                  = null;
+    private static $constantsInitialized = false;
     
     public function __construct($dsn = null, $username = null, $password = null, $options = null)
     {
@@ -29,7 +30,7 @@ class DataBase
     public static function __callStatic($name, $arguments = array())
     {
         self::initialize();
-        call_user_func_array(array(self::$PDO, $name), $arguments);
+        return call_user_func_array(array(self::$PDO, $name), $arguments);
     }
 
     /**
@@ -47,12 +48,21 @@ class DataBase
             } elseif (is_string($dsn)) {
                 self::$PDO = new \PDO($dsn);
             } elseif ($dsn === null) {
-                // Load default parameters using reflection trick to pass params
-                $reflectionClass = new \ReflectionClass('PDO');
                 Ini::setIniFileName('conf.ini');
-                self::$PDO = $reflectionClass->newInstanceArgs(Ini::getSectionParams('Database'));
+                
+                // Load default parameters
+                $params = Ini::getSectionParams('Database');
+
+                self::$PDO = new \PDO($params['dsn'], $params['username'], $params['password'], $params['options']);
             } else {
                 throw new Exception('The first parameter must be a string', Exception::$PARAMETER);
+            }
+
+            // Load default PDO parameters
+            $params = Ini::getSectionParams('PDO');
+
+            foreach ($params as $paramName => $paramValue) {
+                self::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
             }
         }
     }

@@ -62,3 +62,6 @@
 2015-07-09 01:48:54		ERROR::The section Database doesn't exist in the ini conf file
 2015-07-09 01:52:23		ERROR::The INI file config.ini cannot be found
 2015-07-09 01:53:39		ERROR::The section Database doesn't exist in the ini conf file
+2015-07-10 22:45:15		The attribute columnsValue is undefined
+2015-07-10 22:45:39		The attribute columnsValue is undefined
+2015-07-11 00:01:50		Entity was not deleted

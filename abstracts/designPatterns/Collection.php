@@ -5,7 +5,7 @@ namespace utilities\abstracts\designPatterns;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\abstracts\designPatterns\Entity as Entity;
 
-abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableIterator
+abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \SeekableIterator
 {
     /**
      * @var Entity[]       $collection An array of entity object
@@ -28,7 +28,7 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
      */
     public function add($entity)
     {
-        $id = $entity->getId();
+        $id = $entity->getIdValue();
 
         if (array_key_exists($id, $this->indexId)) {
             throw new Exception('This entity id(' . $id .') is already in the collection', Exception::$WARNING);
