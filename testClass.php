@@ -10,19 +10,18 @@ include_once 'autoloader.php';
 
 try {
     $entityManager = new EntityManager();
-    $collection = new Collection();
+    $collection    = new Collection();
 
-    for ($i = 0; $i < 100; $i++) {
-        $user = new User();
+    for ($i = 0; $i < 10; $i++) {
+        $user       = new User();
         $user->id   = $i;
         $user->name = 'User_' . $i;
         $collection->add($user);
+        echo $user . PHP_EOL;
     }
     
-    $entityManager->setEntityCollection($collection);
-    $entityManager->saveCollection();
-
-    // gg
+    // $entityManager->setEntityCollection($collection);
+    // $entityManager->saveCollection();
 } catch (Exception $e) {
 } finally {
     exit(0);

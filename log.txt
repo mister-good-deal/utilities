@@ -65,3 +65,9 @@
 2015-07-10 22:45:15		The attribute columnsValue is undefined
 2015-07-10 22:45:39		The attribute columnsValue is undefined
 2015-07-11 00:01:50		Entity was not deleted
+2015-07-11 16:24:27		The entity object must be a children of the class "Entity"
+2015-07-11 16:26:10		The entityCollection object must be a children of the class "Collection"
+2015-07-11 16:27:26		The entityCollection object must be a children of the class "Collection"
+2015-07-11 16:30:34		The entityCollection object must be a children of the class "Collection"
+2015-07-11 16:30:50		The entityCollection object must be a children of the class "Collection"
+2015-07-11 16:31:58		The entityCollection object must be a children of the class "Collection"

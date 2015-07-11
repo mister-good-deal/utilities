@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Romain Laneuville <romain.laneuville@hotmail.fr
+ * @link   https://github.com/ZiperRom1/utilities
+ */
 
 namespace utilities\abstracts\designPatterns;
 
@@ -8,6 +12,8 @@ use \utilities\classes\DataBase as DB;
 
 class Entity
 {
+    use \utilities\traits\BeautifullIndentTrait;
+
     /**
      * @var array  $columnsValue An assosiative array with colum name on key and its value on value
      * @var string $idKey Id key name
@@ -64,19 +70,23 @@ class Entity
 
     public function __toString()
     {
-        $this->setBeautifullIndent();
+        $this->setMaxSize('columnName', array_keys($this->columnsValue));
+        $this->setMaxSize('columnValue', array_values($this->columnsValue));
+        $this->setMaxSize('columnType', array_column($this->columnsAttributes, 'type'));
+        $this->setMaxSize('columnSize', array_column($this->columnsAttributes, 'size'));
 
         $string = '['  . $this->entityName . ']' . PHP_EOL;
 
         foreach ($this->columnsValue as $columnName => $columnValue) {
             $string .=
-                '  ' . $this->smartIndent($columnName, $this->maxColumnNameSize)
-                . '  ' . $this->smartIndent(
+                '  ' . $this->smartAlign($columnName, 'columnName')
+                . '  ' . $this->smartAlign(
                     $this->columnsAttributes[$columnName]['type'] . '(' .
                     $this->columnsAttributes[$columnName]['size'] . ')',
-                    $this->maxColumnTypeSize
+                    array('columnType', 'columnSize'),
+                    2
                 )
-                . '  = ' . $this->formatValue($columnValue) . PHP_EOL;
+                . '  = ' . $this->smartAlign($columnValue) . PHP_EOL;
         }
 
         return $string;
@@ -238,43 +248,6 @@ class Entity
 
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
-    }
-
-    /**
-     * Utility method to process and set the max size of name and type
-     */
-    private function setBeautifullIndent()
-    {
-        $maxColumnNameSize = 0;
-        $maxColumnTypeSize = 0;
-
-        foreach ($this->columnsAttributes as $columnName => $columnAttributes) {
-            $currentColumnNameSize = strlen($columnName);
-            $currentColumnTypeSize = strlen($columnAttributes['type']) + strlen($columnAttributes['size']);
-
-            if ($currentColumnNameSize > $maxColumnNameSize) {
-                $maxColumnNameSize = $currentColumnNameSize;
-            }
-
-            if ($currentColumnTypeSize > $maxColumnTypeSize + 2) {
-                $maxColumnTypeSize = $currentColumnTypeSize + 2;
-            }
-        }
-
-        $this->maxColumnNameSize = $maxColumnNameSize;
-        $this->maxColumnTypeSize = $maxColumnTypeSize;
-    }
-
-    /**
-     * Indent a string nicely to align "=" sign
-     *
-     * @param  string $value   The string to indent
-     * @param  int    $maxSize The max size of all the string to indent with
-     * @return string          The indented string
-     */
-    private function smartIndent($value, $maxSize)
-    {
-        return str_pad($value, $maxSize, ' ', STR_PAD_RIGHT);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace utilities\classes\entitiesCollection;
 
-use utilities\abstracts\designPatterns\Collection as Collection;
+use \utilities\abstracts\designPatterns\Collection as Collection;
       
 class UserCollection extends Collection
 {

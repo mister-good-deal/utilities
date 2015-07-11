@@ -8,6 +8,6 @@ class UserEntityManager extends EntityManager
 {
     public function __construct()
     {
-        parent::__construct('User');
+        parent::__construct();
     }
 }

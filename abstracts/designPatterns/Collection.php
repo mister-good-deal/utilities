@@ -20,6 +20,11 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     {
     }
 
+    public function __toString()
+    {
+        
+    }
+
     /**
      * Add an entity at the end of the collection
      *

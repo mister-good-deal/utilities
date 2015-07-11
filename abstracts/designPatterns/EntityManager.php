@@ -5,8 +5,14 @@ namespace utilities\abstracts\designPatterns;
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
 use \utilities\abstracts\designPatterns\Entity as Entity;
+use \utilities\abstracts\designPatterns\Collection as Collection;
 use \utilities\classes\DataBase as DB;
 
+/**
+ * Abstract EntityManager pattern taht implements basic entity performed action
+ *
+ * @abstract
+ */
 abstract class EntityManager
 {
     /**
@@ -20,9 +26,15 @@ abstract class EntityManager
     =            Magic methods            =
     =====================================*/
     
-    public function __construct($entityName)
+    public function __construct($entity = null, $entityCollection = null)
     {
-        $this->entity = new Entity($entityName);
+        if ($entity !== null) {
+            $this->setEntity($entity);
+        }
+
+        if ($entityCollection !== null) {
+            $this->setEntityCollection($entityCollection);
+        }
     }
     
     /*-----  End of Magic methods  ------*/
@@ -44,11 +56,16 @@ abstract class EntityManager
     /**
      * Set the entity object
      *
-     * @param Entity $entity The new entity oject
+     * @param  Entity    $entity The new entity oject
+     * @throws Exception         If the entity is not a subclass of Entity
      */
     public function setEntity($entity)
     {
-        $this->entity = $entity;
+        if ($entity instanceof Entity) {
+            $this->entity = $entity;
+        } else {
+            throw new Exception('The entity object must be a children of the class "Entity"', Exception::$PARAMETER);
+        }
     }
 
     /**
@@ -64,11 +81,19 @@ abstract class EntityManager
     /**
      * Set the entity collection object
      *
-     * @param Collection $entityCollection The new entity collection object
+     * @param  Collection $entityCollection The new entity collection object
+     * @throws Exception                    If the entityCollection is not a subclass of Collection
      */
     public function setEntityCollection($entityCollection)
     {
-        $this->entityCollection = $entityCollection;
+        if ($entityCollection instanceof Collection) {
+            $this->entityCollection = $entityCollection;
+        } else {
+            throw new Exception(
+                'The entityCollection object must be a children of the class "Collection"',
+                Exception::$PARAMETER
+            );
+        }
     }
     
     /*-----  End of Getters and setter  ------*/
@@ -102,7 +127,7 @@ abstract class EntityManager
     private function entityAlreadyExists($entity = null)
     {
         if ($entity === null) {
-            $this->entity;
+            $entity = $this->entity;
         }
 
         $sql = 'SELECT COUNT(*)
@@ -133,7 +158,7 @@ abstract class EntityManager
     private function saveInDatabase($entity = null)
     {
         if ($entity === null) {
-            $this->entity;
+            $entity = $this->entity;
         }
 
         $query = 'INSERT INTO ' . $entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks();
@@ -152,7 +177,7 @@ abstract class EntityManager
     private function deleteInDatabse($entity = null)
     {
         if ($entity === null) {
-            $this->entity;
+            $entity = $this->entity;
         }
 
         $sql = 'DELETE FROM %s
@@ -182,7 +207,7 @@ abstract class EntityManager
     private function updateInDatabase($entity = null)
     {
         if ($entity === null) {
-            $this->entity;
+            $entity = $this->entity;
         }
 
         if (!$this->deleteInDatabse($entity)) {
@@ -200,9 +225,9 @@ abstract class EntityManager
     private function getEntityAttributesMarks($entity = null)
     {
         if ($entity === null) {
-            $this->entity;
+            $entity = $this->entity;
         }
 
-        return '(' . implode(array_fill(0, count($this->entity->getcolumnsAttributes()), '?'), ', ') . ')';
+        return '(' . implode(array_fill(0, count($entity->getcolumnsAttributes()), '?'), ', ') . ')';
     }
 }
