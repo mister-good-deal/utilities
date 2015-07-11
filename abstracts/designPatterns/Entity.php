@@ -86,7 +86,7 @@ class Entity
                     array('columnType', 'columnSize'),
                     2
                 )
-                . '  = ' . $this->smartAlign($columnValue) . PHP_EOL;
+                . '  = ' . $columnValue . PHP_EOL;
         }
 
         return $string;
@@ -222,6 +222,16 @@ class Entity
     public function getColumnsValue()
     {
         return $this->columnsValue;
+    }
+
+    /**
+     * Get the entity name
+     *
+     * @return string The entity name
+     */
+    public function getEntityName()
+    {
+        return $this->entityName;
     }
 
     /*-----  End of Getters and setter  ------*/

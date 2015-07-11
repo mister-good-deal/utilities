@@ -17,8 +17,9 @@ try {
         $user->id   = $i;
         $user->name = 'User_' . $i;
         $collection->add($user);
-        echo $user . PHP_EOL;
     }
+
+    // echo $collection . PHP_EOL;
     
     // $entityManager->setEntityCollection($collection);
     // $entityManager->saveCollection();

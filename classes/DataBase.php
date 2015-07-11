@@ -71,6 +71,13 @@ class DataBase
         }
     }
 
+    public static function getAllTables()
+    {
+        self::initialize();
+
+        return self::$PDO->query('SHOW TABLES;')->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
     /**
      * Utility method to reuse the same PDO instance at each call (work like a Singleton pattern)
      *

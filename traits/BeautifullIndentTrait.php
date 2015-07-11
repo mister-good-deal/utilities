@@ -56,6 +56,7 @@ trait BeautifullIndentTrait
         } else {
             $max = self::$beautifullIndentMaxSize[$category];
         }
+        
         return str_pad($value, $max + $extraSize, ' ', STR_PAD_RIGHT);
     }
 }

@@ -22,7 +22,14 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
 
     public function __toString()
     {
+        $string = PHP_EOL . 'Collection of (' . $this->count() . ') ' . $this->getEntityByIndex(0)->getEntityName()
+            . ' entity' . PHP_EOL . implode(array_fill(0, 116, '-'));
         
+        foreach ($this->collection as $entity) {
+            $string .= $entity . implode(array_fill(0, 116, '-'));
+        }
+
+        return $string;
     }
 
     /**
@@ -57,6 +64,21 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
         }
 
         return $this->collection[$this->indexId[$entityId]];
+    }
+
+    /**
+     * Get an entity by its index
+     *
+     * @param  integer $index The entity index in the Collection
+     * @return Entity         The entity
+     */
+    public function getEntityByIndex($index)
+    {
+        if (!isset($this->collection[$index])) {
+            throw new Exception('There is no entity at index ' . $index, Exception::$PARAMETER);
+        }
+
+        return $this->collection[$index];
     }
 
     /*==========  Iterator interface  ==========*/
