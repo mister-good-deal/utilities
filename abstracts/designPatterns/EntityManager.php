@@ -9,7 +9,7 @@ use \utilities\abstracts\designPatterns\Collection as Collection;
 use \utilities\classes\DataBase as DB;
 
 /**
- * Abstract EntityManager pattern taht implements basic entity performed action
+ * Abstract EntityManager pattern that implements basic entity performed action
  *
  * @abstract
  */
@@ -98,53 +98,82 @@ abstract class EntityManager
     
     /*-----  End of Getters and setter  ------*/
 
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
     /**
      * Save the entity in the database
      *
-     * @todo Exception and return true / false
+     * @return boolean True if the entity has been saved or updated else false
      */
-    public function saveEntity($entity = null)
+    public function saveEntity()
     {
-        if ($this->entityAlreadyExists($entity)) {
-            $this->updateInDatabase($entity);
-        } else {
-            $this->saveInDatabase($entity);
-        }
-    }
+        $sucess = true;
 
-    public function saveCollection()
-    {
-        foreach ($this->entityCollection as $entity) {
-            $this->saveEntity($entity);
+        if ($this->entityAlreadyExists()) {
+            $this->updateInDatabase();
+        } else {
+            $sucess = $this->saveInDatabase();
         }
+
+        return $sucess;
     }
 
     /**
+     * Save the entity colection in the database
+     *
+     * @return boolean True if the entity collection has been saved else false
+     */
+    public function saveCollection()
+    {
+        $currentEntity = $this->entity;
+        $success       = true;
+
+        DB::beginTransaction();
+
+        foreach ($this->entityCollection as $entity) {
+            if (!$success) {
+                break;
+            }
+
+            $this->setEntity($entity);
+            $success = $this->saveEntity();
+        }
+        
+        if ($success) {
+            DB::commit();
+        } else {
+            DB::rollBack();
+        }
+
+        // restore the initial entity
+        $this->entity = $currentEntity;
+
+        return $success;
+    }
+    
+    /*-----  End of Public methods  ------*/
+
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
+    /**
      * Check if the entity already exists in the database
      *
-     * @return bool True if the entity exists else false
+     * @return boolean True if the entity exists else false
      */
-    private function entityAlreadyExists($entity = null)
+    private function entityAlreadyExists()
     {
-        if ($entity === null) {
-            $entity = $this->entity;
-        }
+        $sqlMarks = 'SELECT COUNT(*)
+                     FROM %s
+                     WHERE %s';
 
-        $sql = 'SELECT COUNT(*)
-                FROM %s
-                WHERE %s';
-
-        $columnsValue = array();
-
-        // Handle multiple primary keys
-        foreach ($entity->getIdKeyValue() as $columnName => $columnValue) {
-            $columnsValue[] = $columnName . ' = ' . DB::quote($columnValue);
-        }
-
-        $sql = sprintf(
-            $sql,
-            $entity->getTableName(),
-            implode($columnsValue, 'AND ')
+        $sql = $this->sqlFormater(
+            $sqlMarks,
+            $this->entity->getTableName(),
+            $this->getEntityPrimaryKeysWhereClause()
         );
 
         return ((int) DB::query($sql)->fetchColumn() >= 1);
@@ -153,20 +182,41 @@ abstract class EntityManager
     /**
      * Save the entity in the database
      *
-     * @todo check SQL syntax to handle multiple SGBD
+     * @return boolean True if the entity has beed saved else false
      */
-    private function saveInDatabase($entity = null)
+    private function saveInDatabase()
     {
-        if ($entity === null) {
-            $entity = $this->entity;
-        }
+        $sqlMarks = 'INSERT INTO %s
+                     VALUES %s';
 
-        $query = 'INSERT INTO ' . $entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks($entity);
+        $sql = $this->sqlFormater(
+            $sqlMarks,
+            $this->entity->getTableName(),
+            $this->getEntityAttributesMarks($this->entity)
+        );
 
-        DB::prepare($query)
-           ->execute(array_values($entity->getColumnsValue()));
+        return DB::prepare($sql)->execute(array_values($this->entity->getColumnsValue()));
+    }
 
-           // todo return the number of row affected (1 if ok else 0 (bool success ?))
+    /**
+     * Uddape the entity in the database
+     *
+     * @return integer The number of rows updated
+     */
+    private function updateInDatabase()
+    {
+        $sqlMarks = 'UPDATE %s
+                     SET %s
+                     WHERE %s';
+
+        $sql = $this->sqlFormater(
+            $sqlMarks,
+            $this->entity->getTableName(),
+            $this->getEntityUpdateMarksValue(),
+            $this->getEntityPrimaryKeysWhereClause()
+        );
+
+        return (int) DB::exec($sql);
     }
 
     /**
@@ -174,60 +224,77 @@ abstract class EntityManager
      *
      * @return boolean True if the entity has beed deleted else false
      */
-    private function deleteInDatabse($entity = null)
+    private function deleteInDatabse()
     {
-        if ($entity === null) {
-            $entity = $this->entity;
-        }
+        $sqlMarks = 'DELETE FROM %s
+                     WHERE %s';
 
-        $sql = 'DELETE FROM %s
-                WHERE %s';
-
-        $columnsValue = array();
-
-        // Handle multiple primary keys
-        foreach ($entity->getIdKeyValue() as $columnName => $columnValue) {
-            $columnsValue[] = $columnName . ' = ' . DB::quote($columnValue);
-        }
-
-        $sql = sprintf(
-            $sql,
-            $entity->getTableName(),
-            implode($columnsValue, 'AND ')
+        $sql = $this->sqlFormater(
+            $sqlMarks,
+            $this->entity->getTableName(),
+            $this->getEntityPrimaryKeysWhereClause()
         );
 
         return ((int) DB::exec($sql) === 1);
     }
 
+    /*==========  Utilities methods  ==========*/
+    
     /**
-     * Update an entity from the database
-     *
-     * @throws Exception if the deletion failed
-     */
-    private function updateInDatabase($entity = null)
-    {
-        if ($entity === null) {
-            $entity = $this->entity;
-        }
-
-        if (!$this->deleteInDatabse($entity)) {
-            throw new Exception('Entity was not deleted', Exception::$ERROR);
-        }
-
-        $this->saveInDatabase($entity);
-    }
-
-    /**
-     * Get the "?" markers of the Entity
+     * Get the "?" markers of the entity
      *
      * @return string The string markers (?, ?, ?)
      */
-    private function getEntityAttributesMarks($entity = null)
+    private function getEntityAttributesMarks()
     {
-        if ($entity === null) {
-            $entity = $this->entity;
+        return '(' . implode(array_fill(0, count($this->entity->getColumnsAttributes()), '?'), ', ') . ')';
+    }
+
+    /**
+     * Get the "columnName = 'columnValue'" markers of the entity for the update sql command
+     *
+     * @return string The string markers (columnName1 = 'value1', columnName2 = 'value2') primary keys EXCLUDED
+     */
+    private function getEntityUpdateMarksValue()
+    {
+        $marks = array();
+
+        foreach ($this->entity->getColumnsKeyValueNoPrimary() as $columnName => $columnValue) {
+            $marks[] = $columnName . ' = ' . DB::quote($columnValue);
         }
 
-        return '(' . implode(array_fill(0, count($entity->getColumnsAttributes()), '?'), ', ') . ')';
+        return implode(', ', $marks);
     }
+
+    /**
+     * Get the "primaryKey1 = 'primaryKey1Value' AND primaryKey2 = 'primaryKey2Value'" of the entity
+     *
+     * @return string The SQL segment string "primaryKey1 = 'primaryKey1Value' AND primaryKey2 = 'primaryKey2Value'"
+     */
+    private function getEntityPrimaryKeysWhereClause()
+    {
+        $columnsValue = array();
+
+        foreach ($this->entity->getIdKeyValue() as $columnName => $columnValue) {
+            $columnsValue[] = $columnName . ' = ' . DB::quote($columnValue);
+        }
+
+        return implode($columnsValue, 'AND ');
+    }
+
+    /**
+     * Format a sql query with sprintf function PHP 5.6+
+     * First arg must be the sql string with markers (%s, %d, ...)
+     * Others args should be the values for the markers
+     *
+     * @param  mixed $args     Sql string with markers (%s, %d, ...)
+     * @param  mixed $args,... Values for the markers
+     * @return string          The SQL formated string
+     */
+    private function sqlFormater(...$args)
+    {
+        return call_user_func_array('sprintf', $args);
+    }
+    
+    /*-----  End of Private methods  ------*/
 }

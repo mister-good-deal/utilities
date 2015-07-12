@@ -13,12 +13,13 @@ class Console
     use \utilities\traits\FiltersTrait;
 
     private static $COMMANDS = array(
-        'exit'               => 'Exit the ORM console',
-        'last cmd'           => 'Get the last command written',
-        'all cmd'            => 'Get all the commands written',
-        'tables'             => 'Get all the tables name',
-        'clean -t tableName' => 'Delete all the row of the given table name',
-        'help'               => 'Display all the commands'
+        'exit'                                          => 'Exit the ORM console',
+        'last cmd'                                      => 'Get the last command written',
+        'all cmd'                                       => 'Get all the commands written',
+        'tables'                                        => 'Get all the tables name',
+        'clean -t tableName'                            => 'Delete all the row of the given table name',
+        'show -t tableName [-s startIndex -e endIndex]' => 'Show table data begin at startIndex and stop at endIndex',
+        'help'                                          => 'Display all the commands'
     );
 
     private $commandsHistoric = array();
@@ -71,6 +72,10 @@ class Console
                 $this->cleanTable($command);
                 break;
 
+            case 'show':
+                $this->showTable($command);
+                break;
+
             case 'help':
                 echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(self::$COMMANDS, 'comands');
                 break;
@@ -103,6 +108,26 @@ class Console
         } else {
             DB::cleanTable($args['t']);
             echo 'The table "' . $args['t'] . '" is cleaned' . PHP_EOL;
+        }
+    }
+
+    private function showTable($command)
+    {
+        $args = $this->getArgs($command);
+        $data = null;
+
+        if (!isset($args['t'])) {
+            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
+        } elseif (!in_array($args['t'], DB::getAllTables())) {
+            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
+        } elseif (isset($args['s']) && isset($args['e']) && is_numeric($args['s']) && is_numeric($args['e'])) {
+            $data = DB::showTable($args['t'], $args['s'], $args['e']);
+        } else {
+            $data = DB::showTable($args['t']);
+        }
+
+        if ($data !== null) {
+            echo $this->prettySqlResult($args['t'], $data) . PHP_EOL;
         }
     }
 
@@ -149,5 +174,50 @@ class Console
         }
 
         return PHP_EOL . $string;
+    }
+
+    /**
+     * Format the SQL result in a pretty output
+     *
+     * @param  string $tableName The table name
+     * @param  array  $data      Array containing the SQL result
+     * @return string            The pretty output
+     */
+    private function prettySqlResult($tableName, $data)
+    {
+        $columns       = $this->filterFecthAllByColumn($data);
+        $colmunsNumber = count($columns);
+        $rowsNumber    = count($columns[key($columns)]);
+        $columnsName   = array();
+        $maxLength     = 0;
+
+        foreach ($columns as $key => $value) {
+            $columnsName[] = $key;
+            $this->setMaxSize($key, $columns[$key], strlen($key));
+            $maxLength += ($this->getMaxSize($key) + 3); // 2 because 2 spaces and 1 | are added between name
+        }
+
+        $maxLength      -= 1; // don't touch it's magic ;p
+        $separationLine = '+' . str_pad('', $maxLength, '-', STR_PAD_BOTH) . '+' . PHP_EOL;
+        $prettyString   = $separationLine;
+        $prettyString   .= '|' . str_pad($tableName, $maxLength, ' ', STR_PAD_BOTH) . '|' . PHP_EOL ;
+        $prettyString   .= $separationLine;
+
+        for ($i = 0; $i < $colmunsNumber; $i++) {
+            $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName[$i], 0, STR_PAD_BOTH) . ' ';
+        }
+        
+        $prettyString .= '|' . PHP_EOL . $separationLine;
+
+        for ($i = 0; $i < $rowsNumber; $i++) {
+            for ($j = 0; $j < $colmunsNumber; $j++) {
+                $prettyString .= '| ' .
+                    $this->smartAlign($columns[$columnsName[$j]][$i], $columnsName[$j]) . ' ';
+            }
+
+            $prettyString .= '|' . PHP_EOL;
+        }
+
+        return $prettyString . $separationLine;
     }
 }

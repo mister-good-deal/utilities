@@ -12,7 +12,7 @@ try {
     $entityManager = new EntityManager();
     $collection    = new Collection();
 
-    for ($i = 0; $i < 10; $i++) {
+    for ($i = 1; $i < 11; $i++) {
         $user       = new User();
         $user->id   = $i;
         $user->name = 'User_' . $i;
@@ -22,7 +22,12 @@ try {
     // echo $collection . PHP_EOL;
     
     $entityManager->setEntityCollection($collection);
-    $entityManager->saveCollection();
+
+    if (!$entityManager->saveCollection()) {
+        echo 'Insertion failed' . PHP_EOL;
+    } else {
+        echo 'Insertion succeeded' . PHP_EOL;
+    }
 } catch (Exception $e) {
 } finally {
     exit(0);

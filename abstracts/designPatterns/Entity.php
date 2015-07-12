@@ -174,6 +174,30 @@ class Entity
     }
 
     /**
+     * Get the associative array columnName => columnValue primary keys EXCLUDED
+     *
+     * @return array The associative array columnName => columnValue primary keys EXCLUDED
+     */
+    public function getColumnsKeyValueNoPrimary()
+    {
+        $columnsKeyValue = array();
+
+        if (!is_array($this->idKey)) {
+            $idKeys = array($this->idKey);
+        } else {
+            $idKeys = $this->idKey;
+        }
+
+        foreach ($this->columnsValue as $columnName => $columnValue) {
+            if (!in_array($columnName, $idKeys)) {
+                $columnsKeyValue[$columnName] = $columnValue;
+            }
+        }
+
+        return $columnsKeyValue;
+    }
+
+    /**
      * Set the id value of the entity (can be an array if several primary keys)
      *
      * @param int|array The id value

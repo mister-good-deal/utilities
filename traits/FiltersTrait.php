@@ -31,4 +31,21 @@ trait FiltersTrait
 
         return $cleanArray;
     }
+
+    public function filterFecthAllByColumn($data)
+    {
+        $columnsArray = array();
+
+        foreach ($data as $row) {
+            foreach ($row as $columnName => $columnValue) {
+                if (!isset($columnsArray[$columnName])) {
+                    $columnsArray[$columnName] = array();
+                }
+
+                $columnsArray[$columnName][] = $columnValue;
+            }
+        }
+
+        return $columnsArray;
+    }
 }

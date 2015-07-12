@@ -37,16 +37,19 @@ class DataBase
     const INI_CONF_FILE = 'conf.ini';
 
     /**
-     * @var \PDO $PDO A PDO object DEFAULT null
+     * @staticvar \PDO $PDO A PDO object DEFAULT null
      */
     private static $PDO = null;
+    
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
     
     /**
      * A never called constructor (can't declare it private because it's generate error)
      */
     public function __construct()
     {
-
     }
 
     /**
@@ -70,7 +73,13 @@ class DataBase
             throw new Exception('The method "' . $name . '" is not a PDO method', Exception::$PARAMETER);
         }
     }
+    
+    /*-----  End of Magic methods  ------*/
 
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
     /**
      * Get all the table name of he current database
      *
@@ -81,7 +90,7 @@ class DataBase
     {
         self::initialize();
 
-        return self::$PDO->query('SHOW TABLES;')->fetchAll(\PDO::FETCH_COLUMN);
+        return self::$PDO->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -95,6 +104,37 @@ class DataBase
         self::$PDO->exec('TRUNCATE ' . $tableName);
     }
 
+    /**
+     * Show all the data of the specified table with limit default (0, 100)
+     *
+     * @param  string  $tableName The table name
+     * @param  integer $begin     Data start at this index
+     * @param  integer $end       Data stop at this index
+     * @return array              Array containing the result
+     * @static
+     */
+    public static function showTable($tableName, $begin = 0, $end = 100)
+    {
+        $sqlMarks = 'SELECT *
+                     FROM %s
+                     LIMIT %d, %d';
+
+        $sql = sprintf(
+            $sqlMarks,
+            $tableName,
+            $begin,
+            $end
+        );
+
+        return self::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    /*-----  End of Public methods  ------*/
+    
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
     /**
      * Utility method to reuse the same PDO instance at each call (work like a Singleton pattern)
      *
@@ -131,4 +171,6 @@ class DataBase
             }
         }
     }
+    
+    /*-----  End of Private methods  ------*/
 }
