@@ -71,11 +71,28 @@ class DataBase
         }
     }
 
+    /**
+     * Get all the table name of he current database
+     *
+     * @return string[] The table name as a string array
+     * @static
+     */
     public static function getAllTables()
     {
         self::initialize();
 
         return self::$PDO->query('SHOW TABLES;')->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Delete all the rows of a table
+     *
+     * @param  string $tableName The table name to clean
+     * @static
+     */
+    public static function cleanTable($tableName)
+    {
+        self::$PDO->exec('TRUNCATE ' . $tableName);
     }
 
     /**

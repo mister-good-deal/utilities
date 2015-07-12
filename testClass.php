@@ -21,8 +21,8 @@ try {
 
     // echo $collection . PHP_EOL;
     
-    // $entityManager->setEntityCollection($collection);
-    // $entityManager->saveCollection();
+    $entityManager->setEntityCollection($collection);
+    $entityManager->saveCollection();
 } catch (Exception $e) {
 } finally {
     exit(0);

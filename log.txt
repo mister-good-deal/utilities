@@ -71,3 +71,4 @@
 2015-07-11 16:30:34		The entityCollection object must be a children of the class "Collection"
 2015-07-11 16:30:50		The entityCollection object must be a children of the class "Collection"
 2015-07-11 16:31:58		The entityCollection object must be a children of the class "Collection"
+2015-07-12 04:07:36		The table "tableName" does not exist

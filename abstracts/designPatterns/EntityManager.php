@@ -161,7 +161,7 @@ abstract class EntityManager
             $entity = $this->entity;
         }
 
-        $query = 'INSERT INTO ' . $entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks();
+        $query = 'INSERT INTO ' . $entity->getTableName() . ' VALUES ' . $this->getEntityAttributesMarks($entity);
 
         DB::prepare($query)
            ->execute(array_values($entity->getColumnsValue()));
@@ -228,6 +228,6 @@ abstract class EntityManager
             $entity = $this->entity;
         }
 
-        return '(' . implode(array_fill(0, count($entity->getcolumnsAttributes()), '?'), ', ') . ')';
+        return '(' . implode(array_fill(0, count($entity->getColumnsAttributes()), '?'), ', ') . ')';
     }
 }

@@ -10,13 +10,15 @@ use \utilities\classes\DataBase as DB;
 class Console
 {
     use \utilities\traits\BeautifullIndentTrait;
+    use \utilities\traits\FiltersTrait;
 
     private static $COMMANDS = array(
-        'exit'     => 'Exit the ORM console',
-        'last cmd' => 'Get the last command written',
-        'all cmd'  => 'Get all the commands written',
-        'tables'   => 'Get all the tables name',
-        'help'     => 'Display all the commands'
+        'exit'               => 'Exit the ORM console',
+        'last cmd'           => 'Get the last command written',
+        'all cmd'            => 'Get all the commands written',
+        'tables'             => 'Get all the tables name',
+        'clean -t tableName' => 'Delete all the row of the given table name',
+        'help'               => 'Display all the commands'
     );
 
     private $commandsHistoric = array();
@@ -43,10 +45,11 @@ class Console
     private function processCommand($command)
     {
         $exit = false;
+        preg_match('/^[a-zA-Z ]+/', $command, $commandName);
 
         echo PHP_EOL;
 
-        switch ($command) {
+        switch (rtrim($commandName[0])) {
             case 'exit':
                 $exit = true;
                 echo 'ORM console closing' . PHP_EOL;
@@ -62,6 +65,10 @@ class Console
 
             case 'tables':
                 echo 'Tables name: ' . PHP_EOL . $this->tablePrettyPrint(DB::getAllTables()) . PHP_EOL;
+                break;
+
+            case 'clean':
+                $this->cleanTable($command);
                 break;
 
             case 'help':
@@ -85,6 +92,20 @@ class Console
         }
     }
 
+    private function cleanTable($command)
+    {
+        $args = $this->getArgs($command);
+
+        if (!isset($args['t'])) {
+            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
+        } elseif (!in_array($args['t'], DB::getAllTables())) {
+            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
+        } else {
+            DB::cleanTable($args['t']);
+            echo 'The table "' . $args['t'] . '" is cleaned' . PHP_EOL;
+        }
+    }
+
     private function getLastCommand()
     {
         $nbCommands = count($this->commandsHistoric);
@@ -98,12 +119,26 @@ class Console
         return $cmd;
     }
 
-    public function tablePrettyPrint($table)
+    /**
+     * Get the command arguments in an array (argName => argValue)
+     *
+     * @param  string $command The command
+     * @return array           The arguments in an array (argName => argValue)
+     */
+    private function getArgs($command)
+    {
+        preg_match_all('/\-(?P<argKey>[a-zA-Z]+) (?P<argValue>[a-zA-Z0-9 _]+)/', $command, $matches);
+
+        return $this->filterPregMatchAllWithFlags($matches, 'argKey', 'argValue');
+    }
+
+
+    private function tablePrettyPrint($table)
     {
         return PHP_EOL . '- ' . implode(PHP_EOL . '- ', $table);
     }
 
-    public function tableAssociativPrettyPrint($table, $category)
+    private function tableAssociativPrettyPrint($table, $category)
     {
         $this->setMaxSize($category, array_keys($table));
 
