@@ -207,3 +207,4 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
         }
     }
 }
+

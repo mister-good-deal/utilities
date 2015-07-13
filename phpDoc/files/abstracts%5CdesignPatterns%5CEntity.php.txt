@@ -324,3 +324,4 @@ abstract class Entity
         return $formatedValue;
     }
 }
+

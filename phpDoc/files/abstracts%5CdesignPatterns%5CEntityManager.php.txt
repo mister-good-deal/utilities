@@ -298,3 +298,4 @@ abstract class EntityManager
     
     /*-----  End of Private methods  ------*/
 }
+
