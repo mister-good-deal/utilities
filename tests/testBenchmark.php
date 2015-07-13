@@ -1,4 +1,10 @@
 <?php
+/**
+ * Test script for Benchmark class
+ *
+ * @category Test
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 use \utilities\classes\Benchmark as Benchmark;
 use \utilities\classes\exception\ExceptionManager as Exception;
@@ -21,7 +27,7 @@ $func2 = function ($array) {
     return array_sum($array);
 };
 
-$functions = array();
+$functions = array($func1);
 
 try {
     $benchmark = new Benchmark($functions);
@@ -29,4 +35,3 @@ try {
 } finally {
     exit(0);
 }
-

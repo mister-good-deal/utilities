@@ -1,4 +1,10 @@
 <?php
+/**
+ * Trait to set beautifull indent on multiple array values
+ *
+ * @category Trait
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\traits;
 
@@ -64,6 +70,12 @@ trait BeautifullIndentTrait
         return str_pad($value, $max + $extraSize, ' ', $position);
     }
 
+    /**
+     * Get the max size of a category
+     *
+     * @param  string $category The category
+     * @return integer          The max size
+     */
     public function getMaxSize($category)
     {
         if (!isset(self::$beautifullIndentMaxSize[$category])) {
@@ -71,22 +83,6 @@ trait BeautifullIndentTrait
         }
 
         return self::$beautifullIndentMaxSize[$category];
-    }
-
-    public function getMaxSizeSumByCategory($categories)
-    {
-        $sum = 0;
-
-        foreach ($categories as $category) {
-            $sum += self::$beautifullIndentMaxSize[$category];
-        }
-        
-        return $sum;
-    }
-
-    public function getMaxSizeSum()
-    {
-        return array_sum(self::$beautifullIndentMaxSize);
     }
 }
 

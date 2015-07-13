@@ -1,4 +1,10 @@
 <?php
+/**
+ * Test script for entity/manager patterns
+ *
+ * @category Test
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 use \utilities\classes\entities\User as User;
 use \utilities\classes\entitiesManager\UserEntityManager as EntityManager;
@@ -32,4 +38,3 @@ try {
 } finally {
     exit(0);
 }
-

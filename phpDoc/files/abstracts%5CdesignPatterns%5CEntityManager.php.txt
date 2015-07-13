@@ -1,4 +1,10 @@
 <?php
+/**
+ * Entity manager pattern abstract class
+ *
+ * @category Abstract
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\abstracts\designPatterns;
 
@@ -16,16 +22,24 @@ use \utilities\classes\DataBase as DB;
 abstract class EntityManager
 {
     /**
-     * @var Entity     $entity           An entity object
-     * @var Collection $entityCollection An entityCollection object
+     * @var Entity $entity An entity object
      */
     private $entity;
+    /**
+     * @var Collection $entityCollection An entityCollection object
+     */
     private $entityCollection;
 
     /*=====================================
     =            Magic methods            =
     =====================================*/
     
+    /**
+     * Constructor that can take an Entity as first parameter and a Collection as second parameter
+     *
+     * @param Entity     $entity           An entity object
+     * @param Collection $entityCollection A colection oject
+     */
     public function __construct($entity = null, $entityCollection = null)
     {
         if ($entity !== null) {
@@ -287,13 +301,11 @@ abstract class EntityManager
      * First arg must be the sql string with markers (%s, %d, ...)
      * Others args should be the values for the markers
      *
-     * @param  mixed $args     Sql string with markers (%s, %d, ...)
-     * @param  mixed $args,... Values for the markers
-     * @return string          The SQL formated string
+     * @return string         The SQL formated string
      */
-    private function sqlFormater(...$args)
+    private function sqlFormater()
     {
-        return call_user_func_array('sprintf', $args);
+        return call_user_func_array('sprintf', func_get_args());
     }
     
     /*-----  End of Private methods  ------*/

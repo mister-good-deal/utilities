@@ -1,4 +1,11 @@
 <?php
+/**
+ * Singleton database manager
+ *
+ * @category Singleton
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ * @example /utilities/examples/dataBase.php                Basic use of this singleton
+ */
 
 namespace utilities\classes;
 
@@ -8,9 +15,7 @@ use \utilities\classes\ini\IniManager as Ini;
 /**
  * Singleton pattern style to handle DB connection using PDO
  *
- * @class   Database
- * @author  Romain Laneuville <romain.laneuville@hotmail.fr>
- * @example /utilities/examples/dataBase.php                Basic use of this singleton
+ * @class Database
  *
  * PDO methods that can be called directly with the __callStatic magic method
  *
@@ -32,12 +37,12 @@ use \utilities\classes\ini\IniManager as Ini;
 class DataBase
 {
     /**
-     * The path of the ini configuration file
+     * @const INI_CONF_FILE The path of the ini configuration file
      */
     const INI_CONF_FILE = 'conf.ini';
 
     /**
-     * @staticvar \PDO $PDO A PDO object DEFAULT null
+     * @var \PDO $PDO A PDO object DEFAULT null
      */
     private static $PDO = null;
     
@@ -55,11 +60,11 @@ class DataBase
     /**
      * Is triggered when invoking inaccessible methods in a static context
      *
-     * @note                        This is so powerfull, we can call non static methods with a static call
      * @param  string    $name      Name of the method being called
      * @param  array     $arguments Enumerated array containing the parameters passed to the method called
      * @throws Exception            If the method called is not a PDO method
      * @static
+     * @note                        This is so powerfull, we can call non static methods with a static call
      */
     public static function __callStatic($name, $arguments = array())
     {
@@ -142,6 +147,7 @@ class DataBase
      * @param  string $username The user name for the DSN string. This parameter is optional for some PDO drivers
      * @param  string $password The password for the DSN string. This parameter is optional for some PDO drivers
      * @param  array  $options  A key=>value array of driver-specific connection options
+     * @static
      */
     private static function initialize($dsn = '', $username = '', $password = '', $options = array())
     {

@@ -1,12 +1,36 @@
 <?php
+/**
+ * Console colors to output colors in console
+ *
+ * @category Console
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\classes\logger;
 
+/**
+ * Class to get different color to output in a console
+ *
+ * @class ConsoleColors
+ */
 class ConsoleColors
 {
+    /**
+     * @var array $foregroundColors Foreground colors
+     */
     private $foregroundColors = array();
+    /**
+     * @var array $backgroundColors Background colors
+     */
     private $backgroundColors = array();
 
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
+    
+    /**
+     * Constructor which sets up all the colors
+     */
     public function __construct()
     {
         // Set up shell colors
@@ -36,8 +60,21 @@ class ConsoleColors
         $this->backgroundColors['cyan'] = '46';
         $this->backgroundColors['light_gray'] = '47';
     }
+    
+    /*-----  End of Magic methods  ------*/
 
-    // Returns colored string
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
+    /**
+     * Return the string colored
+     *
+     * @param  string $string          The string to color
+     * @param  string $foregroundColor The foreground color
+     * @param  string $backgroundColor The background color
+     * @return string                  The colored string
+     */
     public function getColoredString($string, $foregroundColor = null, $backgroundColor = null)
     {
         $coloredString = '';
@@ -57,15 +94,25 @@ class ConsoleColors
         return $coloredString;
     }
 
-    // Returns all foreground color names
+    /**
+     * Returns all foreground color names
+     *
+     * @return string[] Foreground color names
+     */
     public function getForegroundColors()
     {
         return array_keys($this->foregroundColors);
     }
 
-    // Returns all background color names
+    /**
+     * Returns all background color names
+     *
+     * @return string[] Background color names
+     */
     public function getBackgroundColors()
     {
         return array_keys($this->backgroundColors);
     }
+    
+    /*-----  End of Public methods  ------*/
 }

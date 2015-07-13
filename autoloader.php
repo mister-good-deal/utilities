@@ -1,6 +1,12 @@
 <?php
+/**
+ * Autoloader function to not worry about including stuff anymore
+ *
+ * @category Autoloader
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
-spl_autoload_register(function($className) {
+spl_autoload_register(function ($className) {
     $className = ltrim($className, '\\');
     $fileName  = '';
     $namespace = '';

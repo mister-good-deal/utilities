@@ -1,17 +1,28 @@
 <?php
+/**
+ * ORM console mode
+ *
+ * @category ORM
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\classes;
 
 use \utilities\classes\DataBase as DB;
 
 /**
-* @class Console
-*/
+ * ORM in a console mode with simple command syntax to manage the database
+ *
+ * @class Console
+ */
 class Console
 {
     use \utilities\traits\BeautifullIndentTrait;
     use \utilities\traits\FiltersTrait;
 
+    /**
+     * @var string[] $COMMANDS List of all commands with their description
+     */
     private static $COMMANDS = array(
         'exit'                                          => 'Exit the ORM console',
         'last cmd'                                      => 'Get the last command written',
@@ -22,18 +33,48 @@ class Console
         'help'                                          => 'Display all the commands'
     );
 
+    /**
+     * @var string[] $commandsHistoric Historic of all the command written by the user in the current console session
+     */
     private $commandsHistoric = array();
 
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
+    
+    /**
+     * Constructor
+     */
     public function __construct()
     {
     }
+    
+    /*-----  End of Magic methods  ------*/
 
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
+    /**
+     * Launch a console session
+     */
     public function launchConsole()
     {
         echo PHP_EOL . 'Welcome to the ORM in console' . PHP_EOL . PHP_EOL;
         $this->processCommand($this->userInput());
     }
+    
+    /*-----  End of Public methods  ------*/
 
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
+    /**
+     * Let the user enter a command in his console input
+     *
+     * @return string The command written by the user
+     */
     private function userInput()
     {
         echo 'cmd: ';
@@ -43,6 +84,11 @@ class Console
         return trim(fgets($handle));
     }
 
+    /**
+     * Process the command entered by the user and output the result in the console
+     *
+     * @param  string $command The command passed by the user
+     */
     private function processCommand($command)
     {
         $exit = false;
@@ -97,6 +143,11 @@ class Console
         }
     }
 
+    /**
+     * Delete all the data in a table
+     *
+     * @param string $command The command passed with its arguments
+     */
     private function cleanTable($command)
     {
         $args = $this->getArgs($command);
@@ -111,6 +162,11 @@ class Console
         }
     }
 
+    /**
+     * Display the data of a table
+     *
+     * @param  string $command The commande passed by the user with its arguments
+     */
     private function showTable($command)
     {
         $args = $this->getArgs($command);
@@ -131,6 +187,11 @@ class Console
         }
     }
 
+    /**
+     * Get the last command passed by the user
+     *
+     * @return string The last command
+     */
     private function getLastCommand()
     {
         $nbCommands = count($this->commandsHistoric);
@@ -157,12 +218,24 @@ class Console
         return $this->filterPregMatchAllWithFlags($matches, 'argKey', 'argValue');
     }
 
-
+    /**
+     * Pretty output a table without keys
+     *
+     * @param  array $table The table to print
+     * @return string       The pretty output table data
+     */
     private function tablePrettyPrint($table)
     {
         return PHP_EOL . '- ' . implode(PHP_EOL . '- ', $table);
     }
 
+    /**
+     * Pretty output a table with keys
+     *
+     * @param  array  $table    The associative array to print
+     * @param  string $category The table category to keep the pretty align in memory
+     * @return string           The pretty output table data
+     */
     private function tableAssociativPrettyPrint($table, $category)
     {
         $this->setMaxSize($category, array_keys($table));
@@ -220,4 +293,6 @@ class Console
 
         return $prettyString . $separationLine;
     }
+    
+    /*-----  End of Private methods  ------*/
 }

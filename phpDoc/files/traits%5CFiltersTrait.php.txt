@@ -1,4 +1,10 @@
 <?php
+/**
+ * Trait to use usefull filter to parse an output
+ *
+ * @category Trait
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\traits;
 
@@ -32,6 +38,12 @@ trait FiltersTrait
         return $cleanArray;
     }
 
+    /**
+     * Filter a fetchAll PDO array to parse results in columns
+     *
+     * @param  array $data The fetchAll return
+     * @return array       The filtered array by columns
+     */
     public function filterFecthAllByColumn($data)
     {
         $columnsArray = array();

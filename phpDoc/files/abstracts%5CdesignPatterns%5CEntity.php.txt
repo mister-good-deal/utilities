@@ -1,7 +1,9 @@
 <?php
 /**
- * @author Romain Laneuville <romain.laneuville@hotmail.fr
- * @link   https://github.com/ZiperRom1/utilities
+ * Entity pattern abstract class
+ *
+ * @category Abstract
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
 namespace utilities\abstracts\designPatterns;
@@ -20,25 +22,45 @@ abstract class Entity
     use \utilities\traits\BeautifullIndentTrait;
 
     /**
-     * @var array  $columnsValue An assosiative array with colum name on key and its value on value
-     * @var string $idKey Id key name
+     * @const ENTITIES_CONF_PATH The path where the entities ini conf file are stored
      */
     const ENTITIES_CONF_PATH = 'database/entities/';
 
+    /**
+     * @var array $conf All the ini params
+     */
     private $conf;
+    /**
+     * @var string $tableName The table entity name
+     */
     private $tableName;
+    /**
+     * @var The entity name
+     */
     private $entityName;
+    /**
+     * @var string $idKey Id key name
+     */
     private $idKey;
-    private $maxColumnNameSize = 0;
-    private $maxColumnTypeSize = 0;
 
+    /**
+     * @var array $columnsValue An associative array with column name on key and its value on value
+     */
     protected $columnsValue      = array();
+    /**
+     * @var array $columnsAttributes An associative array with column name on key and column value on value
+     */
     protected $columnsAttributes = array();
 
     /*=====================================
     =            Magic methods            =
     =====================================*/
 
+    /**
+     * Constructor that takes the entity name as first parameter to call the parent constructor
+     *
+     * @param string $entityName The entity name
+     */
     public function __construct($entityName)
     {
         Ini::setIniFileName(self::ENTITIES_CONF_PATH . $entityName . '.ini');
@@ -48,11 +70,24 @@ abstract class Entity
         $this->parseConf();
     }
 
+    /**
+     * Tell if the column name exists
+     *
+     * @param  string  $columnName The column name
+     * @return boolean             True if the column name exists else fale
+     */
     public function __isset($columnName)
     {
         return array_key_exists($columnName, $this->columnsValue);
     }
 
+    /**
+     * Get the column name value
+     *
+     * @param  string $columnName The column name
+     * @throws Exception          If the column name does not a exist
+     * @return mixed              The column value
+     */
     public function __get($columnName)
     {
         if (!$this->__isset($columnName)) {
@@ -64,6 +99,13 @@ abstract class Entity
         return $value;
     }
 
+    /**
+     * Set the column name
+     *
+     * @param  string    $columnName The column name
+     * @param  mixed     $value      The new column value
+     * @throws Exception             If the column name does not a exist
+     */
     public function __set($columnName, $value)
     {
         if (!$this->__isset($columnName)) {
@@ -73,6 +115,11 @@ abstract class Entity
         $this->columnsValue[$columnName] = $value;
     }
 
+    /**
+     * Pretty output the entity
+     *
+     * @return string The pretty output entity
+     */
     public function __toString()
     {
         $this->setMaxSize('columnName', array_keys($this->columnsValue));
@@ -107,6 +154,11 @@ abstract class Entity
         return $this->columnsValue;
     }
 
+    /**
+     * Info to display when using a var_dump on the entity
+     *
+     * @return array The var_dump info
+     */
     public function __debugInfo()
     {
         return $this->columnsValue;
@@ -205,7 +257,9 @@ abstract class Entity
     /**
      * Set the id value of the entity (can be an array if several primary keys)
      *
-     * @param int|array The id value
+     * @param  int|array The id value
+     * @throws Exception If the id is on several columns and $value is not an array
+     * @throws Exception If the id key is not found
      */
     public function setIdValue($value)
     {
@@ -243,11 +297,21 @@ abstract class Entity
         return $this->tableName;
     }
 
+    /**
+     * Get the columns attributes
+     *
+     * @return array The columns attributes
+     */
     public function getColumnsAttributes()
     {
         return $this->columnsAttributes;
     }
 
+    /**
+     * Get the columns value
+     *
+     * @return array The columns value
+     */
     public function getColumnsValue()
     {
         return $this->columnsValue;
@@ -265,6 +329,10 @@ abstract class Entity
 
     /*-----  End of Getters and setter  ------*/
 
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
     /**
      * Parse an entity conf to extract attributes
      */
@@ -323,5 +391,7 @@ abstract class Entity
 
         return $formatedValue;
     }
+    
+    /*-----  End of Private methods  ------*/
 }
 

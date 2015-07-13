@@ -1,4 +1,10 @@
 <?php
+/**
+ * Test script for Benchmark class
+ *
+ * @category Test
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 use \utilities\classes\Benchmark as Benchmark;
 use \utilities\classes\exception\ExceptionManager as Exception;
@@ -29,3 +35,4 @@ try {
 } finally {
     exit(0);
 }
+

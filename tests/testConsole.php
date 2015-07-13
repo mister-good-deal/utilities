@@ -1,4 +1,10 @@
 <?php
+/**
+ * Test script for the Console class
+ *
+ * @category Test
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 use \utilities\classes\Console as Console;
 

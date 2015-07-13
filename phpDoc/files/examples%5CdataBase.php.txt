@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Example of DataBase class used
+ *
+ * @category Example
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 use \utilities\classes\DataBase as DB;
 
 include_once '\utilities\autoloader.php';

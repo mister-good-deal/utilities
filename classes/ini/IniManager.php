@@ -1,7 +1,9 @@
 <?php
 /**
- * @author Romain Laneuville <romain.laneuville@hotmail.fr>
- * @link https://github.com/ZiperRom1/utilities/blob/master/classes/ini/IniManager.php GitHub repo
+ * Ini file manager to get / set parameters with comments handle and pretty align
+ *
+ * @category INI
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
 namespace utilities\classes\ini;
@@ -10,14 +12,11 @@ use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\logger\LoggerManager as Logger;
 
 /**
-* IniManager
-*
-* Helper class to provide access read and write to an ini conf file.
-* Can set and get any parameter in the given ini file.
-*
-* @example IniManager::setParam('FileLogger', 'filePath', 'C:\prog\utilities\log.txt');
-* @example IniManager::getParam('FileLogger', 'filePath');
-*/
+ * Helper class to provide access read and write to an ini conf file.
+ * Can set and get any parameter in the given ini file.
+ *
+ * @class IniManager
+ */
 class IniManager
 {
     /**
@@ -25,16 +24,34 @@ class IniManager
      */
     private static $INI_FILE_NAME = 'conf.ini';
 
+    /**
+     * @var array $iniValues The INI params name => value
+     */
     private static $iniValues;
+    /**
+     * @var array $iniSectionsComments The INI section comments
+     */
     private static $iniSectionsComments;
+    /**
+     * @var array $iniSectionsComments The INI params comments
+     */
     private static $iniParamsComments;
+    /**
+     * @var boolean $initialized True if the INI file has been parsed else false
+     */
     private static $initialized = false;
     
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
+    
+    /**
+     * constructor nevers called (see initialize below)
+     */
     public function __construct()
     {
-
     }
-
+    
     /**
      * One time call constructor to get ini values
      */
@@ -58,7 +75,11 @@ class IniManager
         }
     }
 
-    /*==========  Public methods  ==========*/
+    /*-----  End of Magic methods  ------*/
+
+    /*======================================
+    =            Public methods            =
+    ======================================*/
 
     /**
      * Set the ini file name
@@ -264,13 +285,17 @@ class IniManager
         self::$initialized = false;
     }
 
-    /*==========  Private methods  ==========*/
+    /*-----  End of Public methods  ------*/
+
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
     
     /**
      * Check if the section exists in teh ini file
      *
-     * @param  string $section The section name
-     * @return bool            Section exists
+     * @param  string  $section The section name
+     * @return boolean          Section exists
      */
     private static function sectionExists($section)
     {
@@ -280,9 +305,9 @@ class IniManager
     /**
      * Check if the parameter exists in the specified section
      *
-     * @param  string $section The section name
-     * @param  string $param   The parameter name
-     * @return bool            Parameter exists
+     * @param  string  $section The section name
+     * @param  string  $param   The parameter name
+     * @return boolean          Parameter exists
      */
     private static function paramExists($section, $param)
     {
@@ -300,7 +325,7 @@ class IniManager
      *
      * @param string $section The section name
      * @param string $param   The param name
-     * @param mixed $value    The param value (can be any type except mutli dimensional array)
+     * @param mixed  $value   The param value (can be any type except mutli dimensional array)
      */
     private static function addParam($section, $param, $value)
     {
@@ -365,8 +390,8 @@ class IniManager
     /**
      * Get the max characters length parameters name
      *
-     * @param  array $attributes parameters as associativ array
-     * @return int               The max length parameter name
+     * @param  array   $attributes   Parameters as associativ array
+     * @return integer               The max length parameter name
      */
     private static function getMaxLength($attributes)
     {
@@ -387,9 +412,9 @@ class IniManager
     /**
      * Return the spaces needed to align the value with others
      *
-     * @param  string $attribute parameter name
-     * @param  int    $maxLength the max length parameter name
-     * @return string            The spaces needed to align the value
+     * @param  string  $attribute Parameter name
+     * @param  integer $maxLength The max length parameter name
+     * @return string             The spaces needed to align the value
      */
     private static function alignValues($attribute, $maxLength)
     {
@@ -484,6 +509,7 @@ class IniManager
      * Helper to parse an ini conf file and get all the params comments into an array
      *
      * @return array Multi dimensional array containg all the params comments
+     * @todo debug
      */
     private static function parseParamsComments()
     {
@@ -520,4 +546,6 @@ class IniManager
 
         return $paramsComments;
     }
+
+    /*-----  End of Private methods  ------*/
 }

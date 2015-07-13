@@ -1,15 +1,28 @@
 <?php
+/**
+ * Logger interface
+ *
+ * @category Interface
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\classes\logger;
 
 use \utilities\classes\logger\LogLevel as LogLevel;
+use \utilities\classes\logger\ConsoleColors as ConsoleColor;
 use \utilities\interfaces\logger\LoggerInterface as LoggerInterface;
+use \utilities\abstracts\logger\AbstractLogger as AbstractLogger;
 
 /**
-* ConsoleLogger class
-*/
-class ConsoleLogger implements LoggerInterface
+ * A logger which writes the log in the console
+ *
+ * @class ConsoleLogger
+ */
+class ConsoleLogger extends AbstractLogger implements LoggerInterface
 {
+    /**
+     * @var array $LEVELS Logger level based on LogLevel class
+     */
     public static $LEVELS = array(
         LogLevel::EMERGENCY => 'emergency',
         LogLevel::ALERT     => 'alert',
@@ -21,14 +34,30 @@ class ConsoleLogger implements LoggerInterface
         LogLevel::DEBUG     => 'debug'
     );
 
+    /**
+     * @var ConsoleColor $colors ConsoleColor instance to color console output
+     */
     private $colors;
     
+    /*=====================================
+    =            Magic methods            =
+    =====================================*/
+    
+    /**
+     * Constructor that instanciates a ConsoleColor
+     */
     public function __construct()
     {
         $this->colors = new ConsoleColors();
     }
+    
+    /*-----  End of Magic methods  ------*/
 
-    /**
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
+     /**
      * System is unusable.
      *
      * @param string $message
@@ -183,7 +212,19 @@ class ConsoleLogger implements LoggerInterface
             $this->info($message, $context);
         }
     }
+    
+    /*-----  End of Public methods  ------*/
 
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
+    /**
+     * Helper method to pretty output info with colors defined for each type of context
+     *
+     * @param  array $contexts The context
+     * @return string          The output result as a string
+     */
     private function formatContext($contexts)
     {
         $string = '';
@@ -229,7 +270,9 @@ class ConsoleLogger implements LoggerInterface
                         . PHP_EOL;
                 }
 
-                // TODO implement args display
+                /**
+                 * @todo implement args display
+                 */
                 // if (isset($context['args'])){
                 //     $string .= "\twith args:\t" . $context['args'] . PHP_EOL;
                 // }
@@ -238,4 +281,6 @@ class ConsoleLogger implements LoggerInterface
 
         return $string;
     }
+    
+    /*-----  End of Private methods  ------*/
 }
