@@ -1,3 +1,4 @@
-/.phpintel
-/.sonar
 net_info.txt
+/.sonar
+/.phpintel
+/utilities.wiki
