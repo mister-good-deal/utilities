@@ -9,7 +9,6 @@
 namespace utilities\abstracts\designPatterns;
 
 use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\classes\ini\IniManager as Ini;
 use \utilities\abstracts\designPatterns\Entity as Entity;
 use \utilities\abstracts\designPatterns\Collection as Collection;
 use \utilities\classes\DataBase as DB;
@@ -297,11 +296,11 @@ abstract class EntityManager
     }
 
     /**
-     * Format a sql query with sprintf function PHP 5.6+
+     * Format a sql query with sprintf function
      * First arg must be the sql string with markers (%s, %d, ...)
      * Others args should be the values for the markers
      *
-     * @return string         The SQL formated string
+     * @return string The SQL formated string
      */
     private function sqlFormater()
     {

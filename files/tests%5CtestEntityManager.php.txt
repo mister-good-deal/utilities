@@ -12,7 +12,7 @@ use \utilities\classes\entitiesCollection\UserCollection as Collection;
 use \utilities\classes\DataBase as DB;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
-include_once 'autoloader.php';
+include_once '../autoloader.php';
 
 try {
     $entityManager = new EntityManager();
