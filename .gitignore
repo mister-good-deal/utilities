@@ -1,5 +1,5 @@
-/utilities.wiki
-/phpDoc
 net_info.txt
-/.sonar
 /.phpintel
+/.sonar
+/phpDoc
+/utilities.wiki
