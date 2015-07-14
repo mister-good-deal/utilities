@@ -38,7 +38,7 @@ The [phpDoc](http://ziperrom1.github.io/utilities/) is automatically generated a
 
 ***
 
-The code is open source so feel free to use / fork it or ask for bugf ix / new feature by asking me or create branches with [feature/your-feature branch] name for a feature or [hotfix/your-hotfix] branch name for a bug fix (forked from master).
+The code is open source so feel free to use / fork it or ask for bug fix / new feature by asking me or create branches with [feature/your-feature] branch name for a feature or [hotfix/your-hotfix] branch name for a bug fix (forked from master).
 
 ***
 
