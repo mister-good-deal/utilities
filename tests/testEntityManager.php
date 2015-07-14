@@ -22,6 +22,7 @@ try {
         $user       = new User();
         $user->id   = $i;
         $user->name = 'User_' . $i;
+        // echo $user . PHP_EOL;
         $collection->add($user);
     }
 

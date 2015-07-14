@@ -16,6 +16,7 @@ use \utilities\classes\logger\LoggerManager as Logger;
  * Can set and get any parameter in the given ini file.
  *
  * @class IniManager
+ * @todo make this class non static
  */
 class IniManager
 {
@@ -60,16 +61,16 @@ class IniManager
         /* To use constants in INI conf file */
         Logger::globalConstDefine();
 
-        if (!self::$initialized) {
-            self::$iniValues           = parse_ini_file(self::$INI_FILE_NAME, true);
-            self::$iniSectionsComments = self::parseSectionsComments();
-            self::$iniParamsComments   = self::parseParamsComments();
-            self::$initialized         = true;
+        if (!static::$initialized) {
+            static::$iniValues           = parse_ini_file(static::$INI_FILE_NAME, true);
+            static::$iniSectionsComments = static::parseSectionsComments();
+            static::$iniParamsComments   = static::parseParamsComments();
+            static::$initialized         = true;
         }
 
-        if (self::$iniValues === false) {
+        if (static::$iniValues === false) {
             throw new Exception(
-                'ERROR::The INI file ' . self::$INI_FILE_NAME . ' cannot be found',
+                'ERROR::The INI file ' . static::$INI_FILE_NAME . ' cannot be found',
                 Exception::$WARNING
             );
         }
@@ -88,10 +89,10 @@ class IniManager
      */
     public static function setIniFileName($iniFileName)
     {
-        self::$INI_FILE_NAME = $iniFileName;
-        self::$initialized   = false;
+        static::$INI_FILE_NAME = $iniFileName;
+        static::$initialized   = false;
 
-        self::initialize();
+        static::initialize();
     }
 
     /**
@@ -105,12 +106,12 @@ class IniManager
      */
     public static function getParam($section = null, $param = null)
     {
-        self::initialize();
+        static::initialize();
 
-        $params = self::getSectionParams($section);
+        $params = static::getSectionParams($section);
 
         if (is_string($param)) {
-            if (self::paramExists($section, $param)) {
+            if (static::paramExists($section, $param)) {
                 return $params[$param];
             } else {
                 throw new Exception(
@@ -133,14 +134,14 @@ class IniManager
      */
     public static function getSectionParams($section = null)
     {
-        self::initialize();
+        static::initialize();
         $return = array();
 
         if (is_array($section)) {
             foreach ($section as $sectionLevel) {
                 if (is_string($sectionLevel)) {
-                    if (self::sectionExists($section)) {
-                        $return[$sectionLevel] = self::$iniValues[$sectionLevel];
+                    if (static::sectionExists($section)) {
+                        $return[$sectionLevel] = static::$iniValues[$sectionLevel];
                     } else {
                         throw new Exception(
                             'ERROR::The section ' . $sectionLevel . ' doesn\'t exist in the ini conf file',
@@ -155,8 +156,8 @@ class IniManager
                 }
             }
         } elseif (is_string($section)) {
-            if (self::sectionExists($section)) {
-                $return[$section] = self::$iniValues[$section];
+            if (static::sectionExists($section)) {
+                $return[$section] = static::$iniValues[$section];
             } else {
                 echo 'ERROR::The section ' . $section . ' doesn\'t exist in the ini conf file' . PHP_EOL;
                 throw new Exception(
@@ -165,7 +166,7 @@ class IniManager
                 );
             }
 
-            $return = self::$iniValues[$section];
+            $return = static::$iniValues[$section];
         } else {
             throw new Exception(
                 'ERROR::Parameter section must be a String or an array of String',
@@ -183,9 +184,9 @@ class IniManager
      */
     public static function getAllParams()
     {
-        self::initialize();
+        static::initialize();
 
-        return self::$iniValues;
+        return static::$iniValues;
     }
 
     /**
@@ -195,9 +196,9 @@ class IniManager
      */
     public static function getParamsComment()
     {
-        self::initialize();
+        static::initialize();
 
-        return self::$iniParamsComments;
+        return static::$iniParamsComments;
     }
 
     /**
@@ -207,9 +208,9 @@ class IniManager
      */
     public static function getSections()
     {
-        self::initialize();
+        static::initialize();
 
-        return array_keys(self::$iniValues);
+        return array_keys(static::$iniValues);
     }
 
     /**
@@ -219,9 +220,9 @@ class IniManager
      */
     public static function getSectionsComment()
     {
-        self::initialize();
+        static::initialize();
 
-        return self::$iniSectionsComments;
+        return static::$iniSectionsComments;
     }
 
     /**
@@ -233,9 +234,9 @@ class IniManager
      */
     public static function setParam($section = null, $param = null, $value = null)
     {
-        self::initialize();
-        self::addParam($section, $param, $value);
-        self::$initialized = false;
+        static::initialize();
+        static::addParam($section, $param, $value);
+        static::$initialized = false;
     }
 
     /**
@@ -247,14 +248,14 @@ class IniManager
      */
     public static function setSectionComment($section = null, $comment = '')
     {
-        self::initialize();
+        static::initialize();
 
-        if (!self::sectionExists($section)) {
+        if (!static::sectionExists($section)) {
             throw new Exception('The section ' . $section . 'does not exist', Exception::$WARNING);
         }
 
-        self::addCommentToSection($section, $comment);
-        self::$initialized = false;
+        static::addCommentToSection($section, $comment);
+        static::$initialized = false;
     }
 
     /**
@@ -268,21 +269,21 @@ class IniManager
      */
     public static function setParamComment($section = null, $param = null, $comment = '')
     {
-        self::initialize();
+        static::initialize();
 
-        if (!self::sectionExists($section)) {
+        if (!static::sectionExists($section)) {
             throw new Exception('The section ' . $section . 'does not exist', Exception::$WARNING);
         }
 
-        if (!self::paramExists($section, $param)) {
+        if (!static::paramExists($section, $param)) {
             throw new Exception(
                 'The parameter ' . $param . 'does not exist in the section ' . $section,
                 Exception::$WARNING
             );
         }
 
-        self::addCommentToParam($section, $param, $comment);
-        self::$initialized = false;
+        static::addCommentToParam($section, $param, $comment);
+        static::$initialized = false;
     }
 
     /*-----  End of Public methods  ------*/
@@ -299,7 +300,7 @@ class IniManager
      */
     private static function sectionExists($section)
     {
-        return array_key_exists($section, self::$iniValues);
+        return array_key_exists($section, static::$iniValues);
     }
 
     /**
@@ -312,9 +313,9 @@ class IniManager
     private static function paramExists($section, $param)
     {
         if (preg_match('/^(?P<subsection>.*)\[(?P<key>.*)\]$/', $param, $matches) === 1) {
-            $exist = array_key_exists($matches['key'], self::$iniValues[$section][$matches['subsection']]);
+            $exist = array_key_exists($matches['key'], static::$iniValues[$section][$matches['subsection']]);
         } else {
-            $exist = array_key_exists($param, self::$iniValues[$section]);
+            $exist = array_key_exists($param, static::$iniValues[$section]);
         }
 
         return $exist;
@@ -329,12 +330,12 @@ class IniManager
      */
     private static function addParam($section, $param, $value)
     {
-        self::initialize();
-        self::$iniValues[$section][$param] = $value;
+        static::initialize();
+        static::$iniValues[$section][$param] = $value;
 
         file_put_contents(
-            self::$INI_FILE_NAME,
-            self::arrayToIni(),
+            static::$INI_FILE_NAME,
+            static::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
     }
@@ -347,12 +348,12 @@ class IniManager
      */
     private static function addCommentToSection($section, $comment)
     {
-        self::initialize();
-        self::$iniSectionsComments[$section] = $comment;
+        static::initialize();
+        static::$iniSectionsComments[$section] = $comment;
 
         file_put_contents(
-            self::$INI_FILE_NAME,
-            self::arrayToIni(),
+            static::$INI_FILE_NAME,
+            static::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
     }
@@ -366,12 +367,12 @@ class IniManager
      */
     private static function addCommentToParam($section, $param, $comment)
     {
-        self::initialize();
-        self::$iniParamsComments[$section][$param] = $comment;
+        static::initialize();
+        static::$iniParamsComments[$section][$param] = $comment;
 
         file_put_contents(
-            self::$INI_FILE_NAME,
-            self::arrayToIni(),
+            static::$INI_FILE_NAME,
+            static::arrayToIni(),
             FILE_USE_INCLUDE_PATH | LOCK_EX
         );
     }
@@ -432,31 +433,31 @@ class IniManager
     {
         $iniString = '';
 
-        foreach (self::$iniValues as $section => $sectionValue) {
-            if (isset(self::$iniSectionsComments[$section])) {
-                $iniString .= self::formatComment(self::$iniSectionsComments[$section]) . PHP_EOL;
+        foreach (static::$iniValues as $section => $sectionValue) {
+            if (isset(static::$iniSectionsComments[$section])) {
+                $iniString .= static::formatComment(static::$iniSectionsComments[$section]) . PHP_EOL;
             }
 
             $iniString .= "[" . $section . "]" . PHP_EOL;
-            $maxLength = self::getMaxLength($sectionValue);
+            $maxLength = static::getMaxLength($sectionValue);
 
             foreach ($sectionValue as $param => $value) {
                 if (is_array($value)) {
-                    $maxLength = self::getMaxLength($value);
+                    $maxLength = static::getMaxLength($value);
 
                     foreach ($value as $subSectionLevel => $subSectionValue) {
                         $iniString .= $param
                             . "["
                             . $subSectionLevel
                             ."]"
-                            . self::alignValues($subSectionLevel, $maxLength)
+                            . static::alignValues($subSectionLevel, $maxLength)
                             . " = "
                             . (is_numeric($subSectionValue) ? $subSectionValue : '"' . $subSectionValue . '"');
 
-                        if (isset(self::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']'])) {
+                        if (isset(static::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']'])) {
                             $iniString .= ' '
-                            . self::formatComment(
-                                self::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']']
+                            . static::formatComment(
+                                static::$iniParamsComments[$section][$param . '[' . $subSectionLevel . ']']
                             );
                         }
 
@@ -464,12 +465,12 @@ class IniManager
                     }
                 } else {
                     $iniString .= $param
-                        . self::alignValues($param, $maxLength)
+                        . static::alignValues($param, $maxLength)
                         ." = "
                         . (is_numeric($value) ? $value : '"' . $value . '"');
 
-                    if (isset(self::$iniParamsComments[$section][$param])) {
-                        $iniString .= ' ' . self::formatComment(self::$iniParamsComments[$section][$param]);
+                    if (isset(static::$iniParamsComments[$section][$param])) {
+                        $iniString .= ' ' . static::formatComment(static::$iniParamsComments[$section][$param]);
                     }
 
                     $iniString .= PHP_EOL;
@@ -493,7 +494,7 @@ class IniManager
 
         preg_match_all(
             '/(?P<comment>(;.*\R)+)\[(?P<section>[A-Za-z0-9_ ]*)\]/',
-            file_get_contents(self::$INI_FILE_NAME, true),
+            file_get_contents(static::$INI_FILE_NAME, true),
             $matches,
             PREG_SET_ORDER
         );
@@ -517,7 +518,7 @@ class IniManager
 
         preg_match_all(
             '/\[(?P<name>[A-Za-z0-9_ ]*)\](?<content>\n.+)*/',
-            file_get_contents(self::$INI_FILE_NAME, true),
+            file_get_contents(static::$INI_FILE_NAME, true),
             $sections
         );
         // var_dump($sections);

@@ -206,8 +206,8 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
-        if (in_array($level, array_keys(self::$LEVELS))) {
-            call_user_func(__CLASS__ . '::' . self::$LEVELS[$level], $message, $context);
+        if (in_array($level, array_keys(static::$LEVELS))) {
+            call_user_func(__CLASS__ . '::' . static::$LEVELS[$level], $message, $context);
         } else {
             $this->info($message, $context);
         }

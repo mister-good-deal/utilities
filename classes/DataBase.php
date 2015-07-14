@@ -70,10 +70,10 @@ class DataBase
     {
         $PDO = new \ReflectionClass('\PDO');
 
-        self::initialize();
+        static::initialize();
 
         if ($PDO->hasMethod($name)) {
-            return call_user_func_array(array(self::$PDO, $name), $arguments);
+            return call_user_func_array(array(static::$PDO, $name), $arguments);
         } else {
             throw new Exception('The method "' . $name . '" is not a PDO method', Exception::$PARAMETER);
         }
@@ -93,9 +93,9 @@ class DataBase
      */
     public static function getAllTables()
     {
-        self::initialize();
+        static::initialize();
 
-        return self::$PDO->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
+        return static::$PDO->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -106,7 +106,7 @@ class DataBase
      */
     public static function cleanTable($tableName)
     {
-        self::$PDO->exec('TRUNCATE ' . $tableName);
+        static::$PDO->exec('TRUNCATE ' . $tableName);
     }
 
     /**
@@ -131,7 +131,7 @@ class DataBase
             $end
         );
 
-        return self::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        return static::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /*-----  End of Public methods  ------*/
@@ -151,29 +151,29 @@ class DataBase
      */
     private static function initialize($dsn = '', $username = '', $password = '', $options = array())
     {
-        if (self::$PDO === null) {
+        if (static::$PDO === null) {
             if ($username !== '' && $password !== '') {
                 if (count($options) > 0) {
-                    self::$PDO = new \PDO($dsn, $username, $password, $options);
+                    static::$PDO = new \PDO($dsn, $username, $password, $options);
                 } else {
-                    self::$PDO = new \PDO($dsn, $username, $password);
+                    static::$PDO = new \PDO($dsn, $username, $password);
                 }
             } elseif ($dsn !== '') {
-                self::$PDO = new \PDO($dsn);
+                static::$PDO = new \PDO($dsn);
             } else {
-                Ini::setIniFileName(self::INI_CONF_FILE);
+                Ini::setIniFileName(static::INI_CONF_FILE);
                 
                 // Load default database parameters
                 $params = Ini::getSectionParams('Database');
 
-                self::$PDO = new \PDO($params['dsn'], $params['username'], $params['password'], $params['options']);
+                static::$PDO = new \PDO($params['dsn'], $params['username'], $params['password'], $params['options']);
             }
 
             // Load default PDO parameters
             $params = Ini::getSectionParams('PDO');
 
             foreach ($params as $paramName => $paramValue) {
-                self::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
+                static::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
             }
         }
     }

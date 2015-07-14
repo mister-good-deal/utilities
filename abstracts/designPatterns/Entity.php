@@ -63,7 +63,7 @@ abstract class Entity
      */
     public function __construct($entityName)
     {
-        Ini::setIniFileName(self::ENTITIES_CONF_PATH . $entityName . '.ini');
+        Ini::setIniFileName(static::ENTITIES_CONF_PATH . $entityName . '.ini');
 
         $this->conf       = Ini::getAllParams();
         $this->entityName = $entityName;
@@ -94,9 +94,7 @@ abstract class Entity
             throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
         }
 
-        $value = $this->columnsValue[$columnName];
-
-        return $value;
+        return $this->columnsValue[$columnName];
     }
 
     /**
@@ -138,7 +136,7 @@ abstract class Entity
                     array('columnType', 'columnSize'),
                     2
                 )
-                . '  = ' . $columnValue . PHP_EOL;
+                . '  = ' . $this->formatValue($columnValue) . PHP_EOL;
         }
 
         return $string;

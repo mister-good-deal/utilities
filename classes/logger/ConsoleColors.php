@@ -89,9 +89,7 @@ class ConsoleColors
         }
 
         // Add string and end coloring
-        $coloredString .=  $string . "\033[0m";
-
-        return $coloredString;
+        return $coloredString . $string . "\033[0m";
     }
 
     /**

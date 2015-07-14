@@ -37,8 +37,8 @@ trait BeautifullIndentTrait
      */
     public function setMaxSize($category, $strings = array(), $minSize = 0)
     {
-        if (!isset(self::$beautifullIndentMaxSize[$category]) ||
-            $this->md5Array($strings) !== self::$md5Categories[$category]
+        if (!isset(static::$beautifullIndentMaxSize[$category]) ||
+            $this->md5Array($strings) !== static::$md5Categories[$category]
         ) {
             $max = 0;
 
@@ -50,8 +50,8 @@ trait BeautifullIndentTrait
                 }
             }
 
-            self::$beautifullIndentMaxSize[$category] = max($max, $minSize);
-            self::$md5Categories[$category]           = $this->md5Array($strings);
+            static::$beautifullIndentMaxSize[$category] = max($max, $minSize);
+            static::$md5Categories[$category]           = $this->md5Array($strings);
         }
     }
 
@@ -70,10 +70,10 @@ trait BeautifullIndentTrait
             $max = 0;
 
             foreach ($category as $categoryName) {
-                $max += self::$beautifullIndentMaxSize[$categoryName];
+                $max += static::$beautifullIndentMaxSize[$categoryName];
             }
         } else {
-            $max = self::$beautifullIndentMaxSize[$category];
+            $max = static::$beautifullIndentMaxSize[$category];
         }
 
         return str_pad($value, $max + $extraSize, ' ', $position);
@@ -87,11 +87,11 @@ trait BeautifullIndentTrait
      */
     public function getMaxSize($category)
     {
-        if (!isset(self::$beautifullIndentMaxSize[$category])) {
+        if (!isset(static::$beautifullIndentMaxSize[$category])) {
             throw new Exception('The category ' . $category . ' does not exist', Exception::$PARAMETER);
         }
 
-        return self::$beautifullIndentMaxSize[$category];
+        return static::$beautifullIndentMaxSize[$category];
     }
 
     /**

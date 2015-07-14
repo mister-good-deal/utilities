@@ -62,7 +62,7 @@ class LoggerManager
      */
     public function log($level, $message, array $context = array())
     {
-        foreach ($this->implementedLoggers as $loggerName => $logger) {
+        foreach ($this->implementedLoggers as $logger) {
             $logger->log($level, $message, $context);
         }
     }
@@ -77,10 +77,10 @@ class LoggerManager
         $loggerType = (int) $loggerType;
 
         if (!$this->hasLogger($loggerType)) {
-            if ($loggerType === self::FILE) {
-                $this->implementedLoggers[self::FILE] = new FileLogger();
-            } elseif ($loggerType === self::CONSOLE) {
-                $this->implementedLoggers[self::CONSOLE] = new ConsoleLogger();
+            if ($loggerType === static::FILE) {
+                $this->implementedLoggers[static::FILE] = new FileLogger();
+            } elseif ($loggerType === static::CONSOLE) {
+                $this->implementedLoggers[static::CONSOLE] = new ConsoleLogger();
             }
         }
     }
@@ -103,11 +103,11 @@ class LoggerManager
     public static function globalConstDefine()
     {
         if (!defined('FILE_LOGGER')) {
-            define('FILE_LOGGER', self::FILE);
+            define('FILE_LOGGER', static::FILE);
         }
 
         if (!defined('CONSOLE_LOGGER')) {
-            define('CONSOLE_LOGGER', self::CONSOLE);
+            define('CONSOLE_LOGGER', static::CONSOLE);
         }
     }
     

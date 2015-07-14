@@ -17,11 +17,4 @@ use utilities\abstracts\designPatterns\EntityManager as EntityManager;
  */
 class UserEntityManager extends EntityManager
 {
-    /**
-     * Constructor which called the parent one
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 }

@@ -165,6 +165,16 @@ abstract class EntityManager
 
         return $success;
     }
+
+    /**
+     * Delete an entity in the database
+     *
+     * @return boolean True if the entity has beed deleted else false
+     */
+    public function deleteEntity()
+    {
+        return $this->deleteInDatabse();
+    }
     
     /*-----  End of Public methods  ------*/
 

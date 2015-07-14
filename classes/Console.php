@@ -123,7 +123,7 @@ class Console
                 break;
 
             case 'help':
-                echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(self::$COMMANDS, 'comands');
+                echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(static::$COMMANDS, 'comands');
                 break;
 
             default:
@@ -154,11 +154,15 @@ class Console
 
         if (!isset($args['t'])) {
             echo 'You need to specify a table name with -t parameter' . PHP_EOL;
-        } elseif (!in_array($args['t'], DB::getAllTables())) {
-            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
         } else {
-            DB::cleanTable($args['t']);
-            echo 'The table "' . $args['t'] . '" is cleaned' . PHP_EOL;
+            $tableName = 'The table "' . $args['t'] . '"';
+
+            if (!in_array($args['t'], DB::getAllTables())) {
+                echo $tableName . ' does not exist' . PHP_EOL;
+            } else {
+                DB::cleanTable($args['t']);
+                echo $tableName . ' is cleaned' . PHP_EOL;
+            }
         }
     }
 
@@ -267,10 +271,12 @@ class Console
         foreach ($columns as $key => $value) {
             $columnsName[] = $key;
             $this->setMaxSize($key, $columns[$key], strlen($key));
-            $maxLength += ($this->getMaxSize($key) + 3); // 2 because 2 spaces and 1 | are added between name
+            // 3 because 2 spaces and 1 | are added between name
+            $maxLength += ($this->getMaxSize($key) + 3);
         }
 
-        $maxLength      -= 1; // don't touch it's magic ;p
+        // don't touch it's magic ;p
+        $maxLength      -= 1;
         $separationLine = '+' . str_pad('', $maxLength, '-', STR_PAD_BOTH) . '+' . PHP_EOL;
         $prettyString   = $separationLine;
         $prettyString   .= '|' . str_pad($tableName, $maxLength, ' ', STR_PAD_BOTH) . '|' . PHP_EOL ;
