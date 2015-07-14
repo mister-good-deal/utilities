@@ -92,7 +92,7 @@ class Console
     private function processCommand($command)
     {
         $exit = false;
-        preg_match('/^[a-zA-Z ]+/', $command, $commandName);
+        preg_match('/^[a-zA-Z ]*/', $command, $commandName);
 
         echo PHP_EOL;
 

@@ -21,9 +21,15 @@ trait BeautifullIndentTrait
      * @var array $beautifullIndentMaxSize Array containing the max size of each category values
      */
     private static $beautifullIndentMaxSize = array();
+    /**
+     * @var string[] $md5Categories Array containing the md5 hash of the categories array
+     */
+    private static $md5Categories           = array();
 
     /**
      * Process the max value size of a category
+     *
+     * If the category is processed and the array didn't change, the category is not reprocessed
      *
      * @param string  $category The category name
      * @param array   $strings  The category values
@@ -31,7 +37,9 @@ trait BeautifullIndentTrait
      */
     public function setMaxSize($category, $strings = array(), $minSize = 0)
     {
-        if (!isset(self::$beautifullIndentMaxSize[$category])) {
+        if (!isset(self::$beautifullIndentMaxSize[$category]) ||
+            $this->md5Array($strings) !== self::$md5Categories[$category]
+        ) {
             $max = 0;
 
             foreach ($strings as $string) {
@@ -43,6 +51,7 @@ trait BeautifullIndentTrait
             }
 
             self::$beautifullIndentMaxSize[$category] = max($max, $minSize);
+            self::$md5Categories[$category]           = $this->md5Array($strings);
         }
     }
 
@@ -83,5 +92,18 @@ trait BeautifullIndentTrait
         }
 
         return self::$beautifullIndentMaxSize[$category];
+    }
+
+    /**
+     * Get the md5 hash of an array
+     *
+     * @param  array  $array The array to hash
+     * @return string        The md5 hash
+     */
+    private function md5Array($array)
+    {
+        array_multisort($array);
+        
+        return md5(json_encode($array));
     }
 }

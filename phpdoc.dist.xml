@@ -12,7 +12,7 @@
     </extensions>
   </parser>
   <transformer>
-    <target>./phpDoc</target>
+    <target>../utilities-gh-pages</target>
   </transformer>
   <files>
     <file>autoloader.php</file>

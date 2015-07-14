@@ -9,7 +9,7 @@
 use \utilities\classes\Benchmark as Benchmark;
 use \utilities\classes\exception\ExceptionManager as Exception;
 
-include_once 'autoloader.php';
+include_once '../autoloader.php';
 
 $func1 = function ($array) {
     $sum = 0;
