@@ -6,9 +6,9 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\entitiesManager;
+namespace classes\entitiesManager;
 
-use utilities\abstracts\designPatterns\EntityManager as EntityManager;
+use \abstracts\designPatterns\EntityManager as EntityManager;
 
 /**
  * Performed database action relative to the User entity class

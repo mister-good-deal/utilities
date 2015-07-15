@@ -6,12 +6,12 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\logger;
+namespace classes\logger;
 
-use \utilities\classes\logger\LogLevel as LogLevel;
-use \utilities\classes\ini\IniManager as Ini;
-use \utilities\interfaces\logger\LoggerInterface as LoggerInterface;
-use \utilities\abstracts\logger\AbstractLogger as AbstractLogger;
+use \classes\logger\LogLevel as LogLevel;
+use \classes\ini\IniManager as Ini;
+use \interfaces\logger\LoggerInterface as LoggerInterface;
+use \abstracts\logger\AbstractLogger as AbstractLogger;
 
 /**
  * File logger to log  exceptions in a file
@@ -28,7 +28,7 @@ class FileLogger extends AbstractLogger implements LoggerInterface
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor taht take the file path as a first parameter, if ommited it loads the file path defined in the ini
      *
@@ -42,13 +42,13 @@ class FileLogger extends AbstractLogger implements LoggerInterface
             $this->filePath = Ini::getParam('FileLogger', 'filePath');
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Logs with an arbitrary level.
      *
@@ -60,13 +60,13 @@ class FileLogger extends AbstractLogger implements LoggerInterface
     {
         $this->writeInFile($message, $context);
     }
-    
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Utility methods to format and write the log in a file
      *
@@ -83,6 +83,6 @@ class FileLogger extends AbstractLogger implements LoggerInterface
 
         file_put_contents($this->filePath, $string, FILE_APPEND);
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

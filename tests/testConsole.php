@@ -6,7 +6,7 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-use \utilities\classes\Console as Console;
+use \classes\Console as Console;
 
 include_once '../autoloader.php';
 

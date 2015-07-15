@@ -6,10 +6,10 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\logger;
+namespace classes\logger;
 
-use \utilities\classes\logger\ConsoleLogger as ConsoleLogger;
-use \utilities\classes\logger\FileLogger as FileLogger;
+use \classes\logger\ConsoleLogger as ConsoleLogger;
+use \classes\logger\FileLogger as FileLogger;
 
 /**
 * LoggerManager
@@ -32,7 +32,7 @@ class LoggerManager
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor which takes the logger type to implement in a parameter
      *
@@ -46,13 +46,13 @@ class LoggerManager
             }
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
-    
+
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Logs avec un niveau arbitraire.
      *
@@ -84,7 +84,7 @@ class LoggerManager
             }
         }
     }
-    
+
     /**
      * Remove a logger to the implemented logger
      *
@@ -110,13 +110,13 @@ class LoggerManager
             define('CONSOLE_LOGGER', static::CONSOLE);
         }
     }
-    
+
     /*-----  End of Public methods  ------*/
-    
+
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Check if a logger is already implemented
      *
@@ -127,6 +127,6 @@ class LoggerManager
     {
         return array_key_exists($loggerType, $this->implementedLoggers);
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

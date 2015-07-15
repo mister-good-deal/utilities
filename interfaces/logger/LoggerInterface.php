@@ -5,7 +5,7 @@
  * @category Interface
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
-namespace utilities\interfaces\logger;
+namespace interfaces\logger;
 
 /**
  * Describes a logger instance.
@@ -98,7 +98,7 @@ interface LoggerInterface
      * @param array  $context
      */
     public function debug($message, array $context = array());
-    
+
     /**
      * Logs with an arbitrary level.
      *

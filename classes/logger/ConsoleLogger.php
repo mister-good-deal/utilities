@@ -6,12 +6,12 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\logger;
+namespace classes\logger;
 
-use \utilities\classes\logger\LogLevel as LogLevel;
-use \utilities\classes\logger\ConsoleColors as ConsoleColor;
-use \utilities\interfaces\logger\LoggerInterface as LoggerInterface;
-use \utilities\abstracts\logger\AbstractLogger as AbstractLogger;
+use \classes\logger\LogLevel as LogLevel;
+use \classes\logger\ConsoleColors as ConsoleColor;
+use \interfaces\logger\LoggerInterface as LoggerInterface;
+use \abstracts\logger\AbstractLogger as AbstractLogger;
 
 /**
  * A logger which writes the log in the console
@@ -38,11 +38,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      * @var ConsoleColor $colors ConsoleColor instance to color console output
      */
     private $colors;
-    
+
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor that instanciates a ConsoleColor
      */
@@ -50,13 +50,13 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     {
         $this->colors = new ConsoleColors();
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
      /**
      * System is unusable.
      *
@@ -212,13 +212,13 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
             $this->info($message, $context);
         }
     }
-    
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Helper method to pretty output info with colors defined for each type of context
      *
@@ -281,6 +281,6 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
 
         return $string;
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

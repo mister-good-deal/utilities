@@ -6,11 +6,11 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\exception;
+namespace classes\exception;
 
-use \utilities\classes\logger\LoggerManager as Logger;
-use \utilities\classes\logger\LogLevel as LogLevel;
-use \utilities\classes\ini\IniManager as Ini;
+use \classes\logger\LoggerManager as Logger;
+use \classes\logger\LogLevel as LogLevel;
+use \classes\ini\IniManager as Ini;
 
 /**
  * Add a logger process to the class exception throw
@@ -60,11 +60,11 @@ class ExceptionManager extends \Exception
      * @var Logger $logger A LoggerManager instance
      */
     private $logger;
-    
+
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor that called the parent \Exception constructor
      *
@@ -76,17 +76,17 @@ class ExceptionManager extends \Exception
     {
         parent::__construct($message, $code, $previous);
         Ini::setIniFileName('conf.ini');
-        
+
         $this->logger = new Logger(Ini::getParam('Exception', 'implementedLogger'));
         $this->logger->log($code, $message, parent::getTrace());
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Add a logger to the implemented logger
      *
@@ -106,6 +106,6 @@ class ExceptionManager extends \Exception
     {
         $this->logger->removeLogger($loggerType);
     }
-    
+
     /*-----  End of Public methods  ------*/
 }

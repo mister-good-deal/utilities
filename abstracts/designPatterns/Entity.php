@@ -6,11 +6,11 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\abstracts\designPatterns;
+namespace abstracts\designPatterns;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\classes\ini\IniManager as Ini;
-use \utilities\classes\DataBase as DB;
+use \classes\exception\ExceptionManager as Exception;
+use \classes\ini\IniManager as Ini;
+use \classes\DataBase as DB;
 
 /**
  * Abstract Entity pattern
@@ -330,7 +330,7 @@ abstract class Entity
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Parse an entity conf to extract attributes
      */
@@ -389,6 +389,6 @@ abstract class Entity
 
         return $formatedValue;
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

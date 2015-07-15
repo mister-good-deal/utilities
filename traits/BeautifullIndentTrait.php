@@ -6,9 +6,9 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\traits;
+namespace traits;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
+use \classes\exception\ExceptionManager as Exception;
 
 /**
  * Utility methods to smart align values
@@ -103,7 +103,7 @@ trait BeautifullIndentTrait
     private function md5Array($array)
     {
         array_multisort($array);
-        
+
         return md5(json_encode($array));
     }
 }

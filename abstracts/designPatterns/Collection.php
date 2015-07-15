@@ -6,10 +6,10 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\abstracts\designPatterns;
+namespace abstracts\designPatterns;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\abstracts\designPatterns\Entity as Entity;
+use \classes\exception\ExceptionManager as Exception;
+use \abstracts\designPatterns\Entity as Entity;
 
 /**
  * Abstract Collection pattern to use with Entity pattern
@@ -34,7 +34,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     /*=====================================
     =            Magic mathods            =
     =====================================*/
-    
+
     /**
      * Constructor
      */
@@ -51,20 +51,20 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     {
         $string = PHP_EOL . 'Collection of (' . $this->count() . ') ' . $this->getEntityByIndex(0)->getEntityName()
             . ' entity' . PHP_EOL . implode(array_fill(0, 116, '-'));
-        
+
         foreach ($this->collection as $entity) {
             $string .= $entity . implode(array_fill(0, 116, '-'));
         }
 
         return $string;
     }
-    
+
     /*-----  End of Magic mathods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Add an entity at the end of the collection
      *
@@ -234,6 +234,6 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
             $this->current = $position;
         }
     }
-    
+
     /*-----  End of Public methods  ------*/
 }

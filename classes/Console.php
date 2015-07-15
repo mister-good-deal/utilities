@@ -6,9 +6,9 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes;
+namespace classes;
 
-use \utilities\classes\DataBase as DB;
+use \classes\DataBase as DB;
 
 /**
  * ORM in a console mode with simple command syntax to manage the database
@@ -17,8 +17,8 @@ use \utilities\classes\DataBase as DB;
  */
 class Console
 {
-    use \utilities\traits\BeautifullIndentTrait;
-    use \utilities\traits\FiltersTrait;
+    use \traits\BeautifullIndentTrait;
+    use \traits\FiltersTrait;
 
     /**
      * @var string[] $COMMANDS List of all commands with their description
@@ -41,20 +41,20 @@ class Console
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor
      */
     public function __construct()
     {
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Launch a console session
      */
@@ -63,13 +63,13 @@ class Console
         echo PHP_EOL . 'Welcome to the ORM in console' . PHP_EOL . PHP_EOL;
         $this->processCommand($this->userInput());
     }
-    
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Let the user enter a command in his console input
      *
@@ -80,7 +80,7 @@ class Console
         echo 'cmd: ';
 
         $handle = fopen('php://stdin', 'r');
-       
+
         return trim(fgets($handle));
     }
 
@@ -285,7 +285,7 @@ class Console
         for ($i = 0; $i < $colmunsNumber; $i++) {
             $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName[$i], 0, STR_PAD_BOTH) . ' ';
         }
-        
+
         $prettyString .= '|' . PHP_EOL . $separationLine;
 
         for ($i = 0; $i < $rowsNumber; $i++) {
@@ -299,6 +299,6 @@ class Console
 
         return $prettyString . $separationLine;
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

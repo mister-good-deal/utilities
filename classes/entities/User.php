@@ -6,9 +6,9 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\entities;
+namespace classes\entities;
 
-use utilities\abstracts\designPatterns\Entity as Entity;
+use \abstracts\designPatterns\Entity as Entity;
 
 /**
  * User entity that extends the Entity abstact class
@@ -20,7 +20,7 @@ class User extends Entity
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor that calls the parent Entity constructor
      */
@@ -28,6 +28,6 @@ class User extends Entity
     {
         parent::__construct('User');
     }
-    
+
     /*-----  End of Magic methods  ------*/
 }

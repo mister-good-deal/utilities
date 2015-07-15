@@ -7,10 +7,10 @@
  * @example /utilities/examples/dataBase.php                Basic use of this singleton
  */
 
-namespace utilities\classes;
+namespace classes;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\classes\ini\IniManager as Ini;
+use \classes\exception\ExceptionManager as Exception;
+use \classes\ini\IniManager as Ini;
 
 /**
  * Singleton pattern style to handle DB connection using PDO
@@ -45,11 +45,11 @@ class DataBase
      * @var \PDO $PDO A PDO object DEFAULT null
      */
     private static $PDO = null;
-    
+
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * A never called constructor (can't declare it private because it's generate error)
      */
@@ -78,13 +78,13 @@ class DataBase
             throw new Exception('The method "' . $name . '" is not a PDO method', Exception::$PARAMETER);
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Get all the table name of he current database
      *
@@ -133,13 +133,13 @@ class DataBase
 
         return static::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
+
     /*-----  End of Public methods  ------*/
-    
+
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Utility method to reuse the same PDO instance at each call (work like a Singleton pattern)
      *
@@ -162,7 +162,7 @@ class DataBase
                 static::$PDO = new \PDO($dsn);
             } else {
                 Ini::setIniFileName(static::INI_CONF_FILE);
-                
+
                 // Load default database parameters
                 $params = Ini::getSectionParams('Database');
 
@@ -177,6 +177,6 @@ class DataBase
             }
         }
     }
-    
+
     /*-----  End of Private methods  ------*/
 }

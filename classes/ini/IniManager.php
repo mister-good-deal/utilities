@@ -6,10 +6,10 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\ini;
+namespace classes\ini;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\classes\logger\LoggerManager as Logger;
+use \classes\exception\ExceptionManager as Exception;
+use \classes\logger\LoggerManager as Logger;
 
 /**
  * Helper class to provide access read and write to an ini conf file.
@@ -41,18 +41,18 @@ class IniManager
      * @var boolean $initialized True if the INI file has been parsed else false
      */
     private static $initialized = false;
-    
+
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * constructor nevers called (see initialize below)
      */
     public function __construct()
     {
     }
-    
+
     /**
      * One time call constructor to get ini values
      */
@@ -291,7 +291,7 @@ class IniManager
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Check if the section exists in teh ini file
      *

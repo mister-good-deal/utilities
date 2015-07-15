@@ -6,7 +6,7 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\logger;
+namespace classes\logger;
 
 /**
  * Class to get different color to output in a console
@@ -27,7 +27,7 @@ class ConsoleColors
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor which sets up all the colors
      */
@@ -60,13 +60,13 @@ class ConsoleColors
         $this->backgroundColors['cyan'] = '46';
         $this->backgroundColors['light_gray'] = '47';
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Return the string colored
      *
@@ -111,6 +111,6 @@ class ConsoleColors
     {
         return array_keys($this->backgroundColors);
     }
-    
+
     /*-----  End of Public methods  ------*/
 }
