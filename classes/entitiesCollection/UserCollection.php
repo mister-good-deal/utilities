@@ -1,32 +1,31 @@
 <?php
 /**
- * User entity
+ * User Collection
  *
- * @category Entity
+ * @category Collection
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\entities;
+namespace utilities\classes\entitiesCollection;
 
-use utilities\abstracts\designPatterns\Entity as Entity;
+use \utilities\abstracts\designPatterns\Collection as Collection;
 
 /**
- * User entity that extends the Entity abstact class
+ * A collection of User entity that extends the Colelction pattern
  *
- * @class User
+ * @class UserCollection
  */
-class User extends Entity
+class UserCollection extends Collection
 {
     /*=====================================
     =            Magic methods            =
     =====================================*/
     
     /**
-     * Constructor that calls the parent Entity constructor
+     * constructor
      */
     public function __construct()
     {
-        parent::__construct('User');
     }
     
     /*-----  End of Magic methods  ------*/

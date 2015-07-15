@@ -1,25 +1,70 @@
 <?php
+/**
+ * Abstarct Collection pattern
+ *
+ * @category Abstract
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\abstracts\designPatterns;
 
 use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\abstracts\designPatterns\Entity as Entity;
 
-abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableIterator
+/**
+ * Abstract Collection pattern to use with Entity pattern
+ *
+ * @abstract
+ */
+abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \SeekableIterator
 {
     /**
-     * @var Entity[]       $collection An array of entity object
-     * @var int[]|string[] $indexId    An array of entity id key
-     * @var int            $current    Current position of the pointer in the $collection
+     * @var Entity[] $collection An array of entity object
      */
     private $collection = array();
+    /**
+     * @var int[]|string[] $indexId An array of entity id key
+     */
     private $indexId    = array();
+    /**
+     * @var integer $current Current position of the pointer in the $collection
+     */
     private $current    = 0;
 
+    /*=====================================
+    =            Magic mathods            =
+    =====================================*/
+    
+    /**
+     * Constructor
+     */
     public function __construct()
     {
     }
 
+    /**
+     * Pretty print the Collection
+     *
+     * @return string String output
+     */
+    public function __toString()
+    {
+        $string = PHP_EOL . 'Collection of (' . $this->count() . ') ' . $this->getEntityByIndex(0)->getEntityName()
+            . ' entity' . PHP_EOL . implode(array_fill(0, 116, '-'));
+        
+        foreach ($this->collection as $entity) {
+            $string .= $entity . implode(array_fill(0, 116, '-'));
+        }
+
+        return $string;
+    }
+    
+    /*-----  End of Magic mathods  ------*/
+
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
     /**
      * Add an entity at the end of the collection
      *
@@ -28,7 +73,7 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
      */
     public function add($entity)
     {
-        $id = $entity->getId();
+        $id = $entity->getIdValue();
 
         if (array_key_exists($id, $this->indexId)) {
             throw new Exception('This entity id(' . $id .') is already in the collection', Exception::$WARNING);
@@ -52,6 +97,21 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
         }
 
         return $this->collection[$this->indexId[$entityId]];
+    }
+
+    /**
+     * Get an entity by its index
+     *
+     * @param  integer $index The entity index in the Collection
+     * @return Entity         The entity
+     */
+    public function getEntityByIndex($index)
+    {
+        if (!isset($this->collection[$index])) {
+            throw new Exception('There is no entity at index ' . $index, Exception::$PARAMETER);
+        }
+
+        return $this->collection[$index];
     }
 
     /*==========  Iterator interface  ==========*/
@@ -174,4 +234,6 @@ abstract class Collection implements Iterator, ArrayAccess, Countable, SeekableI
             $this->current = $position;
         }
     }
+    
+    /*-----  End of Public methods  ------*/
 }

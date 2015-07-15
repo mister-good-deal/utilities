@@ -1,4 +1,10 @@
 <?php
+/**
+ * Entity pattern abstract class
+ *
+ * @category Abstract
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 
 namespace utilities\abstracts\designPatterns;
 
@@ -6,75 +12,129 @@ use \utilities\classes\exception\ExceptionManager as Exception;
 use \utilities\classes\ini\IniManager as Ini;
 use \utilities\classes\DataBase as DB;
 
-class Entity
+/**
+ * Abstract Entity pattern
+ *
+ * @abstract
+ */
+abstract class Entity
 {
+    use \utilities\traits\BeautifullIndentTrait;
+
     /**
-     * @var array  $columnsValue An assosiative array with colum name on key and its value on value
-     * @var string $idKey Id key name
+     * @const ENTITIES_CONF_PATH The path where the entities ini conf file are stored
      */
     const ENTITIES_CONF_PATH = 'database/entities/';
 
+    /**
+     * @var array $conf All the ini params
+     */
     private $conf;
+    /**
+     * @var string $tableName The table entity name
+     */
     private $tableName;
+    /**
+     * @var The entity name
+     */
     private $entityName;
+    /**
+     * @var string $idKey Id key name
+     */
     private $idKey;
-    private $maxColumnNameSize = 0;
-    private $maxColumnTypeSize = 0;
 
+    /**
+     * @var array $columnsValue An associative array with column name on key and its value on value
+     */
     protected $columnsValue      = array();
+    /**
+     * @var array $columnsAttributes An associative array with column name on key and column value on value
+     */
     protected $columnsAttributes = array();
 
     /*=====================================
     =            Magic methods            =
     =====================================*/
 
+    /**
+     * Constructor that takes the entity name as first parameter to call the parent constructor
+     *
+     * @param string $entityName The entity name
+     */
     public function __construct($entityName)
     {
-        Ini::setIniFileName(self::ENTITIES_CONF_PATH . $entityName . '.ini');
+        Ini::setIniFileName(static::ENTITIES_CONF_PATH . $entityName . '.ini');
 
         $this->conf       = Ini::getAllParams();
         $this->entityName = $entityName;
         $this->parseConf();
     }
 
+    /**
+     * Tell if the column name exists
+     *
+     * @param  string  $columnName The column name
+     * @return boolean             True if the column name exists else fale
+     */
     public function __isset($columnName)
     {
         return array_key_exists($columnName, $this->columnsValue);
     }
 
+    /**
+     * Get the column name value
+     *
+     * @param  string $columnName The column name
+     * @throws Exception          If the column name does not a exist
+     * @return mixed              The column value
+     */
     public function __get($columnName)
     {
         if (!$this->__isset($columnName)) {
             throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
         }
 
-        $value = $this->columnsValue[$columnName];
-
-        return $value;
+        return $this->columnsValue[$columnName];
     }
 
+    /**
+     * Set the column name
+     *
+     * @param  string    $columnName The column name
+     * @param  mixed     $value      The new column value
+     * @throws Exception             If the column name does not a exist
+     */
     public function __set($columnName, $value)
     {
         if (!$this->__isset($columnName)) {
             throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
         }
-        // @todo fix here
+
         $this->columnsValue[$columnName] = $value;
     }
 
+    /**
+     * Pretty output the entity
+     *
+     * @return string The pretty output entity
+     */
     public function __toString()
     {
-        $this->setBeautifullIndent();
+        $this->setMaxSize('columnName', array_keys($this->columnsValue));
+        $this->setMaxSize('columnValue', array_values($this->columnsValue));
+        $this->setMaxSize('columnType', array_column($this->columnsAttributes, 'type'));
+        $this->setMaxSize('columnSize', array_column($this->columnsAttributes, 'size'));
 
         $string = '['  . $this->entityName . ']' . PHP_EOL;
 
         foreach ($this->columnsValue as $columnName => $columnValue) {
             $string .=
-                '  ' . $this->smartIndent($columnName, $this->maxColumnNameSize)
-                . '  ' . $this->smartIndent(
+                '  ' . $this->smartAlign($columnName, 'columnName')
+                . '  ' . $this->smartAlign(
                     $this->columnsAttributes[$columnName]['type'] . '(' .
                     $this->columnsAttributes[$columnName]['size'] . ')',
-                    $this->maxColumnTypeSize
+                    array('columnType', 'columnSize'),
+                    2
                 )
                 . '  = ' . $this->formatValue($columnValue) . PHP_EOL;
         }
@@ -92,6 +152,11 @@ class Entity
         return $this->columnsValue;
     }
 
+    /**
+     * Info to display when using a var_dump on the entity
+     *
+     * @return array The var_dump info
+     */
     public function __debugInfo()
     {
         return $this->columnsValue;
@@ -126,18 +191,18 @@ class Entity
     /**
      * Get the id value of the entity
      *
-     * @return int[] The id value
+     * @return int|int[] The id value(s)
      */
     public function getIdValue()
     {
-        $idValue = array();
-
         if (is_array($this->idKey)) {
+            $idValue = array();
+
             foreach ($this->idKey as $columnName) {
                 $idValue[] = $this->__get($columnName);
             }
         } else {
-            $idValue[] = $this->__get($this->idKey);
+            $idValue = $this->__get($this->idKey);
         }
 
         return $idValue;
@@ -157,20 +222,45 @@ class Entity
                 $idKeyValue[$columnName] = $this->__get($columnName);
             }
         } else {
-            $idKeyValue[$this->idKey] = $this->__get($this->idKey);
+            $idKeyValue[$this->idKey] = $this->getIdValue();
         }
 
         return $idKeyValue;
     }
 
     /**
+     * Get the associative array columnName => columnValue primary keys EXCLUDED
+     *
+     * @return array The associative array columnName => columnValue primary keys EXCLUDED
+     */
+    public function getColumnsKeyValueNoPrimary()
+    {
+        $columnsKeyValue = array();
+
+        if (!is_array($this->idKey)) {
+            $idKeys = array($this->idKey);
+        } else {
+            $idKeys = $this->idKey;
+        }
+
+        foreach ($this->columnsValue as $columnName => $columnValue) {
+            if (!in_array($columnName, $idKeys)) {
+                $columnsKeyValue[$columnName] = $columnValue;
+            }
+        }
+
+        return $columnsKeyValue;
+    }
+
+    /**
      * Set the id value of the entity (can be an array if several primary keys)
      *
-     * @param int|array The id value
+     * @param  int|array The id value
+     * @throws Exception If the id is on several columns and $value is not an array
+     * @throws Exception If the id key is not found
      */
     public function setIdValue($value)
     {
-        var_dump($this->idKey);
         if (is_array($this->idKey)) {
             if (!is_array($value)) {
                 throw new Exception(
@@ -205,18 +295,42 @@ class Entity
         return $this->tableName;
     }
 
+    /**
+     * Get the columns attributes
+     *
+     * @return array The columns attributes
+     */
     public function getColumnsAttributes()
     {
         return $this->columnsAttributes;
     }
 
+    /**
+     * Get the columns value
+     *
+     * @return array The columns value
+     */
     public function getColumnsValue()
     {
         return $this->columnsValue;
     }
 
+    /**
+     * Get the entity name
+     *
+     * @return string The entity name
+     */
+    public function getEntityName()
+    {
+        return $this->entityName;
+    }
+
     /*-----  End of Getters and setter  ------*/
 
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
     /**
      * Parse an entity conf to extract attributes
      */
@@ -239,43 +353,6 @@ class Entity
 
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
-    }
-
-    /**
-     * Utility method to process and set the max size of name and type
-     */
-    private function setBeautifullIndent()
-    {
-        $maxColumnNameSize = 0;
-        $maxColumnTypeSize = 0;
-
-        foreach ($this->columnsAttributes as $columnName => $columnAttributes) {
-            $currentColumnNameSize = strlen($columnName);
-            $currentColumnTypeSize = strlen($columnAttributes['type']) + strlen($columnAttributes['size']);
-
-            if ($currentColumnNameSize > $maxColumnNameSize) {
-                $maxColumnNameSize = $currentColumnNameSize;
-            }
-
-            if ($currentColumnTypeSize > $maxColumnTypeSize + 2) {
-                $maxColumnTypeSize = $currentColumnTypeSize + 2;
-            }
-        }
-
-        $this->maxColumnNameSize = $maxColumnNameSize;
-        $this->maxColumnTypeSize = $maxColumnTypeSize;
-    }
-
-    /**
-     * Indent a string nicely to align "=" sign
-     *
-     * @param  string $value   The string to indent
-     * @param  int    $maxSize The max size of all the string to indent with
-     * @return string          The indented string
-     */
-    private function smartIndent($value, $maxSize)
-    {
-        return str_pad($value, $maxSize, ' ', STR_PAD_RIGHT);
     }
 
     /**
@@ -312,4 +389,6 @@ class Entity
 
         return $formatedValue;
     }
+    
+    /*-----  End of Private methods  ------*/
 }

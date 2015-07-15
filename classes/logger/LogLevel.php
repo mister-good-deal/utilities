@@ -1,9 +1,14 @@
 <?php
-
+/**
+ * Log Level to report an exception
+ *
+ * @category Constants
+ * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
+ */
 namespace utilities\classes\logger;
 
 /**
- * Décrit les niveaux de journalisation
+ * Log level constants
  */
 class LogLevel
 {
