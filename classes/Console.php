@@ -264,7 +264,7 @@ class Console
     {
         $columns       = $this->filterFecthAllByColumn($data);
         $colmunsNumber = count($columns);
-        $rowsNumber    = count($columns[key($columns)]);
+        $rowsNumber    = ($colmunsNumber > 0) ? count($columns[key($columns)]) : 0;
         $columnsName   = array();
         $maxLength     = 0;
 
@@ -277,6 +277,12 @@ class Console
 
         // don't touch it's magic ;p
         $maxLength      -= 1;
+
+        if ($maxLength <= 0) {
+            // 9 beacause strlen('No data') = 7 + 2 spaces
+            $maxLength = max(strlen($tableName) + 2, 9);
+        }
+
         $separationLine = '+' . str_pad('', $maxLength, '-', STR_PAD_BOTH) . '+' . PHP_EOL;
         $prettyString   = $separationLine;
         $prettyString   .= '|' . str_pad($tableName, $maxLength, ' ', STR_PAD_BOTH) . '|' . PHP_EOL ;
@@ -286,7 +292,10 @@ class Console
             $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName[$i], 0, STR_PAD_BOTH) . ' ';
         }
 
-        $prettyString .= '|' . PHP_EOL . $separationLine;
+        if ($colmunsNumber > 0) {
+            $prettyString .= '|' . PHP_EOL . $separationLine;
+        }
+
 
         for ($i = 0; $i < $rowsNumber; $i++) {
             for ($j = 0; $j < $colmunsNumber; $j++) {
@@ -295,6 +304,10 @@ class Console
             }
 
             $prettyString .= '|' . PHP_EOL;
+        }
+
+        if ($rowsNumber === 0) {
+            $prettyString .= '|' . str_pad('No data', $maxLength, ' ', STR_PAD_BOTH) . '|' . PHP_EOL ;
         }
 
         return $prettyString . $separationLine;
