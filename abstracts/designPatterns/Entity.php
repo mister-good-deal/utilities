@@ -19,7 +19,7 @@ use \classes\DataBase as DB;
  */
 abstract class Entity
 {
-    use \utilities\traits\BeautifullIndentTrait;
+    use \traits\BeautifullIndentTrait;
 
     /**
      * @const ENTITIES_CONF_PATH The path where the entities ini conf file are stored
@@ -120,20 +120,19 @@ abstract class Entity
      */
     public function __toString()
     {
-        $this->setMaxSize('columnName', array_keys($this->columnsValue));
-        $this->setMaxSize('columnValue', array_values($this->columnsValue));
-        $this->setMaxSize('columnType', array_column($this->columnsAttributes, 'type'));
-        $this->setMaxSize('columnSize', array_column($this->columnsAttributes, 'size'));
-
         $string = '['  . $this->entityName . ']' . PHP_EOL;
+        $keys   = array_keys($this->columnsValue);
 
         foreach ($this->columnsValue as $columnName => $columnValue) {
             $string .=
-                '  ' . $this->smartAlign($columnName, 'columnName')
+                '  ' . $this->smartAlign($columnName, $keys)
                 . '  ' . $this->smartAlign(
                     $this->columnsAttributes[$columnName]['type'] . '(' .
                     $this->columnsAttributes[$columnName]['size'] . ')',
-                    array('columnType', 'columnSize'),
+                    array(
+                        array_column($this->columnsAttributes, 'type'),
+                        array_column($this->columnsAttributes, 'size')
+                    ),
                     2
                 )
                 . '  = ' . $this->formatValue($columnValue) . PHP_EOL;

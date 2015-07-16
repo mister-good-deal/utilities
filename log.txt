@@ -74,3 +74,45 @@
 2015-07-12 04:07:36		The table "tableName" does not exist
 2015-07-12 17:07:38		The entity object must be a children of the class "Entity"
 2015-07-12 17:08:29		The entity object must be a children of the class "Entity"
+2015-07-16 20:40:26		ERROR::Array must contain at least 2 functions
+2015-07-16 20:45:32		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:14:45		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:14:57		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:15:44		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:17:38		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:17:55		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:18:43		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:19:21		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:19:48		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:20:48		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:21:03		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:21:38		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:23:39		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:26:10		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:26:43		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:27:13		ERROR::Parameter 1 must an array of functions
+2015-07-16 21:35:53		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:03:13		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:05:48		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:06:23		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:07:16		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:07:40		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:10:37		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:12:52		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:14:00		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:14:27		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:15:41		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:16:04		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:21:55		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:23:21		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:24:06		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:28:28		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:29:41		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:30:18		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:31:08		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:32:07		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:47:49		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:48:40		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:49:27		ERROR::Parameter 1 must an array of functions
+2015-07-16 22:49:59		ERROR::Parameter 1 must an array of functions
+2015-07-16 23:52:19		ERROR::Parameter 1 must an array of functions

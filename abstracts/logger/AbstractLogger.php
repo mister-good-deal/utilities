@@ -6,10 +6,10 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\abstracts\logger;
+namespace abstracts\logger;
 
-use \utilities\classes\logger\LogLevel as LogLevel;
-use \utilities\interfaces\logger\LoggerInterface as LoggerInterface;
+use \classes\logger\LogLevel as LogLevel;
+use \interfaces\logger\LoggerInterface as LoggerInterface;
 
 /**
  * This is a simple Logger implementation that other Loggers can inherit from.

@@ -18,80 +18,150 @@ use \classes\exception\ExceptionManager as Exception;
 trait BeautifullIndentTrait
 {
     /**
-     * @var array $beautifullIndentMaxSize Array containing the max size of each category values
+     * @var array $beautifullIndentMaxSize Array containing the max size of each array
      */
-    private static $beautifullIndentMaxSize = array();
-    /**
-     * @var string[] $md5Categories Array containing the md5 hash of the categories array
-     */
-    private static $md5Categories           = array();
+    public static $beautifullIndentMaxSize = array();
 
-    /**
-     * Process the max value size of a category
-     *
-     * If the category is processed and the array didn't change, the category is not reprocessed
-     *
-     * @param string  $category The category name
-     * @param array   $strings  The category values
-     * @param integer $minSize  The minium size DEFAULT 0
-     */
-    public function setMaxSize($category, $strings = array(), $minSize = 0)
-    {
-        if (!isset(static::$beautifullIndentMaxSize[$category]) ||
-            $this->md5Array($strings) !== static::$md5Categories[$category]
-        ) {
-            $max = 0;
-
-            foreach ($strings as $string) {
-                $stringSize = strlen((string) $string);
-
-                if ($stringSize > $max) {
-                    $max = $stringSize;
-                }
-            }
-
-            static::$beautifullIndentMaxSize[$category] = max($max, $minSize);
-            static::$md5Categories[$category]           = $this->md5Array($strings);
-        }
-    }
-
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+    
     /**
      * Return the value with the exact number of right extra spaces to keep all the values align
      *
-     * @param  string           $value     The value to print
-     * @param  string|string[]  $category  The category (can be multiple if needed)
-     * @param  integer          $extraSize An extra size to add to the max value size of the category
-     * @param  integer          $position  The position to align as str_pad constant DEFAULT STR_PAD_RIGHT
-     * @return string                      The formatted value with extra spaces
+     * @param  string              $value      The value to print
+     * @param  string[]|array[]    $arrays     The array of values to align the value with (can be an array of array)
+     * @param  integer             $extraSize  An extra size to add to the max value size of the category
+     * @param  integer             $position   The position to align as str_pad constant DEFAULT STR_PAD_RIGHT
+     * @return string                          The formatted value with extra spaces
      */
-    public function smartAlign($value, $category, $extraSize = 0, $position = STR_PAD_RIGHT)
+    public function smartAlign($value, $arrays, $extraSize = 0, $position = STR_PAD_RIGHT)
     {
-        if (is_array($category)) {
-            $max = 0;
+        // if The array passed is a simple strings array we transform it into an array of one strings array
+        if (!is_array($arrays[0])) {
+            $tempArray = $arrays;
+            $arrays = array($tempArray);
+        }
 
-            foreach ($category as $categoryName) {
-                $max += static::$beautifullIndentMaxSize[$categoryName];
+        $max = 0;
+
+        foreach ($arrays as $array) {
+            $arrayHash = $this->md5Array($array);
+
+            if (!isset(static::$beautifullIndentMaxSize[$arrayHash])) {
+                $this->setMaxSize($array, 0, $arrayHash);
             }
-        } else {
-            $max = static::$beautifullIndentMaxSize[$category];
+
+            $max += static::$beautifullIndentMaxSize[$arrayHash];
         }
 
         return str_pad($value, $max + $extraSize, ' ', $position);
     }
 
     /**
-     * Get the max size of a category
+     * Format an array in a output string or a formated array to output with an implode function
      *
-     * @param  string $category The category
-     * @return integer          The max size
+     * @param  array   $array The array to format
+     * @param  integer $depth OPTIONAL the array values depth DEFAULT 1
+     * @return string         The array as a pretty string
      */
-    public function getMaxSize($category)
+    public function prettyArray($array, $depth = 1)
     {
-        if (!isset(static::$beautifullIndentMaxSize[$category])) {
-            throw new Exception('The category ' . $category . ' does not exist', Exception::$PARAMETER);
+        $arrayFormatted = array();
+        $arrayIndent    = implode(array_fill(0, $depth - 1, "\t"));
+        $valuesIndent   = implode(array_fill(0, $depth, "\t"));
+        $keys           = array_keys($array);
+
+        foreach ($array as $key => $value) {
+            $alignKey = $valuesIndent . $this->smartAlign($key, $keys) . ' => ';
+
+            if (is_array($value)) {
+                $arrayFormatted[] = $alignKey . $this->prettyArray($value, $depth + 1);
+            } else {
+                $arrayFormatted[] = $alignKey . $this->formatArgument($value);
+            }
         }
 
-        return static::$beautifullIndentMaxSize[$category];
+        return 'array(' . PHP_EOL . implode(',' . PHP_EOL, $arrayFormatted) . PHP_EOL . $arrayIndent . ')';
+    }
+
+    /**
+     * Return the argument in a formatted string with type and value
+     *
+     * @param  mixed   $argument The argument (can be any type)
+     * @param  integer $depth    OPTIONAL the array values depth for the prettyArray method DEFAULT 1
+     * @return string            The arguments in a formatted string
+     */
+    public function formatArgument($argument, $depth = 1)
+    {
+        if (gettype($argument) === 'array') {
+            $argumentFormatted = $this->prettyArray($argument, $depth);
+        } elseif (gettype($argument) === 'object') {
+            $argumentFormatted = 'object::' . get_class($argument);
+        } elseif (gettype($argument) === 'resource') {
+            $argumentFormatted = 'resource::' . get_resource_type($argument);
+        } elseif (gettype($argument) === 'string') {
+            $argumentFormatted = '"' . $argument . '"';
+        } elseif (gettype($argument) === 'NULL') {
+            $argumentFormatted = 'null';
+        } elseif (gettype($argument) === 'boolean') {
+            $argumentFormatted = ($argument ? 'true' : 'false');
+        } else {
+            $argumentFormatted = (string) $argument;
+        }
+
+        return $argumentFormatted;
+    }
+
+    /**
+     * Get the max size of a array
+     *
+     * @param  string $array The array
+     * @return integer       The max size
+     */
+    public function getMaxSize($array)
+    {
+        $arrayHash = $this->md5Array($array);
+
+        if (!isset(static::$beautifullIndentMaxSize[$arrayHash])) {
+            $this->setMaxSize($array, 0, $arrayHash);
+        }
+
+        return static::$beautifullIndentMaxSize[$arrayHash];
+    }
+    
+    /*-----  End of Public methods  ------*/
+
+    /*=======================================
+    =            Private methods            =
+    =======================================*/
+    
+    /**
+     * Process the max value size of a category
+     *
+     * If the category is processed and the array didn't change, the category is not reprocessed
+     *
+     * @param string[]   $strings   The array to calculate max size of
+     * @param integer    $minSize   OPTIONAL The minium size DEFAULT 0
+     * @param string     $arrayHash OPTIONAL The already calculated array hash DEFAULT null
+     */
+    private function setMaxSize($strings = array(), $minSize = 0, $arrayHash = null)
+    {
+        if ($arrayHash === null) {
+            $arrayHash = $this->md5Array($strings);
+        }
+
+        $max = 0;
+
+        foreach ($strings as $string) {
+            $stringSize = strlen((string) $string);
+
+            if ($stringSize > $max) {
+                $max = $stringSize;
+            }
+        }
+
+        static::$beautifullIndentMaxSize[$arrayHash] = max($max, $minSize);
     }
 
     /**
@@ -106,4 +176,6 @@ trait BeautifullIndentTrait
 
         return md5(json_encode($array));
     }
+    
+    /*-----  End of Private methods  ------*/
 }

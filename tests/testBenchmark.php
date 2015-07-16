@@ -30,7 +30,7 @@ $func2 = function ($array) {
 $functions = array($func1);
 
 try {
-    $benchmark = new Benchmark($functions);
+    $benchmark = new Benchmark(false, null, 'toto', 123, array(1, false, $func2, array('prout' => null, "pipi" => "popo", "deeper" => array(1, 2, 3))));
 } catch (Exception $e) {
 } finally {
     exit(0);

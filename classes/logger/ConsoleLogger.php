@@ -9,7 +9,7 @@
 namespace classes\logger;
 
 use \classes\logger\LogLevel as LogLevel;
-use \classes\logger\ConsoleColors as ConsoleColor;
+use \classes\console\ConsoleColors as ConsoleColors;
 use \interfaces\logger\LoggerInterface as LoggerInterface;
 use \abstracts\logger\AbstractLogger as AbstractLogger;
 
@@ -20,6 +20,8 @@ use \abstracts\logger\AbstractLogger as AbstractLogger;
  */
 class ConsoleLogger extends AbstractLogger implements LoggerInterface
 {
+    use \traits\BeautifullIndentTrait;
+
     /**
      * @var array $LEVELS Logger level based on LogLevel class
      */
@@ -35,7 +37,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     );
 
     /**
-     * @var ConsoleColor $colors ConsoleColor instance to color console output
+     * @var ConsoleColors $colors ConsoleColors instance to color console output
      */
     private $colors;
 
@@ -44,7 +46,7 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     =====================================*/
 
     /**
-     * Constructor that instanciates a ConsoleColor
+     * Constructor that instanciates a ConsoleColors
      */
     public function __construct()
     {
@@ -69,8 +71,8 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     {
         echo $this->colors->getColoredString(
             $message,
-            'white',
-            'red'
+            ConsoleColors::WHITE_F,
+            ConsoleColors::RED
         )
         . PHP_EOL
         . $this->formatContext($context);
@@ -91,8 +93,8 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
     {
         echo $this->colors->getColoredString(
             $message,
-            'light_gray',
-            'red'
+            ConsoleColors::LIGHT_GRAY,
+            ConsoleColors::RED
         )
         . PHP_EOL
         . $this->formatContext($context);
@@ -110,7 +112,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function critical($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'red', 'light_gray')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::RED,
+            ConsoleColors::LIGHT_GRAY
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -126,7 +132,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function error($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'light_red', 'light_gray')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::LIGHT_RED_F,
+            ConsoleColors::LIGHT_GRAY
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -144,7 +154,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function warning($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'yellow', 'black')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::YELLOW,
+            ConsoleColors::BLACK
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -161,7 +175,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function notice($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'light_gray', 'black')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::LIGHT_GRAY,
+            ConsoleColors::BLACK
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -176,7 +194,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function info($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'light_green', 'black')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::LIGHT_GREEN_F,
+            ConsoleColors::BLACK
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -190,7 +212,11 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function debug($message, array $context = array())
     {
-        echo $this->colors->getColoredString($message, 'cyan', 'black')
+        echo $this->colors->getColoredString(
+            $message,
+            ConsoleColors::CYAN,
+            ConsoleColors::BLACK
+        )
         . PHP_EOL
         . $this->formatContext($context);
     }
@@ -233,53 +259,111 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
             if (is_array($context)) {
                 $string .= PHP_EOL . $this->colors->getColoredString(
                     'Context: ' . ($num + 1),
-                    'yellow',
-                    'black'
+                    ConsoleColors::YELLOW,
+                    ConsoleColors::BLACK
                 ) . PHP_EOL;
 
                 if (isset($context['file'])) {
                     $string .= "\t"
-                        . $this->colors->getColoredString('in file:', 'purple', 'black')
+                        . $this->colors->getColoredString(
+                            'in file:',
+                            ConsoleColors::PURPLE_F,
+                            ConsoleColors::BLACK
+                        )
                         . "\t"
-                        . $this->colors->getColoredString($context['file'], 'yellow', 'black')
+                        . $this->colors->getColoredString(
+                            $context['file'],
+                            ConsoleColors::YELLOW,
+                            ConsoleColors::BLACK
+                        )
                         . PHP_EOL;
                 }
 
                 if (isset($context['class'])) {
                     $string .= "\t"
-                        . $this->colors->getColoredString('in class:', 'purple', 'black')
+                        . $this->colors->getColoredString(
+                            'in class:',
+                            ConsoleColors::PURPLE_F,
+                            ConsoleColors::BLACK
+                        )
                         . "\t"
-                        . $this->colors->getColoredString($context['class'], 'yellow', 'black')
+                        . $this->colors->getColoredString(
+                            $context['class'],
+                            ConsoleColors::YELLOW,
+                            ConsoleColors::BLACK
+                        )
                         . PHP_EOL;
                 }
 
 
                 if (isset($context['function'])) {
                     $string .= "\t"
-                        . $this->colors->getColoredString('in function:', 'purple', 'black')
+                        . $this->colors->getColoredString(
+                            'in function:',
+                            ConsoleColors::PURPLE_F,
+                            ConsoleColors::BLACK
+                        )
                         . "\t"
-                        . $this->colors->getColoredString($context['function'], 'yellow', 'black')
+                        . $this->colors->getColoredString(
+                            $context['function'],
+                            ConsoleColors::YELLOW,
+                            ConsoleColors::BLACK
+                        )
                         . PHP_EOL;
                 }
 
                 if (isset($context['line'])) {
                     $string .= "\t"
-                        . $this->colors->getColoredString('at line:', 'purple', 'black')
+                        . $this->colors->getColoredString(
+                            'at line:',
+                            ConsoleColors::PURPLE_F,
+                            ConsoleColors::BLACK
+                        )
                         . "\t"
-                        . $this->colors->getColoredString($context['line'], 'yellow', 'black')
+                        . $this->colors->getColoredString(
+                            $context['line'],
+                            ConsoleColors::YELLOW,
+                            ConsoleColors::BLACK
+                        )
                         . PHP_EOL;
                 }
 
-                /**
-                 * @todo implement args display
-                 */
-                // if (isset($context['args'])){
-                //     $string .= "\twith args:\t" . $context['args'] . PHP_EOL;
-                // }
+                if (isset($context['args'])) {
+                    $string .= "\t"
+                        . $this->colors->getColoredString(
+                            'with arguments:',
+                            ConsoleColors::PURPLE_F,
+                            ConsoleColors::BLACK
+                        )
+                        . "\t"
+                        . $this->colors->getColoredString(
+                            $this->formatArguments($context['args']),
+                            ConsoleColors::YELLOW,
+                            ConsoleColors::BLACK
+                        )
+                        . PHP_EOL;
+                }
             }
         }
 
         return $string;
+    }
+
+    /**
+     * Return arguments in a formatted string with type and value
+     *
+     * @param  array $arguments The arguments
+     * @return string           The arguments in a formatted string
+     */
+    private function formatArguments($arguments)
+    {
+        $argumentsFormatted = array();
+
+        foreach ($arguments as $argument) {
+            $argumentsFormatted[] = $this->formatArgument($argument, 2);
+        }
+
+        return '(' . implode(', ', $argumentsFormatted) . ')';
     }
 
     /*-----  End of Private methods  ------*/

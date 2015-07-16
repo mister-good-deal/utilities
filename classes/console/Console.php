@@ -6,7 +6,7 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace classes;
+namespace classes\console;
 
 use \classes\DataBase as DB;
 
@@ -242,12 +242,12 @@ class Console
      */
     private function tableAssociativPrettyPrint($table, $category)
     {
-        $this->setMaxSize($category, array_keys($table));
+        $keys =  array_keys($table);
 
         $string = '';
 
         foreach ($table as $key => $value) {
-            $string .= $this->smartAlign($key, $category) . ' : ' . $value . PHP_EOL;
+            $string .= $this->smartAlign($key, $keys) . ' : ' . $value . PHP_EOL;
         }
 
         return PHP_EOL . $string;
@@ -259,6 +259,7 @@ class Console
      * @param  string $tableName The table name
      * @param  array  $data      Array containing the SQL result
      * @return string            The pretty output
+     * @todo rework with the new smartAlign
      */
     private function prettySqlResult($tableName, $data)
     {
@@ -268,11 +269,11 @@ class Console
         $columnsName   = array();
         $maxLength     = 0;
 
-        foreach ($columns as $key => $value) {
-            $columnsName[] = $key;
-            $this->setMaxSize($key, $columns[$key], strlen($key));
+        foreach ($columns as $columnName => $column) {
+            $columnsName[] = $columnName;
+            $this->setMaxSize($column, strlen($columnName));
             // 3 because 2 spaces and 1 | are added between name
-            $maxLength += ($this->getMaxSize($key) + 3);
+            $maxLength += ($this->getMaxSize($column) + 3);
         }
 
         // don't touch it's magic ;p
@@ -289,7 +290,7 @@ class Console
         $prettyString   .= $separationLine;
 
         for ($i = 0; $i < $colmunsNumber; $i++) {
-            $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName[$i], 0, STR_PAD_BOTH) . ' ';
+            $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName, 0, STR_PAD_BOTH) . ' ';
         }
 
         if ($colmunsNumber > 0) {
@@ -300,7 +301,7 @@ class Console
         for ($i = 0; $i < $rowsNumber; $i++) {
             for ($j = 0; $j < $colmunsNumber; $j++) {
                 $prettyString .= '| ' .
-                    $this->smartAlign($columns[$columnsName[$j]][$i], $columnsName[$j]) . ' ';
+                    $this->smartAlign($columns[$columnsName[$j]][$i], $columnsName) . ' ';
             }
 
             $prettyString .= '|' . PHP_EOL;
