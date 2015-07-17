@@ -135,7 +135,7 @@ abstract class Entity
                     ),
                     2
                 )
-                . '  = ' . $this->formatValue($columnValue) . PHP_EOL;
+                . '  = ' . $this->formatVariable($columnValue) . PHP_EOL;
         }
 
         return $string;
@@ -352,41 +352,6 @@ abstract class Entity
 
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
-    }
-
-    /**
-     * Cast a SQL return value to a string value
-     *
-     * @param  mixed $value The typed value
-     * @return string       The string value
-     */
-    private function formatValue($value)
-    {
-        $formatedValue;
-
-        switch (gettype($value)) {
-            case 'boolean':
-                $formatedValue = $value ? 'TRUE' : 'FALSE';
-                break;
-
-            case 'integer':
-                $formatedValue = (int) $value;
-                break;
-
-            case 'string':
-                $formatedValue = '"' . $value . '"';
-                break;
-
-            case 'NULL':
-                $formatedValue = 'NULL';
-                break;
-
-            default:
-                $formatedValue = $value;
-                break;
-        }
-
-        return $formatedValue;
     }
 
     /*-----  End of Private methods  ------*/

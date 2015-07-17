@@ -25,7 +25,7 @@ trait BeautifullIndentTrait
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Return the value with the exact number of right extra spaces to keep all the values align
      *
@@ -59,7 +59,7 @@ trait BeautifullIndentTrait
     }
 
     /**
-     * Format an array in a output string or a formated array to output with an implode function
+     * Format an array in a pretty indented output string
      *
      * @param  array   $array The array to format
      * @param  integer $depth OPTIONAL the array values depth DEFAULT 1
@@ -78,7 +78,7 @@ trait BeautifullIndentTrait
             if (is_array($value)) {
                 $arrayFormatted[] = $alignKey . $this->prettyArray($value, $depth + 1);
             } else {
-                $arrayFormatted[] = $alignKey . $this->formatArgument($value);
+                $arrayFormatted[] = $alignKey . $this->formatVariable($value);
             }
         }
 
@@ -86,28 +86,46 @@ trait BeautifullIndentTrait
     }
 
     /**
-     * Return the argument in a formatted string with type and value
+     * Return the variable in a formatted string with type and value
      *
-     * @param  mixed   $argument The argument (can be any type)
+     * @param  mixed   $variable The variable (can be any type)
      * @param  integer $depth    OPTIONAL the array values depth for the prettyArray method DEFAULT 1
-     * @return string            The arguments in a formatted string
+     * @return string            The variable in a formatted string
      */
-    public function formatArgument($argument, $depth = 1)
+    public function formatVariable($variable, $depth = 1)
     {
-        if (gettype($argument) === 'array') {
-            $argumentFormatted = $this->prettyArray($argument, $depth);
-        } elseif (gettype($argument) === 'object') {
-            $argumentFormatted = 'object::' . get_class($argument);
-        } elseif (gettype($argument) === 'resource') {
-            $argumentFormatted = 'resource::' . get_resource_type($argument);
-        } elseif (gettype($argument) === 'string') {
-            $argumentFormatted = '"' . $argument . '"';
-        } elseif (gettype($argument) === 'NULL') {
-            $argumentFormatted = 'null';
-        } elseif (gettype($argument) === 'boolean') {
-            $argumentFormatted = ($argument ? 'true' : 'false');
-        } else {
-            $argumentFormatted = (string) $argument;
+        switch (gettype($variable)) {
+            case 'array':
+                $argumentFormatted = $this->prettyArray($variable, $depth);
+                break;
+
+            case 'object':
+                $argumentFormatted = 'object::' . get_class($variable);
+                break;
+
+            case 'resource':
+                $argumentFormatted = 'resource::' . get_resource_type($variable);
+                break;
+
+            case 'boolean':
+                $argumentFormatted = $variable ? 'true' : 'false';
+                break;
+
+            case 'integer':
+                $argumentFormatted = (int) $variable;
+                break;
+
+            case 'string':
+                $argumentFormatted = '"' . $variable . '"';
+                break;
+
+            case 'NULL':
+                $argumentFormatted = 'null';
+                break;
+
+            default:
+                $argumentFormatted = $variable;
+                break;
         }
 
         return $argumentFormatted;
@@ -129,13 +147,13 @@ trait BeautifullIndentTrait
 
         return static::$beautifullIndentMaxSize[$arrayHash];
     }
-    
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Process the max value size of a category
      *
@@ -176,6 +194,6 @@ trait BeautifullIndentTrait
 
         return md5(json_encode($array));
     }
-    
+
     /*-----  End of Private methods  ------*/
 }
