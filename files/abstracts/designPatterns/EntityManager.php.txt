@@ -6,12 +6,12 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\abstracts\designPatterns;
+namespace abstracts\designPatterns;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\abstracts\designPatterns\Entity as Entity;
-use \utilities\abstracts\designPatterns\Collection as Collection;
-use \utilities\classes\DataBase as DB;
+use \classes\exception\ExceptionManager as Exception;
+use \abstracts\designPatterns\Entity as Entity;
+use \abstracts\designPatterns\Collection as Collection;
+use \classes\DataBase as DB;
 
 /**
  * Abstract EntityManager pattern
@@ -32,7 +32,7 @@ abstract class EntityManager
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor that can take an Entity as first parameter and a Collection as second parameter
      *
@@ -49,13 +49,13 @@ abstract class EntityManager
             $this->setEntityCollection($entityCollection);
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
-    
+
     /*==========================================
     =            Getters and setter            =
     ==========================================*/
-    
+
     /**
      * Get the entity object
      *
@@ -90,7 +90,7 @@ abstract class EntityManager
     {
         return $this->entityCollection;
     }
-    
+
     /**
      * Set the entity collection object
      *
@@ -108,13 +108,13 @@ abstract class EntityManager
             );
         }
     }
-    
+
     /*-----  End of Getters and setter  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Save the entity in the database
      *
@@ -153,7 +153,7 @@ abstract class EntityManager
             $this->setEntity($entity);
             $success = $this->saveEntity();
         }
-        
+
         if ($success) {
             DB::commit();
         } else {
@@ -165,13 +165,23 @@ abstract class EntityManager
 
         return $success;
     }
-    
+
+    /**
+     * Delete an entity in the database
+     *
+     * @return boolean True if the entity has beed deleted else false
+     */
+    public function deleteEntity()
+    {
+        return $this->deleteInDatabse();
+    }
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Check if the entity already exists in the database
      *
@@ -252,7 +262,7 @@ abstract class EntityManager
     }
 
     /*==========  Utilities methods  ==========*/
-    
+
     /**
      * Get the "?" markers of the entity
      *
@@ -306,7 +316,7 @@ abstract class EntityManager
     {
         return call_user_func_array('sprintf', func_get_args());
     }
-    
+
     /*-----  End of Private methods  ------*/
 }
 

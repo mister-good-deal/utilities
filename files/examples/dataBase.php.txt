@@ -5,7 +5,7 @@
  * @category Example
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
-use \utilities\classes\DataBase as DB;
+use \classes\DataBase as DB;
 
 include_once '\utilities\autoloader.php';
 

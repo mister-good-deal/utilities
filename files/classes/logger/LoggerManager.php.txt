@@ -6,10 +6,10 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes\logger;
+namespace classes\logger;
 
-use \utilities\classes\logger\ConsoleLogger as ConsoleLogger;
-use \utilities\classes\logger\FileLogger as FileLogger;
+use \classes\logger\ConsoleLogger as ConsoleLogger;
+use \classes\logger\FileLogger as FileLogger;
 
 /**
 * LoggerManager
@@ -32,7 +32,7 @@ class LoggerManager
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor which takes the logger type to implement in a parameter
      *
@@ -46,13 +46,13 @@ class LoggerManager
             }
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
-    
+
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Logs avec un niveau arbitraire.
      *
@@ -62,7 +62,7 @@ class LoggerManager
      */
     public function log($level, $message, array $context = array())
     {
-        foreach ($this->implementedLoggers as $loggerName => $logger) {
+        foreach ($this->implementedLoggers as $logger) {
             $logger->log($level, $message, $context);
         }
     }
@@ -77,14 +77,14 @@ class LoggerManager
         $loggerType = (int) $loggerType;
 
         if (!$this->hasLogger($loggerType)) {
-            if ($loggerType === self::FILE) {
-                $this->implementedLoggers[self::FILE] = new FileLogger();
-            } elseif ($loggerType === self::CONSOLE) {
-                $this->implementedLoggers[self::CONSOLE] = new ConsoleLogger();
+            if ($loggerType === static::FILE) {
+                $this->implementedLoggers[static::FILE] = new FileLogger();
+            } elseif ($loggerType === static::CONSOLE) {
+                $this->implementedLoggers[static::CONSOLE] = new ConsoleLogger();
             }
         }
     }
-    
+
     /**
      * Remove a logger to the implemented logger
      *
@@ -103,20 +103,20 @@ class LoggerManager
     public static function globalConstDefine()
     {
         if (!defined('FILE_LOGGER')) {
-            define('FILE_LOGGER', self::FILE);
+            define('FILE_LOGGER', static::FILE);
         }
 
         if (!defined('CONSOLE_LOGGER')) {
-            define('CONSOLE_LOGGER', self::CONSOLE);
+            define('CONSOLE_LOGGER', static::CONSOLE);
         }
     }
-    
+
     /*-----  End of Public methods  ------*/
-    
+
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Check if a logger is already implemented
      *
@@ -127,7 +127,7 @@ class LoggerManager
     {
         return array_key_exists($loggerType, $this->implementedLoggers);
     }
-    
+
     /*-----  End of Private methods  ------*/
 }
 

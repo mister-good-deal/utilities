@@ -5,7 +5,7 @@
  * @category Constants
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
-namespace utilities\classes\logger;
+namespace classes\logger;
 
 /**
  * Log level constants

@@ -6,9 +6,9 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\classes;
+namespace classes;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
+use \classes\exception\ExceptionManager as Exception;
 
 /**
  * Benchmark methods by symply put them in an array sent to the constructors
@@ -34,7 +34,7 @@ class Benchmark
     /*=====================================
     =            Magic methods            =
     =====================================*/
-    
+
     /**
      * Constructor that takes an array of methods as first parameter and array of params as second parameter
      *
@@ -61,13 +61,13 @@ class Benchmark
             }
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
     ======================================*/
-    
+
     /**
      * Run the benchmark by defining a number of iteration
      *
@@ -79,7 +79,7 @@ class Benchmark
             # code...
         }
     }
-    
+
     /*-----  End of Public methods  ------*/
 }
 

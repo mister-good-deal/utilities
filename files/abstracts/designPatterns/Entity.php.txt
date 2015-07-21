@@ -6,11 +6,11 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\abstracts\designPatterns;
+namespace abstracts\designPatterns;
 
-use \utilities\classes\exception\ExceptionManager as Exception;
-use \utilities\classes\ini\IniManager as Ini;
-use \utilities\classes\DataBase as DB;
+use \classes\exception\ExceptionManager as Exception;
+use \classes\ini\IniManager as Ini;
+use \classes\DataBase as DB;
 
 /**
  * Abstract Entity pattern
@@ -19,7 +19,7 @@ use \utilities\classes\DataBase as DB;
  */
 abstract class Entity
 {
-    use \utilities\traits\BeautifullIndentTrait;
+    use \traits\BeautifullIndentTrait;
 
     /**
      * @const ENTITIES_CONF_PATH The path where the entities ini conf file are stored
@@ -63,7 +63,7 @@ abstract class Entity
      */
     public function __construct($entityName)
     {
-        Ini::setIniFileName(self::ENTITIES_CONF_PATH . $entityName . '.ini');
+        Ini::setIniFileName(static::ENTITIES_CONF_PATH . $entityName . '.ini');
 
         $this->conf       = Ini::getAllParams();
         $this->entityName = $entityName;
@@ -94,9 +94,7 @@ abstract class Entity
             throw new Exception('The attribute ' . $columnName . ' is undefined', Exception::$PARAMETER);
         }
 
-        $value = $this->columnsValue[$columnName];
-
-        return $value;
+        return $this->columnsValue[$columnName];
     }
 
     /**
@@ -122,23 +120,22 @@ abstract class Entity
      */
     public function __toString()
     {
-        $this->setMaxSize('columnName', array_keys($this->columnsValue));
-        $this->setMaxSize('columnValue', array_values($this->columnsValue));
-        $this->setMaxSize('columnType', array_column($this->columnsAttributes, 'type'));
-        $this->setMaxSize('columnSize', array_column($this->columnsAttributes, 'size'));
-
         $string = '['  . $this->entityName . ']' . PHP_EOL;
+        $keys   = array_keys($this->columnsValue);
 
         foreach ($this->columnsValue as $columnName => $columnValue) {
             $string .=
-                '  ' . $this->smartAlign($columnName, 'columnName')
+                '  ' . $this->smartAlign($columnName, $keys)
                 . '  ' . $this->smartAlign(
                     $this->columnsAttributes[$columnName]['type'] . '(' .
                     $this->columnsAttributes[$columnName]['size'] . ')',
-                    array('columnType', 'columnSize'),
+                    array(
+                        array_column($this->columnsAttributes, 'type'),
+                        array_column($this->columnsAttributes, 'size')
+                    ),
                     2
                 )
-                . '  = ' . $columnValue . PHP_EOL;
+                . '  = ' . $this->formatVariable($columnValue) . PHP_EOL;
         }
 
         return $string;
@@ -332,7 +329,7 @@ abstract class Entity
     /*=======================================
     =            Private methods            =
     =======================================*/
-    
+
     /**
      * Parse an entity conf to extract attributes
      */
@@ -357,41 +354,6 @@ abstract class Entity
         $this->columnsAttributes = $columnsAttributes;
     }
 
-    /**
-     * Cast a SQL return value to a string value
-     *
-     * @param  mixed $value The typed value
-     * @return string       The string value
-     */
-    private function formatValue($value)
-    {
-        $formatedValue;
-
-        switch (gettype($value)) {
-            case 'boolean':
-                $formatedValue = $value ? 'TRUE' : 'FALSE';
-                break;
-
-            case 'integer':
-                $formatedValue = (int) $value;
-                break;
-
-            case 'string':
-                $formatedValue = '"' . $value . '"';
-                break;
-
-            case 'NULL':
-                $formatedValue = 'NULL';
-                break;
-
-            default:
-                $formatedValue = $value;
-                break;
-        }
-
-        return $formatedValue;
-    }
-    
     /*-----  End of Private methods  ------*/
 }
 

@@ -6,7 +6,7 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace utilities\traits;
+namespace traits;
 
 /**
  * Utility methods to filter arrays or strings
