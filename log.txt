@@ -116,3 +116,5 @@
 2015-07-16 22:49:27		ERROR::Parameter 1 must an array of functions
 2015-07-16 22:49:59		ERROR::Parameter 1 must an array of functions
 2015-07-16 23:52:19		ERROR::Parameter 1 must an array of functions
+2015-07-21 21:58:45		ERROR::Array values must be functions
+2015-07-21 22:00:44		ERROR::Array values must be functions
