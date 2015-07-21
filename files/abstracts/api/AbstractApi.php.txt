@@ -35,7 +35,7 @@ abstract class API
         207 => 'Multi-Status',
         210 => 'Content Different',
         226 => 'IM Used',
-        300 => 'IM Used',
+        300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Moved Temporarily',
         303 => 'See Other',
@@ -161,7 +161,7 @@ abstract class API
                 break;
 
             default:
-                $this->response('Invalid Method', 405);
+                $this->response(400);
                 break;
         }
     }
@@ -177,17 +177,17 @@ abstract class API
             return $this->response($this->{$this->endpoint}($this->args));
         }
 
-        return $this->response('No Endpoint: '. $this->endpoint, 404);
+        return $this->response(404, 'No endpoint: '. $this->endpoint);
     }
 
     /**
      * Format the response in a JSON format
      *
-     * @param  array   $data   The respsonse data to parse
-     * @param  integer $status The HTTP repsonse code
+     * @param  integer $status The HTTP repsonse code DEFAULT 200
+     * @param  array   $data   The respsonse data to parse DEFAULT array()
      * @return string          The repsonse in a JSON format as a string
      */
-    private function response($data, $status = 200)
+    private function response($status = 200, $data = array())
     {
         header('HTTP/1.1 ' . $status . ' ' . static::$HTTP_MESSAGE_STATUS[$status]);
 
