@@ -123,7 +123,7 @@ class Console
                 break;
 
             case 'help':
-                echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(static::$COMMANDS, 'comands');
+                echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(static::$COMMANDS);
                 break;
 
             default:
@@ -236,11 +236,10 @@ class Console
     /**
      * Pretty output a table with keys
      *
-     * @param  array  $table    The associative array to print
-     * @param  string $category The table category to keep the pretty align in memory
-     * @return string           The pretty output table data
+     * @param  array  $table The associative array to print
+     * @return string        The pretty output table data
      */
-    private function tableAssociativPrettyPrint($table, $category)
+    private function tableAssociativPrettyPrint($table)
     {
         $keys =  array_keys($table);
 

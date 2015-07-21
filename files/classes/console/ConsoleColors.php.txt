@@ -34,7 +34,7 @@ class ConsoleColors
     const MAGENTA_B      = 'magenta';
 
     /**
-     * @var array $foregroundColors Foreground colors
+     * @var string[] $foregroundColors Foreground colors
      */
     private static $foregroundColors = array(
         self::BLACK          => '0;30',
@@ -55,7 +55,7 @@ class ConsoleColors
         self::WHITE_F        => '1;37'
     );
     /**
-     * @var array $backgroundColors Background colors
+     * @var string[] $backgroundColors Background colors
      */
     private static $backgroundColors = array(
         self::BLACK      => '40',
