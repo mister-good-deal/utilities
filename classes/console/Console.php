@@ -258,7 +258,6 @@ class Console
      * @param  string $tableName The table name
      * @param  array  $data      Array containing the SQL result
      * @return string            The pretty output
-     * @todo rework with the new smartAlign
      */
     private function prettySqlResult($tableName, $data)
     {
@@ -289,7 +288,8 @@ class Console
         $prettyString   .= $separationLine;
 
         for ($i = 0; $i < $colmunsNumber; $i++) {
-            $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columnsName, 0, STR_PAD_BOTH) . ' ';
+            $prettyString .= '| ' . $this->smartAlign($columnsName[$i], $columns[$columnsName[$i]], 0, STR_PAD_BOTH)
+                . ' ';
         }
 
         if ($colmunsNumber > 0) {
@@ -300,7 +300,7 @@ class Console
         for ($i = 0; $i < $rowsNumber; $i++) {
             for ($j = 0; $j < $colmunsNumber; $j++) {
                 $prettyString .= '| ' .
-                    $this->smartAlign($columns[$columnsName[$j]][$i], $columnsName) . ' ';
+                    $this->smartAlign($columns[$columnsName[$j]][$i], $columns[$columnsName[$j]]) . ' ';
             }
 
             $prettyString .= '|' . PHP_EOL;
