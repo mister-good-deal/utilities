@@ -9,6 +9,7 @@
 namespace classes\console;
 
 use \classes\DataBase as DB;
+use \classes\ini\IniManager as Ini;
 
 /**
  * ORM in a console mode with simple command syntax to manage the database
@@ -19,6 +20,14 @@ class Console
 {
     use \traits\BeautifullIndentTrait;
     use \traits\FiltersTrait;
+
+    const WELCOME = <<<'WELCOME'
+ __        __   _                            _          _   _             ___  ____  __  __ 
+ \ \      / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |_| |__   ___   / _ \|  _ \|  \/  |
+  \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \  | __| '_ \ / _ \ | | | | |_) | |\/| |
+   \ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/ | |_| |  _ <| |  | |
+    \_/\_/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/   \__|_| |_|\___|  \___/|_| \_\_|  |_|
+WELCOME;
 
     /**
      * @var string[] $COMMANDS List of all commands with their description
@@ -37,6 +46,10 @@ class Console
      * @var string[] $commandsHistoric Historic of all the command written by the user in the current console session
      */
     private $commandsHistoric = array();
+    /**
+     * @var int $maxLength The console max characters length in a row
+     */
+    private $maxLength;
 
     /*=====================================
     =            Magic methods            =
@@ -47,6 +60,7 @@ class Console
      */
     public function __construct()
     {
+        $this->maxLength = Ini::getParam('Console', 'maxLength');
     }
 
     /*-----  End of Magic methods  ------*/
@@ -60,7 +74,7 @@ class Console
      */
     public function launchConsole()
     {
-        echo PHP_EOL . 'Welcome to the ORM in console' . PHP_EOL . PHP_EOL;
+        echo PHP_EOL . static::WELCOME . PHP_EOL . PHP_EOL;
         $this->processCommand($this->userInput());
     }
 
@@ -79,9 +93,12 @@ class Console
     {
         echo 'cmd: ';
 
-        $handle = fopen('php://stdin', 'r');
+        do {
+            $handle  = fopen('php://stdin', 'r');
+            $command = trim(fgets($handle));
+        } while ($command === '');
 
-        return trim(fgets($handle));
+        return $command;
     }
 
     /**
@@ -258,6 +275,7 @@ class Console
      * @param  string $tableName The table name
      * @param  array  $data      Array containing the SQL result
      * @return string            The pretty output
+     * @todo use $this->maxLength
      */
     private function prettySqlResult($tableName, $data)
     {
