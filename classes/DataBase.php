@@ -101,25 +101,29 @@ class DataBase
     /**
      * Delete all the rows of a table
      *
-     * @param  string $tableName The table name to clean
+     * @param  string  $tableName The table name to clean
+     * @return boolean            True on success else false
      * @static
      */
     public static function cleanTable($tableName)
     {
         static::initialize();
-        static::$PDO->exec('TRUNCATE ' . $tableName);
+
+        return static::$PDO->exec('TRUNCATE ' . $tableName) !== false;
     }
 
     /**
      * Drop a table
      *
-     * @param  string $tableName The table name to drop
+     * @param  string  $tableName The table name to drop
+     * @return boolean            True on success else false
      * @static
      */
     public static function dropTable($tableName)
     {
         static::initialize();
-        static::$PDO->exec('DROP TABLE ' . $tableName);
+
+        return static::$PDO->exec('DROP TABLE ' . $tableName) !== false;
     }
 
     /**
@@ -187,30 +191,34 @@ class DataBase
      */
     private static function initialize($dsn = '', $username = '', $password = '', $options = array())
     {
-        if (static::$PDO === null) {
-            if ($username !== '' && $password !== '') {
-                if (count($options) > 0) {
-                    static::$PDO = new \PDO($dsn, $username, $password, $options);
+        try {
+            if (static::$PDO === null) {
+                if ($username !== '' && $password !== '') {
+                    if (count($options) > 0) {
+                        static::$PDO = new \PDO($dsn, $username, $password, $options);
+                    } else {
+                        static::$PDO = new \PDO($dsn, $username, $password);
+                    }
+                } elseif ($dsn !== '') {
+                    static::$PDO = new \PDO($dsn);
                 } else {
-                    static::$PDO = new \PDO($dsn, $username, $password);
+                    Ini::setIniFileName(static::INI_CONF_FILE);
+
+                    // Load default database parameters
+                    $params = Ini::getSectionParams('Database');
+
+                    static::$PDO = new \PDO($params['dsn'], $params['username'], $params['password'], $params['options']);
                 }
-            } elseif ($dsn !== '') {
-                static::$PDO = new \PDO($dsn);
-            } else {
-                Ini::setIniFileName(static::INI_CONF_FILE);
 
-                // Load default database parameters
-                $params = Ini::getSectionParams('Database');
+                // Load default PDO parameters
+                $params = Ini::getSectionParams('PDO');
 
-                static::$PDO = new \PDO($params['dsn'], $params['username'], $params['password'], $params['options']);
+                foreach ($params as $paramName => $paramValue) {
+                    static::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
+                }
             }
-
-            // Load default PDO parameters
-            $params = Ini::getSectionParams('PDO');
-
-            foreach ($params as $paramName => $paramValue) {
-                static::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
-            }
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage(), Exception::$CRITICAL);
         }
     }
 

@@ -118,3 +118,29 @@
 2015-07-16 23:52:19		ERROR::Parameter 1 must an array of functions
 2015-07-21 21:58:45		ERROR::Array values must be functions
 2015-07-21 22:00:44		ERROR::Array values must be functions
+2015-07-23 23:37:43		SQLSTATE[HY000] [2002] Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu.
+
+2015-07-23 23:38:45		SQLSTATE[HY000] [1045] Access denied for user 'roott'@'localhost' (using password: YES)
+2015-07-23 23:39:47		SQLSTATE[HY000] [2002] Une tentative de connexion a Ã©chouÃ© car le parti connectÃ© nÂ’a pas rÃ©pondu convenablement au-delÃ  dÂ’une certaine durÃ©e ou une connexion Ã©tablie a Ã©chouÃ© car lÂ’hÃ´te de connexion nÂ’a pas rÃ©pondu.
+
+2015-07-23 23:42:58		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-23 23:47:53		
+2015-07-23 23:50:21		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-23 23:51:07		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-23 23:54:05		SQLSTATE[HY000] [2002] Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu.
+
+2015-07-24 00:06:33		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-24 00:09:17		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-24 00:10:45		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-24 00:12:38		SQLSTATE[HY000] [2002] Une tentative de connexion a ?chou? car le parti connect? n?a pas r?pondu convenablement au-del? d?une certaine dur?e ou une connexion ?tablie a ?chou? car l?h?te de connexion n?a pas r?pondu.
+
+2015-07-24 00:30:57		SQLSTATE[HY000] [2002] Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu.
+
+2015-07-24 00:52:18		SQLSTATE[HY000] [2002] Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu.
+
