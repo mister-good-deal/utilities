@@ -106,20 +106,35 @@ class DataBase
      */
     public static function cleanTable($tableName)
     {
+        static::initialize();
         static::$PDO->exec('TRUNCATE ' . $tableName);
     }
 
     /**
-     * Show all the data of the specified table with limit default (0, 100)
+     * Drop a table
+     *
+     * @param  string $tableName The table name to drop
+     * @static
+     */
+    public static function dropTable($tableName)
+    {
+        static::initialize();
+        static::$PDO->exec('DROP TABLE ' . $tableName);
+    }
+
+    /**
+     * Show all the table data with limit default (0, 100)
      *
      * @param  string  $tableName The table name
-     * @param  integer $begin     Data start at this index
-     * @param  integer $end       Data stop at this index
+     * @param  integer $begin     Data start at this index DEFAULT 0
+     * @param  integer $end       Data stop at this index DEFAULT 100
      * @return array              Array containing the result
      * @static
      */
     public static function showTable($tableName, $begin = 0, $end = 100)
     {
+        static::initialize();
+
         $sqlMarks = 'SELECT *
                      FROM %s
                      LIMIT %d, %d';
@@ -129,6 +144,27 @@ class DataBase
             $tableName,
             $begin,
             $end
+        );
+
+        return static::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Show the table description
+     *
+     * @param  string $tableName The table name
+     * @return array             Array containing the result
+     * @static
+     */
+    public static function descTable($tableName)
+    {
+        static::initialize();
+
+        $sqlMarks = 'DESC %s';
+
+        $sql = sprintf(
+            $sqlMarks,
+            $tableName
         );
 
         return static::$PDO->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
@@ -146,7 +182,7 @@ class DataBase
      * @param  string $dsn      The Data Source Name, or DSN, contains the information required to connect to the database
      * @param  string $username The user name for the DSN string. This parameter is optional for some PDO drivers
      * @param  string $password The password for the DSN string. This parameter is optional for some PDO drivers
-     * @param  array  $options  A key=>value array of driver-specific connection options
+     * @param  array  $options  A key => value array of driver-specific connection options
      * @static
      */
     private static function initialize($dsn = '', $username = '', $password = '', $options = array())

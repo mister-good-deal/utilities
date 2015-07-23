@@ -10,6 +10,7 @@ namespace classes\console;
 
 use \classes\DataBase as DB;
 use \classes\ini\IniManager as Ini;
+use \classes\console\ConsoleColors as ConsoleColors;
 
 /**
  * ORM in a console mode with simple command syntax to manage the database
@@ -22,12 +23,26 @@ class Console
     use \traits\FiltersTrait;
 
     const WELCOME = <<<'WELCOME'
- __        __   _                            _          _   _             ___  ____  __  __
+ __        __   _                            _          _   _             ___  ____  __  __ 
  \ \      / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |_| |__   ___   / _ \|  _ \|  \/  |
   \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \  | __| '_ \ / _ \ | | | | |_) | |\/| |
    \ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/ | |_| |  _ <| |  | |
     \_/\_/ \___|_|\___\___/|_| |_| |_|\___|  \__\___/   \__|_| |_|\___|  \___/|_| \_\_|  |_|
+                                                                                            
 WELCOME;
+    
+    const GODDBYE = <<<'GODDBYE'
+   ____                 _ _                
+  / ___| ___   ___   __| | |__  _   _  ___ 
+ | |  _ / _ \ / _ \ / _` | '_ \| | | |/ _ \
+ | |_| | (_) | (_) | (_| | |_) | |_| |  __/
+  \____|\___/ \___/ \__,_|_.__/ \__, |\___|
+                                |___/      
+                                           
+GODDBYE;
+
+    const ACTION_CANCEL = 'Canceled';
+    const ACTION_DONE   = 'Done';
 
     /**
      * @var string[] $COMMANDS List of all commands with their description
@@ -38,7 +53,9 @@ WELCOME;
         'all cmd'                                       => 'Get all the commands written',
         'tables'                                        => 'Get all the tables name',
         'clean -t tableName'                            => 'Delete all the row of the given table name',
+        'drop -t tableName'                             => 'Drop the given table name',
         'show -t tableName [-s startIndex -e endIndex]' => 'Show table data begin at startIndex and stop at endIndex',
+        'show -t tableName'                             => 'Show table structure',
         'help'                                          => 'Display all the commands'
     );
 
@@ -50,6 +67,10 @@ WELCOME;
      * @var int $maxLength The console max characters length in a row
      */
     private $maxLength;
+    /**
+     * @var ConsoleColors $colors A ConsoleColors instance
+     */
+    private $colors;
 
     /*=====================================
     =            Magic methods            =
@@ -61,6 +82,7 @@ WELCOME;
     public function __construct()
     {
         $this->maxLength = Ini::getParam('Console', 'maxLength');
+        $this->colors = new ConsoleColors();
     }
 
     /*-----  End of Magic methods  ------*/
@@ -74,7 +96,11 @@ WELCOME;
      */
     public function launchConsole()
     {
-        echo PHP_EOL . static::WELCOME . PHP_EOL . PHP_EOL;
+        echo PHP_EOL
+            . $this->colors->getColoredString(static::WELCOME, ConsoleColors::LIGHT_RED_F, ConsoleColors::GREEN)
+            . PHP_EOL
+            . PHP_EOL;
+
         $this->processCommand($this->userInput());
     }
 
@@ -91,7 +117,7 @@ WELCOME;
      */
     private function userInput()
     {
-        echo 'cmd: ';
+        echo $this->colors->getColoredString('> ', ConsoleColors::LIGHT_GREEN_F, ConsoleColors::BLACK);
 
         do {
             $handle  = fopen('php://stdin', 'r');
@@ -116,7 +142,8 @@ WELCOME;
         switch (rtrim($commandName[0])) {
             case 'exit':
                 $exit = true;
-                echo 'ORM console closing' . PHP_EOL;
+                echo $this->colors->getColoredString(static::GODDBYE, ConsoleColors::LIGHT_RED_F, ConsoleColors::GREEN)
+                    . PHP_EOL;
                 break;
 
             case 'last cmd':
@@ -135,8 +162,16 @@ WELCOME;
                 $this->cleanTable($command);
                 break;
 
+            case 'drop':
+                $this->dropTable($command);
+                break;
+
             case 'show':
                 $this->showTable($command);
+                break;
+
+            case 'desc':
+                $this->descTable($command);
                 break;
 
             case 'help':
@@ -169,16 +204,31 @@ WELCOME;
     {
         $args = $this->getArgs($command);
 
-        if (!isset($args['t'])) {
-            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
-        } else {
-            $tableName = 'The table "' . $args['t'] . '"';
-
-            if (!in_array($args['t'], DB::getAllTables())) {
-                echo $tableName . ' does not exist' . PHP_EOL;
-            } else {
+        if ($this->checkTableName($args)) {
+            if ($this->confirmAction('TRUNCATE the table "' . $args['t'] .'" ? (Y/N)') === 'Y') {
                 DB::cleanTable($args['t']);
-                echo $tableName . ' is cleaned' . PHP_EOL;
+                echo static::ACTION_DONE . PHP_EOL;
+            } else {
+                echo static::ACTION_CANCEL . PHP_EOL;
+            }
+        }
+    }
+
+    /**
+     * Drop a table
+     *
+     * @param string $command The command passed with its arguments
+     */
+    private function dropTable($command)
+    {
+        $args = $this->getArgs($command);
+
+        if ($this->checkTableName($args)) {
+            if ($this->confirmAction('DROP the table "' . $args['t'] .'" ? (Y/N)') === 'Y') {
+                DB::dropTable($args['t']);
+                echo static::ACTION_DONE . PHP_EOL;
+            } else {
+                echo static::ACTION_CANCEL . PHP_EOL;
             }
         }
     }
@@ -193,18 +243,30 @@ WELCOME;
         $args = $this->getArgs($command);
         $data = null;
 
-        if (!isset($args['t'])) {
-            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
-        } elseif (!in_array($args['t'], DB::getAllTables())) {
-            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
-        } elseif (isset($args['s']) && isset($args['e']) && is_numeric($args['s']) && is_numeric($args['e'])) {
-            $data = DB::showTable($args['t'], $args['s'], $args['e']);
-        } else {
-            $data = DB::showTable($args['t']);
+        if ($this->checkTableName($args)) {
+            if (isset($args['s']) && isset($args['e']) && is_numeric($args['s']) && is_numeric($args['e'])) {
+                $data = DB::showTable($args['t'], $args['s'], $args['e']);
+            } else {
+                $data = DB::showTable($args['t']);
+            }
         }
 
         if ($data !== null) {
             echo $this->prettySqlResult($args['t'], $data) . PHP_EOL;
+        }
+    }
+
+    /**
+     * Display the description of a table
+     *
+     * @param  string $command The commande passed by the user with its arguments
+     */
+    private function descTable($command)
+    {
+        $args = $this->getArgs($command);
+
+        if ($this->checkTableName($args)) {
+            echo $this->prettySqlResult($args['t'], DB::descTable($args['t'])) . PHP_EOL;
         }
     }
 
@@ -224,6 +286,40 @@ WELCOME;
         }
 
         return $cmd;
+    }
+
+    /**
+     * Check if the table is set and if the table exists
+     *
+     * @param  string[] $args The command arguments
+     * @return boolean        True if the table exists else false
+     */
+    private function checkTableName($args)
+    {
+        $check = true;
+
+        if (!isset($args['t'])) {
+            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
+            $check = false;
+        } elseif (!in_array($args['t'], DB::getAllTables())) {
+            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
+            $check = false;
+        }
+
+        return $check;
+    }
+
+    /**
+     * Ask the user to confirm the action
+     *
+     * @param  string $message The message to prompt
+     * @return string          The user response casted in lower case
+     */
+    private function confirmAction($message)
+    {
+        echo $message . PHP_EOL;
+
+        return strtoupper($this->userInput());
     }
 
     /**
@@ -275,7 +371,6 @@ WELCOME;
      * @param  string $tableName The table name
      * @param  array  $data      Array containing the SQL result
      * @return string            The pretty output
-     * @todo use $this->maxLength
      */
     private function prettySqlResult($tableName, $data)
     {
@@ -296,7 +391,7 @@ WELCOME;
         $maxLength      -= 1;
 
         if ($maxLength > $this->maxLength) {
-            echo 'The console width is to small to print the output (console max-width = ' . $this->maxLength
+            return 'The console width is to small to print the output (console max-width = ' . $this->maxLength
                 . ' and content output width = ' . $maxLength . ')' . PHP_EOL;
         }
 
