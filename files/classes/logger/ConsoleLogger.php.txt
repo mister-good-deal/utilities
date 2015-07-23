@@ -10,6 +10,7 @@ namespace classes\logger;
 
 use \classes\logger\LogLevel as LogLevel;
 use \classes\console\ConsoleColors as ConsoleColors;
+use \classes\ini\IniManager as Ini;
 use \interfaces\logger\LoggerInterface as LoggerInterface;
 use \abstracts\logger\AbstractLogger as AbstractLogger;
 
@@ -21,6 +22,7 @@ use \abstracts\logger\AbstractLogger as AbstractLogger;
 class ConsoleLogger extends AbstractLogger implements LoggerInterface
 {
     use \traits\BeautifullIndentTrait;
+    use \traits\EchoTrait;
 
     /**
      * @var array $LEVELS Logger level based on LogLevel class
@@ -50,7 +52,8 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function __construct()
     {
-        $this->colors = new ConsoleColors();
+        static::$echoEncoding = Ini::getParam('Console', 'encoding');
+        $this->colors         = new ConsoleColors();
     }
 
     /*-----  End of Magic methods  ------*/
@@ -69,13 +72,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function emergency($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::WHITE_F,
-            ConsoleColors::RED
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::WHITE_F,
+                ConsoleColors::RED
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -91,13 +96,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function alert($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::LIGHT_GRAY,
-            ConsoleColors::RED
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::LIGHT_GRAY,
+                ConsoleColors::RED
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -112,13 +119,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function critical($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::RED,
-            ConsoleColors::LIGHT_GRAY
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::RED,
+                ConsoleColors::LIGHT_GRAY
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -132,13 +141,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function error($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::LIGHT_RED_F,
-            ConsoleColors::LIGHT_GRAY
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::LIGHT_RED_F,
+                ConsoleColors::LIGHT_GRAY
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -154,13 +165,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function warning($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::YELLOW,
-            ConsoleColors::BLACK
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::YELLOW,
+                ConsoleColors::BLACK
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -175,13 +188,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function notice($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::LIGHT_GRAY,
-            ConsoleColors::BLACK
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::LIGHT_GRAY,
+                ConsoleColors::BLACK
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -194,13 +209,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function info($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::LIGHT_GREEN_F,
-            ConsoleColors::BLACK
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::LIGHT_GREEN_F,
+                ConsoleColors::BLACK
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**
@@ -212,13 +229,15 @@ class ConsoleLogger extends AbstractLogger implements LoggerInterface
      */
     public function debug($message, array $context = array())
     {
-        echo $this->colors->getColoredString(
-            $message,
-            ConsoleColors::CYAN,
-            ConsoleColors::BLACK
-        )
-        . PHP_EOL
-        . $this->formatContext($context);
+        static::out(
+            $this->colors->getColoredString(
+                $message,
+                ConsoleColors::CYAN,
+                ConsoleColors::BLACK
+            )
+            . PHP_EOL
+            . $this->formatContext($context)
+        );
     }
 
     /**

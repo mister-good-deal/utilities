@@ -21,6 +21,7 @@ class Console
 {
     use \traits\BeautifullIndentTrait;
     use \traits\FiltersTrait;
+    use \traits\EchoTrait;
 
     const WELCOME = <<<'WELCOME'
  __        __   _                            _          _   _             ___  ____  __  __ 
@@ -43,6 +44,7 @@ GODDBYE;
 
     const ACTION_CANCEL = 'Canceled';
     const ACTION_DONE   = 'Done';
+    const ACTION_FAIL   = 'Failed';
 
     /**
      * @var string[] $COMMANDS List of all commands with their description
@@ -81,8 +83,9 @@ GODDBYE;
      */
     public function __construct()
     {
-        $this->maxLength = Ini::getParam('Console', 'maxLength');
-        $this->colors = new ConsoleColors();
+        static::$echoEncoding = Ini::getParam('Console', 'encoding');
+        $this->maxLength      = Ini::getParam('Console', 'maxLength');
+        $this->colors         = new ConsoleColors();
     }
 
     /*-----  End of Magic methods  ------*/
@@ -96,10 +99,12 @@ GODDBYE;
      */
     public function launchConsole()
     {
-        echo PHP_EOL
+        static::out(
+            PHP_EOL
             . $this->colors->getColoredString(static::WELCOME, ConsoleColors::LIGHT_RED_F, ConsoleColors::GREEN)
             . PHP_EOL
-            . PHP_EOL;
+            . PHP_EOL
+        );
 
         $this->processCommand($this->userInput());
     }
@@ -117,7 +122,7 @@ GODDBYE;
      */
     private function userInput()
     {
-        echo $this->colors->getColoredString('> ', ConsoleColors::LIGHT_GREEN_F, ConsoleColors::BLACK);
+        static::out($this->colors->getColoredString('> ', ConsoleColors::LIGHT_GREEN_F, ConsoleColors::BLACK));
 
         do {
             $handle  = fopen('php://stdin', 'r');
@@ -137,25 +142,27 @@ GODDBYE;
         $exit = false;
         preg_match('/^[a-zA-Z ]*/', $command, $commandName);
 
-        echo PHP_EOL;
+        static::out(PHP_EOL);
 
         switch (rtrim($commandName[0])) {
             case 'exit':
                 $exit = true;
-                echo $this->colors->getColoredString(static::GODDBYE, ConsoleColors::LIGHT_RED_F, ConsoleColors::GREEN)
-                    . PHP_EOL;
+                static::out(
+                    $this->colors->getColoredString(static::GODDBYE, ConsoleColors::LIGHT_RED_F, ConsoleColors::GREEN)
+                    . PHP_EOL
+                );
                 break;
 
             case 'last cmd':
-                echo 'The last cmd was: ' . $this->getLastCommand() . PHP_EOL;
+                static::out('The last cmd was: ' . $this->getLastCommand() . PHP_EOL);
                 break;
 
             case 'all cmd':
-                echo 'Commands historic:' . $this->tablePrettyPrint($this->commandsHistoric) . PHP_EOL;
+                static::out('Commands historic:' . $this->tablePrettyPrint($this->commandsHistoric) . PHP_EOL);
                 break;
 
             case 'tables':
-                echo 'Tables name: ' . PHP_EOL . $this->tablePrettyPrint(DB::getAllTables()) . PHP_EOL;
+                static::out('Tables name: ' . PHP_EOL . $this->tablePrettyPrint(DB::getAllTables()) . PHP_EOL);
                 break;
 
             case 'clean':
@@ -175,16 +182,18 @@ GODDBYE;
                 break;
 
             case 'help':
-                echo 'List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(static::$COMMANDS);
+                static::out('List of all commands' . PHP_EOL . $this->tableAssociativPrettyPrint(static::$COMMANDS));
                 break;
 
             default:
-                echo 'The command : "' . $command
-                    . '" is not recognized as a command, type help to display all the commands' . PHP_EOL;
+                static::out(
+                    'The command : "' . $command
+                    . '" is not recognized as a command, type help to display all the commands' . PHP_EOL
+                );
                 break;
         }
 
-        echo PHP_EOL;
+        static::out(PHP_EOL);
 
         if ($command !== $this->getLastCommand()) {
             $this->commandsHistoric[] = $command;
@@ -206,10 +215,13 @@ GODDBYE;
 
         if ($this->checkTableName($args)) {
             if ($this->confirmAction('TRUNCATE the table "' . $args['t'] .'" ? (Y/N)') === 'Y') {
-                DB::cleanTable($args['t']);
-                echo static::ACTION_DONE . PHP_EOL;
+                if (DB::cleanTable($args['t'])) {
+                    static::out(static::ACTION_DONE . PHP_EOL);
+                } else {
+                    static::out(static::ACTION_FAIL . PHP_EOL . $this->tablePrettyPrint(DB::errorInfo()) . PHP_EOL);
+                }
             } else {
-                echo static::ACTION_CANCEL . PHP_EOL;
+                static::out(static::ACTION_CANCEL . PHP_EOL);
             }
         }
     }
@@ -225,10 +237,13 @@ GODDBYE;
 
         if ($this->checkTableName($args)) {
             if ($this->confirmAction('DROP the table "' . $args['t'] .'" ? (Y/N)') === 'Y') {
-                DB::dropTable($args['t']);
-                echo static::ACTION_DONE . PHP_EOL;
+                if (DB::dropTable($args['t'])) {
+                    static::out(static::ACTION_DONE . PHP_EOL);
+                } else {
+                    static::out(static::ACTION_FAIL . PHP_EOL . $this->tablePrettyPrint(DB::errorInfo()) . PHP_EOL);
+                }
             } else {
-                echo static::ACTION_CANCEL . PHP_EOL;
+                static::out(static::ACTION_CANCEL . PHP_EOL);
             }
         }
     }
@@ -252,7 +267,7 @@ GODDBYE;
         }
 
         if ($data !== null) {
-            echo $this->prettySqlResult($args['t'], $data) . PHP_EOL;
+            static::out($this->prettySqlResult($args['t'], $data) . PHP_EOL);
         }
     }
 
@@ -266,7 +281,7 @@ GODDBYE;
         $args = $this->getArgs($command);
 
         if ($this->checkTableName($args)) {
-            echo $this->prettySqlResult($args['t'], DB::descTable($args['t'])) . PHP_EOL;
+            static::out($this->prettySqlResult($args['t'], DB::descTable($args['t'])) . PHP_EOL);
         }
     }
 
@@ -299,10 +314,10 @@ GODDBYE;
         $check = true;
 
         if (!isset($args['t'])) {
-            echo 'You need to specify a table name with -t parameter' . PHP_EOL;
+            static::out('You need to specify a table name with -t parameter' . PHP_EOL);
             $check = false;
         } elseif (!in_array($args['t'], DB::getAllTables())) {
-            echo 'The table "' . $args['t'] . '" does not exist' . PHP_EOL;
+            static::out('The table "' . $args['t'] . '" does not exist' . PHP_EOL);
             $check = false;
         }
 
@@ -317,7 +332,7 @@ GODDBYE;
      */
     private function confirmAction($message)
     {
-        echo $message . PHP_EOL;
+        static::out($message . PHP_EOL);
 
         return strtoupper($this->userInput());
     }
