@@ -22,7 +22,7 @@ class Console
     use \traits\FiltersTrait;
 
     const WELCOME = <<<'WELCOME'
- __        __   _                            _          _   _             ___  ____  __  __ 
+ __        __   _                            _          _   _             ___  ____  __  __
  \ \      / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |_| |__   ___   / _ \|  _ \|  \/  |
   \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ | __/ _ \  | __| '_ \ / _ \ | | | | |_) | |\/| |
    \ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/ | |_| |  _ <| |  | |
@@ -294,6 +294,11 @@ WELCOME;
 
         // don't touch it's magic ;p
         $maxLength      -= 1;
+
+        if ($maxLength > $this->maxLength) {
+            echo 'The console width is to small to print the output (console max-width = ' . $this->maxLength
+                . ' and content output width = ' . $maxLength . ')' . PHP_EOL;
+        }
 
         if ($maxLength <= 0) {
             // 9 beacause strlen('No data') = 7 + 2 spaces

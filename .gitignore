@@ -1,5 +1,7 @@
-/phpDoc
 /utilities.wiki
-/.phpintel
+/phpDoc
 net_info.txt
+/.phpintel
+conf_local.ini
 /.sonar
+conf.ini
