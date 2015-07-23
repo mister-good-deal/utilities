@@ -55,7 +55,7 @@ GODDBYE;
         'clean -t tableName'                            => 'Delete all the row of the given table name',
         'drop -t tableName'                             => 'Drop the given table name',
         'show -t tableName [-s startIndex -e endIndex]' => 'Show table data begin at startIndex and stop at endIndex',
-        'show -t tableName'                             => 'Show table structure',
+        'desc -t tableName'                             => 'Show table structure',
         'help'                                          => 'Display all the commands'
     );
 
@@ -130,7 +130,7 @@ GODDBYE;
     /**
      * Process the command entered by the user and output the result in the console
      *
-     * @param  string $command The command passed by the user
+     * @param string $command The command passed by the user
      */
     private function processCommand($command)
     {
@@ -236,7 +236,7 @@ GODDBYE;
     /**
      * Display the data of a table
      *
-     * @param  string $command The commande passed by the user with its arguments
+     * @param string $command The commande passed by the user with its arguments
      */
     private function showTable($command)
     {
@@ -259,7 +259,7 @@ GODDBYE;
     /**
      * Display the description of a table
      *
-     * @param  string $command The commande passed by the user with its arguments
+     * @param string $command The commande passed by the user with its arguments
      */
     private function descTable($command)
     {
