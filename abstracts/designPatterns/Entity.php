@@ -51,11 +51,15 @@ abstract class Entity
      */
     private $comment = '';
     /**
+     * @var array $constraints The table constraints
+     */
+    private $constraints;
+    /**
      * @var The entity name
      */
     private $entityName;
     /**
-     * @var string $idKey Id key name
+     * @var string[] $idKey Id key name(s)
      */
     private $idKey;
 
@@ -184,42 +188,28 @@ abstract class Entity
     ==========================================*/
 
     /**
-     * Get the key id of an entity
+     * Get the key(s) id of an entity
      *
      * @return string[] The entity key id
      */
     public function getIdKey()
     {
-        $idKey = array();
-
-        if (is_array($this->idKey)) {
-            foreach ($this->idKey as $columnName) {
-                $idKey[] = $columnName;
-            }
-        } else {
-            $idKey[] = $this->idKey;
-        }
-
-        return $idKey;
+        return $this->idKey;
     }
 
     /**
      * Get the id value of the entity
      *
-     * @return int|int[] The id value(s)
+     * @return int[] The id value(s)
      */
     public function getIdValue()
     {
-        if (is_array($this->idKey)) {
-            $idValue = array();
+        $idValue = array();
 
-            foreach ($this->idKey as $columnName) {
-                $idValue[] = $this->__get($columnName);
-            }
-        } else {
-            $idValue = $this->__get($this->idKey);
+        foreach ($this->idKey as $columnName) {
+            $idValue[] = $this->__get($columnName);
         }
-
+        
         return $idValue;
     }
 
@@ -232,12 +222,8 @@ abstract class Entity
     {
         $idKeyValue = array();
 
-        if (is_array($this->idKey)) {
-            foreach ($this->idKey as $columnName) {
-                $idKeyValue[$columnName] = $this->__get($columnName);
-            }
-        } else {
-            $idKeyValue[$this->idKey] = $this->getIdValue();
+        foreach ($this->idKey as $columnName) {
+            $idKeyValue[$columnName] = $this->__get($columnName);
         }
 
         return $idKeyValue;
@@ -252,14 +238,8 @@ abstract class Entity
     {
         $columnsKeyValue = array();
 
-        if (!is_array($this->idKey)) {
-            $idKeys = array($this->idKey);
-        } else {
-            $idKeys = $this->idKey;
-        }
-
         foreach ($this->columnsValue as $columnName => $columnValue) {
-            if (!in_array($columnName, $idKeys)) {
+            if (!in_array($columnName, $this->idKey)) {
                 $columnsKeyValue[$columnName] = $columnValue;
             }
         }
@@ -268,7 +248,7 @@ abstract class Entity
     }
 
     /**
-     * Set the id value of the entity (can be an array if several primary keys)
+     * Set the id value(s) of the entity (can be an array if several primary keys)
      *
      * @param  int|array The id value
      * @throws Exception If the id is on several columns and $value is not an array
@@ -276,27 +256,29 @@ abstract class Entity
      */
     public function setIdValue($value)
     {
-        if (is_array($this->idKey)) {
-            if (!is_array($value)) {
+        if (!is_array($value)) {
+            $values = array($value);
+        } else {
+            $values = $value;
+        }
+
+        if (!is_array($value) && count($this->idKey) > 1) {
+            throw new Exception(
+                'The id is on several columns you must passed an assosiative array with keys (' .
+                implode(', ', $this->idKey) . ')',
+                Exception::$PARAMETER
+            );
+        }
+
+        foreach ($values as $key => $val) {
+            if (!array_key_exists($key, $this->columnsValue)) {
                 throw new Exception(
-                    'The id is on several columns you must passed an assosiative array with keys (' .
-                    implode(', ', $this->idKey) . ')',
+                    'The keys of the assosiative array must be one of these : ' . implode(', ', $this->idKey),
                     Exception::$PARAMETER
                 );
             }
 
-            foreach ($value as $key => $val) {
-                if (!array_key_exists($key, $this->columnsValue)) {
-                    throw new Exception(
-                        'The keys of the assosiative array must be one of these : ' . implode(', ', $this->idKey),
-                        Exception::$PARAMETER
-                    );
-                }
-
-                $this->columnAttributes[$key] = $val;
-            }
-        } else {
-            $this->columnAttributes[$this->idKey] = $value;
+            $this->columnAttributes[$key] = $val;
         }
     }
 
@@ -351,6 +333,16 @@ abstract class Entity
     }
 
     /**
+     * Get the entity table constraints
+     *
+     * @return array The entity table constraints
+     */
+    public function getConstraints()
+    {
+        return $this->constraints;
+    }
+
+    /**
      * Get the columns attributes
      *
      * @return array The columns attributes
@@ -392,16 +384,12 @@ abstract class Entity
     private function parseConf()
     {
         $columnsValue = array();
-        $primaryKeys  = array();
+        $constraints  = array();
 
         foreach ($this->conf as $columnName => $columnAttributes) {
             if ($columnName !== 'table') {
                 $columnsValue[$columnName]      = null;
                 $columnsAttributes[$columnName] = $columnAttributes;
-
-                if (isset($columnAttributes['primary'])) {
-                    $primaryKeys[] = $columnName;
-                }
             } else {
                 $this->tableName  = $columnAttributes['name'];
                 $this->engine     = $columnAttributes['engine'];
@@ -417,23 +405,19 @@ abstract class Entity
                 if (isset($columnAttributes['comment'])) {
                     $this->comment = $columnAttributes['comment'];
                 }
+
+                if (isset($columnAttributes['primary'])) {
+                    $constraints['primary']            = array();
+                    $constraints['primary']['name']    = key($columnAttributes['primary']);
+                    $constraints['primary']['columns'] = $columnAttributes['primary'][$constraints['primary']['name']];
+                }
             }
         }
 
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
-
-        switch (count($primaryKeys)) {
-            case 0:
-                break;
-            case 1:
-                $this->idKey = $columnAttributes['primaryKey'][0];
-                break;
-            
-            default:
-                $this->idKey = $columnAttributes['primaryKey'];
-                break;
-        }
+        $this->constraints       = $constraints;
+        $this->idKey             = explode(', ', $constraints['primary']['columns']);
     }
 
     /*-----  End of Private methods  ------*/
