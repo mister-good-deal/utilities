@@ -176,6 +176,30 @@ abstract class EntityManager
         return $this->deleteInDatabse();
     }
 
+    /**
+     * Drop the entity table in the database
+     *
+     * @throws Exception If the table is not dropped
+     */
+    public function dropEntityTable()
+    {
+        if (!$this->dropTable()) {
+            throw new Exception(DB::errorInfo()[2], Exception::$ERROR);
+        }
+    }
+
+    /**
+     * Create the entity table in the database
+     *
+     * @throws Exception If the table is not created
+     */
+    public function createEntityTable()
+    {
+        if (!$this->createTable()) {
+            throw new Exception(DB::errorInfo()[2], Exception::$ERROR);
+        }
+    }
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
@@ -259,6 +283,112 @@ abstract class EntityManager
         );
 
         return ((int) DB::exec($sql) === 1);
+    }
+
+    /**
+     * Drop the entity table
+     *
+     * @return boolean True if the table is dropped else false
+     */
+    private function dropTable()
+    {
+        $sql = 'DROP TABLE `' . $this->entity->getTableName() . '`;';
+
+        return DB::exec($sql) !== false;
+    }
+
+    /**
+     * Create a table based on the entity ini conf file
+     *
+     * @return boolean True if the table is created else false
+     */
+    private function createTable()
+    {
+        $columns = array();
+        $comment = 'AUTO GENERATED THE ' . date('Y-m-d H:i:s');
+        $sql     = 'CREATE TABLE `' . $this->entity->getTableName() . '` (';
+
+        foreach ($this->entity->getColumnsAttributes() as $columnName => $columnsAttributes) {
+            $col = PHP_EOL . "\t`" . $columnName . '` ' . $columnsAttributes['type'];
+
+            if (isset($columnsAttributes['size'])) {
+                $col .= '(' . $columnsAttributes['size'] . ')';
+            }
+
+            if (isset($columnsAttributes['unsigned'])) {
+                $col .= ' UNSIGNED';
+            }
+
+            if ($columnsAttributes['isNull']) {
+                $col .= ' NULL';
+            } else {
+                $col .= ' NOT NULL';
+            }
+
+            if (isset($columnsAttributes['default'])) {
+                $col .= ' DEFAULT '
+                    . ($columnsAttributes['default'] === 'NULL' ? 'NULL' : '\'' . $columnsAttributes['default'] . '\'');
+            }
+
+            if (isset($columnsAttributes['autoIncrement'])) {
+                $col .= ' AUTO_INCREMENT';
+            }
+
+            if (isset($columnsAttributes['unique'])) {
+                $col .= ' UNIQUE';
+
+                if (isset($columnsAttributes['key'])) {
+                    $col .= ' KEY';
+                }
+            } elseif (isset($columnsAttributes['primary'])) {
+                $col .= ' PRIMARY KEY';
+            }
+
+            if (isset($columnsAttributes['comment'])) {
+                $col .= ' COMMENT \'' . $columnsAttributes['comment'] . '\'';
+            }
+
+            if (isset($columnsAttributes['storage'])) {
+                $col .= ' STORAGE ' . $columnsAttributes['storage'];
+            }
+
+            if (isset($columnsAttributes['reference'])) {
+                $col .= ' REFERENCES ' . $columnsAttributes['reference']['table']
+                    . ' (' . $columnsAttributes['reference']['column'] . ')';
+
+                if (isset($columnsAttributes['reference']['match'])) {
+                    $col .= ' MATCH ' . $columnsAttributes['reference']['match'];
+                }
+
+                if (isset($columnsAttributes['reference']['onDelete'])) {
+                    $col .= ' ON DELETE ' . $columnsAttributes['reference']['onDelete'];
+                }
+
+                if (isset($columnsAttributes['reference']['onUpdate'])) {
+                    $col .= ' ON UPDATE ' . $columnsAttributes['reference']['onUpdate'];
+                }
+            }
+
+            $columns[] = $col;
+        }
+
+        $sql .= implode(', ', $columns) . PHP_EOL . ') ENGINE = ' . $this->entity->getEngine();
+
+        if ($this->entity->getCharset() !== '') {
+            $sql .= ', CHARACTER SET = ' . $this->entity->getCharset();
+        }
+
+        if ($this->entity->getCollation() !== '') {
+            $sql .= ', COLLATE = ' . $this->entity->getCollation();
+        }
+
+        if ($this->entity->getComment() !== '') {
+            $comment .= ' | ' . $this->entity->getComment();
+        }
+        
+        $sql .= ', COMMENT = \'' . $comment . '\'';
+
+        return DB::exec($sql . ';') !== false;
     }
 
     /*==========  Utilities methods  ==========*/

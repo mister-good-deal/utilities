@@ -35,6 +35,22 @@ abstract class Entity
      */
     private $tableName;
     /**
+     * @var string $engine The table engine
+     */
+    private $engine;
+    /**
+     * @var string $charset The table default charset DEFAULT ''
+     */
+    private $charset = '';
+    /**
+     * @var string $collation The table charset collation DEFAULT ''
+     */
+    private $collation = '';
+    /**
+     * @var string $comment The table comment DEFAULT ''
+     */
+    private $comment = '';
+    /**
      * @var The entity name
      */
     private $entityName;
@@ -295,6 +311,46 @@ abstract class Entity
     }
 
     /**
+     * Get the entity table engine
+     *
+     * @return string The entity table engine
+     */
+    public function getEngine()
+    {
+        return $this->engine;
+    }
+
+    /**
+     * Get the entity table default charset
+     *
+     * @return string The entity table default charset
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * Get the entity table charset collation
+     *
+     * @return string The entity table charset collation
+     */
+    public function getCollation()
+    {
+        return $this->collation;
+    }
+
+    /**
+     * Get the entity table comment
+     *
+     * @return string The entity table comment
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
      * Get the columns attributes
      *
      * @return array The columns attributes
@@ -336,22 +392,48 @@ abstract class Entity
     private function parseConf()
     {
         $columnsValue = array();
+        $primaryKeys  = array();
 
         foreach ($this->conf as $columnName => $columnAttributes) {
             if ($columnName !== 'table') {
                 $columnsValue[$columnName]      = null;
                 $columnsAttributes[$columnName] = $columnAttributes;
-            } else {
-                $this->tableName = $columnAttributes['name'];
 
-                if (isset($columnAttributes['primaryKey'])) {
-                    $this->idKey = $columnAttributes['primaryKey'];
+                if (isset($columnAttributes['primary'])) {
+                    $primaryKeys[] = $columnName;
+                }
+            } else {
+                $this->tableName  = $columnAttributes['name'];
+                $this->engine     = $columnAttributes['engine'];
+
+                if (isset($columnAttributes['charSet'])) {
+                    $this->charset = $columnAttributes['charSet'];
+                }
+
+                if (isset($columnAttributes['collate'])) {
+                    $this->collation = $columnAttributes['collate'];
+                }
+
+                if (isset($columnAttributes['comment'])) {
+                    $this->comment = $columnAttributes['comment'];
                 }
             }
         }
 
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
+
+        switch (count($primaryKeys)) {
+            case 0:
+                break;
+            case 1:
+                $this->idKey = $columnAttributes['primaryKey'][0];
+                break;
+            
+            default:
+                $this->idKey = $columnAttributes['primaryKey'];
+                break;
+        }
     }
 
     /*-----  End of Private methods  ------*/
