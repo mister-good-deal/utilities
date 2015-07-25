@@ -304,75 +304,19 @@ abstract class EntityManager
      */
     private function createTable()
     {
-        $columns = array();
-        $comment = 'AUTO GENERATED THE ' . date('Y-m-d H:i:s');
-        $sql     = 'CREATE TABLE `' . $this->entity->getTableName() . '` (';
+        $columns     = array();
+        $constraints = array();
+        $comment     = 'AUTO GENERATED THE ' . date('Y-m-d H:i:s');
+        $sql         = 'CREATE TABLE `' . $this->entity->getTableName() . '` (';
 
-        foreach ($this->entity->getColumnsAttributes() as $columnName => $columnsAttributes) {
-            $col = PHP_EOL . "\t`" . $columnName . '` ' . $columnsAttributes['type'];
-
-            if (isset($columnsAttributes['size'])) {
-                $col .= '(' . $columnsAttributes['size'] . ')';
-            }
-
-            if (isset($columnsAttributes['unsigned'])) {
-                $col .= ' UNSIGNED';
-            }
-
-            if ($columnsAttributes['isNull']) {
-                $col .= ' NULL';
-            } else {
-                $col .= ' NOT NULL';
-            }
-
-            if (isset($columnsAttributes['default'])) {
-                $col .= ' DEFAULT '
-                    . ($columnsAttributes['default'] === 'NULL' ? 'NULL' : '\'' . $columnsAttributes['default'] . '\'');
-            }
-
-            if (isset($columnsAttributes['autoIncrement'])) {
-                $col .= ' AUTO_INCREMENT';
-            }
-
-            if (isset($columnsAttributes['unique'])) {
-                $col .= ' UNIQUE';
-
-                if (isset($columnsAttributes['key'])) {
-                    $col .= ' KEY';
-                }
-            } elseif (isset($columnsAttributes['primary'])) {
-                $col .= ' PRIMARY KEY';
-            }
-
-            if (isset($columnsAttributes['comment'])) {
-                $col .= ' COMMENT \'' . $columnsAttributes['comment'] . '\'';
-            }
-
-            if (isset($columnsAttributes['storage'])) {
-                $col .= ' STORAGE ' . $columnsAttributes['storage'];
-            }
-
-            if (isset($columnsAttributes['reference'])) {
-                $col .= ' REFERENCES ' . $columnsAttributes['reference']['table']
-                    . ' (' . $columnsAttributes['reference']['column'] . ')';
-
-                if (isset($columnsAttributes['reference']['match'])) {
-                    $col .= ' MATCH ' . $columnsAttributes['reference']['match'];
-                }
-
-                if (isset($columnsAttributes['reference']['onDelete'])) {
-                    $col .= ' ON DELETE ' . $columnsAttributes['reference']['onDelete'];
-                }
-
-                if (isset($columnsAttributes['reference']['onUpdate'])) {
-                    $col .= ' ON UPDATE ' . $columnsAttributes['reference']['onUpdate'];
-                }
-            }
-
-            $columns[] = $col;
+        foreach ($this->entity->getColumnsAttributes() as $columnName => $columnAttributes) {
+            $columns[] = $this->createColumnDefinition($columnName, $columnAttributes);
+            array_merge_recursive($constraints, $this->createColumnConstraint($columnName, $columnAttributes));
         }
 
-        $sql .= implode(', ', $columns) . PHP_EOL . ') ENGINE = ' . $this->entity->getEngine();
+        $sql .= implode(', ', $columns);
+        $sql .= $this->createTableConstraints() . PHP_EOL;
+        $sql .= ') ENGINE = ' . $this->entity->getEngine();
 
         if ($this->entity->getCharset() !== '') {
             $sql .= ', CHARACTER SET = ' . $this->entity->getCharset();
@@ -433,6 +377,98 @@ abstract class EntityManager
         }
 
         return implode($columnsValue, 'AND ');
+    }
+
+    /**
+     * Utility method to set and return a column definition to put in a SQL create table query
+     *
+     * @param  string $columnName       The column name
+     * @param  array  $columnAttributes The columns attributes
+     * @return string                   The formatted string to put in a SQL create table query
+     */
+    private function createColumnDefinition($columnName, $columnAttributes)
+    {
+        $col = PHP_EOL . "\t`" . $columnName . '` ' . $columnAttributes['type'];
+
+        if (isset($columnAttributes['size'])) {
+            $col .= '(' . $columnAttributes['size'] . ')';
+        }
+
+        if (isset($columnAttributes['unsigned'])) {
+            $col .= ' UNSIGNED';
+        }
+
+        if ($columnAttributes['isNull']) {
+            $col .= ' NULL';
+        } else {
+            $col .= ' NOT NULL';
+        }
+
+        if (isset($columnAttributes['default'])) {
+            $col .= ' DEFAULT '
+                . ($columnAttributes['default'] === 'NULL' ? 'NULL' : '\'' . $columnAttributes['default'] . '\'');
+        }
+
+        if (isset($columnAttributes['autoIncrement'])) {
+            $col .= ' AUTO_INCREMENT';
+        }
+
+        if (isset($columnAttributes['comment'])) {
+            $col .= ' COMMENT \'' . $columnAttributes['comment'] . '\'';
+        }
+
+        if (isset($columnAttributes['storage'])) {
+            $col .= ' STORAGE ' . $columnAttributes['storage'];
+        }
+
+        return $col;
+    }
+
+    /**
+     * Utility method to set en return the table constraints to put in a SQL create table query
+     *
+     * @return string The formatted string to put in a SQL create table query
+     * @todo complete the method
+     */
+    private function createTableConstraints()
+    {
+        $constraints = $this->entity->getConstraints();
+        $sql = '';
+
+        if (count($constraints['primary']) > 0) {
+            $sql .= ',' . PHP_EOL . "\tCONSTRAINT " . $constraints['primary']['name'];
+            $sql .= ' PRIMARY KEY (' . $constraints['primary']['columns'] . ')';
+        }
+
+        return $sql;
+
+        // todo
+        // if (isset($columnAttributes['unique'])) {
+        //     $constraint[] = ' UNIQUE';
+
+        //     if (isset($columnAttributes['key'])) {
+        //         $col .= ' KEY';
+        //     }
+        // }
+
+
+        // if (isset($columnAttributes['foreignKey'])) {
+        //     $col .= PHP_EOL . 'CONSTRAINT FOREIGN (' . $columnName . ')';
+        //     $col .= ' REFERENCES ' . $columnAttributes['reference']['table'];
+        //     $col .= ' (' . $columnAttributes['reference']['column'] . ')';
+
+        //     if (isset($columnAttributes['reference']['match'])) {
+        //         $col .= ' MATCH ' . $columnAttributes['reference']['match'];
+        //     }
+
+        //     if (isset($columnAttributes['reference']['onDelete'])) {
+        //         $col .= ' ON DELETE ' . $columnAttributes['reference']['onDelete'];
+        //     }
+
+        //     if (isset($columnAttributes['reference']['onUpdate'])) {
+        //         $col .= ' ON UPDATE ' . $columnAttributes['reference']['onUpdate'];
+        //     }
+        // }
     }
 
     /**
