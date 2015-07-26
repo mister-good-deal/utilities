@@ -71,18 +71,15 @@ class PDOStatementCustom extends \PDOStatement
     /**
      * Utility method to format and print the SQL query which will be executed
      *
-     * @param mixed $inputParameters The input parameters
+     * @param array $inputParameters The input parameters
      */
     private function printQuery($inputParameters)
     {
-        $query = preg_replace_callback(
-            '/[?]/',
-            function ($k) use ($inputParameters) {
-                static $i = 0;
-                return sprintf("'%s'", $inputParameters[$i++]);
-            },
-            $this->queryString
-        );
+        $query = str_replace('?', '\'%s\'', $this->queryString);
+
+        array_unshift($inputParameters, $query);
+        
+        $query = call_user_func_array('sprintf', $inputParameters);
 
         static::out(PHP_EOL . $query . PHP_EOL);
     }

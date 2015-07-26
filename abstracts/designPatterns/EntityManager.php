@@ -300,7 +300,6 @@ abstract class EntityManager
     private function createTable()
     {
         $columns     = array();
-        $constraints = array();
         $comment     = 'AUTO GENERATED THE ' . date('Y-m-d H:i:s');
         $sql         = 'CREATE TABLE `' . $this->entity->getTableName() . '` (';
 

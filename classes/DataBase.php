@@ -81,12 +81,8 @@ class DataBase
         static::initialize();
 
         if ($PDO->hasMethod($name)) {
-            if (static::$printSQL) {
-                if ($name === 'query' || $name === 'exec') {
-                    static::out(PHP_EOL . $arguments[0] . PHP_EOL);
-                } elseif ($name === 'prepare') {
-                    // static::out(PHP_EOL . static::printPrepare($arguments) . PHP_EOL);
-                }
+            if (static::$printSQL && ($name === 'query' || $name === 'exec')) {
+                static::out(PHP_EOL . $arguments[0] . PHP_EOL);
             }
 
             return call_user_func_array(array(static::$PDO, $name), $arguments);
