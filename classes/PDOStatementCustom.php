@@ -11,6 +11,8 @@ namespace classes;
 /**
  * PDOStatement custom class to print sql query on demand
  *
+ * {@inheritdoc}
+ * 
  * @class PDOStatementCustom
  */
 class PDOStatementCustom extends \PDOStatement
@@ -52,6 +54,9 @@ class PDOStatementCustom extends \PDOStatement
      * Like \PDOStatement->execute() but can print the SQL query before executes it
      *
      * {@inheritdoc}
+     *
+     * @param  array|null $inputParameters The inputs parameters sent to replace the "?" markers tags in the SQL request
+     * @return boolean                     True if the request succeeded else false
      */
     public function execute($inputParameters = null)
     {
@@ -78,7 +83,7 @@ class PDOStatementCustom extends \PDOStatement
         $query = str_replace('?', '\'%s\'', $this->queryString);
 
         array_unshift($inputParameters, $query);
-        
+
         $query = call_user_func_array('sprintf', $inputParameters);
 
         static::out(PHP_EOL . $query . PHP_EOL);
