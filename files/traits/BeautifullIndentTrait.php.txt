@@ -148,6 +148,22 @@ trait BeautifullIndentTrait
         return static::$beautifullIndentMaxSize[$arrayHash];
     }
 
+    /**
+     * Get the md5 hash of an array
+     *
+     * @param  array   $array The array to hash
+     * @param  boolean $sort  If the array should be sorted before hashing DEFAULT true
+     * @return string        The md5 hash
+     */
+    public function md5Array($array, $sort = true)
+    {
+        if ($sort) {
+            array_multisort($array);
+        }
+
+        return md5(json_encode($array));
+    }
+
     /*-----  End of Public methods  ------*/
 
     /*=======================================
@@ -180,19 +196,6 @@ trait BeautifullIndentTrait
         }
 
         static::$beautifullIndentMaxSize[$arrayHash] = max($max, $minSize);
-    }
-
-    /**
-     * Get the md5 hash of an array
-     *
-     * @param  array  $array The array to hash
-     * @return string        The md5 hash
-     */
-    private function md5Array($array)
-    {
-        array_multisort($array);
-
-        return md5(json_encode($array));
     }
 
     /*-----  End of Private methods  ------*/

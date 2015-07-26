@@ -11,6 +11,8 @@ namespace classes;
 
 use \classes\exception\ExceptionManager as Exception;
 use \classes\ini\IniManager as Ini;
+// WARNING if you change the path below, change it in the initialize method in the setAttribute call
+use \classes\PDOStatementCustom as PDOStatementCustom;
 
 /**
  * Singleton pattern style to handle DB connection using PDO
@@ -36,6 +38,8 @@ use \classes\ini\IniManager as Ini;
  */
 class DataBase
 {
+    use \traits\EchoTrait;
+
     /**
      * @const INI_CONF_FILE The path of the ini configuration file
      */
@@ -45,6 +49,10 @@ class DataBase
      * @var \PDO $PDO A PDO object DEFAULT null
      */
     private static $PDO = null;
+    /**
+     * @var boolean $printSql If the SQL requests should be printed in a console DEFAULT null
+     */
+    private static $printSQL = null;
 
     /*=====================================
     =            Magic methods            =
@@ -73,6 +81,10 @@ class DataBase
         static::initialize();
 
         if ($PDO->hasMethod($name)) {
+            if (static::$printSQL && ($name === 'query' || $name === 'exec')) {
+                static::out(PHP_EOL . $arguments[0] . PHP_EOL);
+            }
+
             return call_user_func_array(array(static::$PDO, $name), $arguments);
         } else {
             throw new Exception('The method "' . $name . '" is not a PDO method', Exception::$PARAMETER);
@@ -80,6 +92,43 @@ class DataBase
     }
 
     /*-----  End of Magic methods  ------*/
+
+    /*==================================================
+    =            Getters / setters (static)            =
+    ==================================================*/
+    
+    /**
+     * Get the printSQL value
+     *
+     * @return boolean The printSQL value
+     * @static
+     */
+    public static function getPrintSQL()
+    {
+        return static::$printSQL;
+    }
+
+    /**
+     * Set the printSQL value
+     *
+     * @param  boolean   $printSQL The printSQL value
+     * @throws Exception           If the printSQL value is not a boolean
+     * @static
+     */
+    public static function setPrintSQL($printSQL)
+    {
+        if (is_bool($printSQL)) {
+            static::$printSQL = $printSQL;
+            static::setPDOStatement();
+        } else {
+            throw new Exception(
+                'The printSQL value must be a boolean',
+                Exception::$PARAMETER
+            );
+        }
+    }
+    
+    /*-----  End of Getters / setters (static)  ------*/
 
     /*======================================
     =            Public methods            =
@@ -109,7 +158,7 @@ class DataBase
     {
         static::initialize();
 
-        return static::$PDO->exec('TRUNCATE ' . $tableName) !== false;
+        return static::$PDO->exec('DELETE FROM ' . $tableName) !== false;
     }
 
     /**
@@ -191,6 +240,13 @@ class DataBase
      */
     private static function initialize($dsn = '', $username = '', $password = '', $options = array())
     {
+        Ini::setIniFileName(static::INI_CONF_FILE);
+
+        if (static::$printSQL === null) {
+            // Load default printSQL value
+            static::$printSQL = Ini::getParam('Console', 'printSql');
+        }
+
         try {
             if (static::$PDO === null) {
                 if ($username !== '' && $password !== '') {
@@ -202,8 +258,6 @@ class DataBase
                 } elseif ($dsn !== '') {
                     static::$PDO = new \PDO($dsn);
                 } else {
-                    Ini::setIniFileName(static::INI_CONF_FILE);
-
                     // Load default database parameters
                     $params = Ini::getSectionParams('Database');
 
@@ -216,10 +270,23 @@ class DataBase
                 foreach ($params as $paramName => $paramValue) {
                     static::$PDO->setAttribute(constant('\PDO::' . $paramName), $paramValue);
                 }
+
+                static::setPDOStatement();
             }
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), Exception::$CRITICAL);
         }
+    }
+
+    /**
+     * Set the PDOStatement custom class
+     */
+    private static function setPDOStatement()
+    {
+        static::$PDO->setAttribute(
+            \PDO::ATTR_STATEMENT_CLASS,
+            array('\classes\PDOStatementCustom', array(static::$PDO, static::$printSQL))
+        );
     }
 
     /*-----  End of Private methods  ------*/

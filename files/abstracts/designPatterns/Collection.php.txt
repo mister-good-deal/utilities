@@ -18,6 +18,8 @@ use \abstracts\designPatterns\Entity as Entity;
  */
 abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \SeekableIterator
 {
+    use \traits\BeautifullIndentTrait;
+
     /**
      * @var Entity[] $collection An array of entity object
      */
@@ -73,10 +75,13 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
      */
     public function add($entity)
     {
-        $id = $entity->getIdValue();
+        $id = $this->parseId($entity->getIdValue());
 
         if (array_key_exists($id, $this->indexId)) {
-            throw new Exception('This entity id(' . $id .') is already in the collection', Exception::$WARNING);
+            throw new Exception(
+                'This entity id(' . implode(', ', $id) .') is already in the collection',
+                Exception::$WARNING
+            );
         } else {
             $this->collection[] = $entity;
             $this->indexId[$id] = $this->count();
@@ -86,17 +91,22 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     /**
      * Get an entity by its id
      *
-     * @param  int|string $entityId The entityId
-     * @throws Exception            If the entity id is not in the collection
-     * @return Entity               The entity
+     * @param  int[]|string[] $entityId The entity id(s) in a array
+     * @throws Exception                If the entity id is not in the collection
+     * @return Entity                   The entity
      */
     public function getEntityById($entityId)
     {
-        if (!array_key_exists($entityId, $this->indexId)) {
-            throw new Exception('This entity id(' . $entityId . ') is not in the collection', Exception::$WARNING);
+        $id = $this->parseId($entityId);
+
+        if (!array_key_exists($id, $this->indexId)) {
+            throw new Exception(
+                'This entity id(' . implode(', ', $id) . ') is not in the collection',
+                Exception::$WARNING
+            );
         }
 
-        return $this->collection[$this->indexId[$entityId]];
+        return $this->collection[$this->indexId[$id]];
     }
 
     /**
@@ -236,5 +246,28 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     }
 
     /*-----  End of Public methods  ------*/
+
+    /*======================================
+    =            Private method            =
+    ======================================*/
+    
+    /**
+     * Parse the id(s) sent in array to get his key
+     *
+     * @param  int[]|string[] $id The id(s) in an array
+     * @return string             The id(s) key
+     */
+    private function parseId($id)
+    {
+        if (count($id) > 1) {
+            $id = $this->md5Array($id);
+        } else {
+            $id = $id[0];
+        }
+
+        return $id;
+    }
+    
+    /*-----  End of Private method  ------*/
 }
 

@@ -406,18 +406,43 @@ abstract class Entity
                     $this->comment = $columnAttributes['comment'];
                 }
 
+                if (isset($columnAttributes['unique'])) {
+                    $constraints['unique'] = $columnAttributes['unique'];
+                }
+
                 if (isset($columnAttributes['primary'])) {
                     $constraints['primary']            = array();
                     $constraints['primary']['name']    = key($columnAttributes['primary']);
                     $constraints['primary']['columns'] = $columnAttributes['primary'][$constraints['primary']['name']];
                 }
+                
+                if (isset($columnAttributes['foreignKey'])) {
+                    $names                     = array_keys($columnAttributes['foreignKey']);
+                    $constraints['foreignKey'] = array();
+
+                    foreach ($names as $name) {
+                        $constraints['foreignKey'][$name]               = array();
+                        $constraints['foreignKey'][$name]['name']       = $name;
+                        $constraints['foreignKey'][$name]['columns']    = $columnAttributes['foreignKey'][$name];
+                        $constraints['foreignKey'][$name]['tableRef']   = $columnAttributes['tableRef'][$name];
+                        $constraints['foreignKey'][$name]['columnsRef'] = $columnAttributes['columnRef'][$name];
+                        $constraints['foreignKey'][$name]['match']      = @$columnAttributes['match'][$name];
+                        $constraints['foreignKey'][$name]['onDelete']   = @$columnAttributes['onDelete'][$name];
+                        $constraints['foreignKey'][$name]['onUpdate']   = @$columnAttributes['onUpdate'][$name];
+                    }
+                }
             }
         }
 
+        if (isset($constraints['primary'])) {
+            $this->idKey = explode(', ', trim($constraints['primary']['columns'], '`'));
+        } else {
+            $this->idKey = array();
+        }
+        
         $this->columnsValue      = $columnsValue;
         $this->columnsAttributes = $columnsAttributes;
         $this->constraints       = $constraints;
-        $this->idKey             = explode(', ', $constraints['primary']['columns']);
     }
 
     /*-----  End of Private methods  ------*/

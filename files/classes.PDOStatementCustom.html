@@ -21,7 +21,55 @@
     <script src="../js/jquery.smooth-scroll.js"></script>
     <script src="../js/prism.min.js"></script>
     <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-    
+        <script type="text/javascript">
+        function loadExternalCodeSnippets() {
+            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+                var src = pre.getAttribute('data-src');
+                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+                var language = 'php';
+
+                var code = document.createElement('code');
+                code.className = 'language-' + language;
+
+                pre.textContent = '';
+
+                code.textContent = 'Loading…';
+
+                pre.appendChild(code);
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('GET', src, true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+
+                            Prism.highlightElement(code);
+                        }
+                        else if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                        }
+                        else {
+                            code.textContent = '✖ Error: File does not exist or is empty';
+                        }
+                    }
+                };
+
+                xhr.send(null);
+            });
+        }
+
+        $(document).ready(function(){
+            loadExternalCodeSnippets();
+        });
+        $('#source-view').on('shown', function () {
+            loadExternalCodeSnippets();
+        })
+    </script>
+
     <link rel="shortcut icon" href="../images/favicon.ico"/>
     <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
     <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
@@ -99,28 +147,28 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-433851963"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1481525908"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-433851963" class="accordion-body collapse in">
+            <div id="namespace-1481525908" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1842555288"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1551789977"></a>
                                 <a href="../namespaces/abstracts.html" style="margin-left: 30px; padding-left: 0">abstracts</a>
             </div>
-            <div id="namespace-1842555288" class="accordion-body collapse ">
+            <div id="namespace-1551789977" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1043775675"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1782645428"></a>
                                 <a href="../namespaces/abstracts.designPatterns.html" style="margin-left: 30px; padding-left: 0">designPatterns</a>
             </div>
-            <div id="namespace-1043775675" class="accordion-body collapse ">
+            <div id="namespace-1782645428" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -137,10 +185,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1066749655"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1492247333"></a>
                                 <a href="../namespaces/abstracts.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
             </div>
-            <div id="namespace-1066749655" class="accordion-body collapse ">
+            <div id="namespace-1492247333" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -164,19 +212,19 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1753516870"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-288745493"></a>
                                 <a href="../namespaces/classes.html" style="margin-left: 30px; padding-left: 0">classes</a>
             </div>
-            <div id="namespace-1753516870" class="accordion-body collapse ">
+            <div id="namespace-288745493" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1800990907"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-28959001"></a>
                                 <a href="../namespaces/classes.console.html" style="margin-left: 30px; padding-left: 0">console</a>
             </div>
-            <div id="namespace-1800990907" class="accordion-body collapse ">
+            <div id="namespace-28959001" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -192,10 +240,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1058309710"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2037400341"></a>
                                 <a href="../namespaces/classes.entities.html" style="margin-left: 30px; padding-left: 0">entities</a>
             </div>
-            <div id="namespace-1058309710" class="accordion-body collapse ">
+            <div id="namespace-2037400341" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -211,10 +259,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1047410481"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-788835185"></a>
                                 <a href="../namespaces/classes.entitiesCollection.html" style="margin-left: 30px; padding-left: 0">entitiesCollection</a>
             </div>
-            <div id="namespace-1047410481" class="accordion-body collapse ">
+            <div id="namespace-788835185" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -229,10 +277,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-830065112"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2062436638"></a>
                                 <a href="../namespaces/classes.entitiesManager.html" style="margin-left: 30px; padding-left: 0">entitiesManager</a>
             </div>
-            <div id="namespace-830065112" class="accordion-body collapse ">
+            <div id="namespace-2062436638" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -248,10 +296,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1058368334"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1746414373"></a>
                                 <a href="../namespaces/classes.exception.html" style="margin-left: 30px; padding-left: 0">exception</a>
             </div>
-            <div id="namespace-1058368334" class="accordion-body collapse ">
+            <div id="namespace-1746414373" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -266,10 +314,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1284140595"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1762437170"></a>
                                 <a href="../namespaces/classes.ini.html" style="margin-left: 30px; padding-left: 0">ini</a>
             </div>
-            <div id="namespace-1284140595" class="accordion-body collapse ">
+            <div id="namespace-1762437170" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -284,10 +332,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1659913668"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1175245670"></a>
                                 <a href="../namespaces/classes.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
             </div>
-            <div id="namespace-1659913668" class="accordion-body collapse ">
+            <div id="namespace-1175245670" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -316,19 +364,19 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-743009474"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-551691823"></a>
                                 <a href="../namespaces/interfaces.html" style="margin-left: 30px; padding-left: 0">interfaces</a>
             </div>
-            <div id="namespace-743009474" class="accordion-body collapse ">
+            <div id="namespace-551691823" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-502735773"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1218178800"></a>
                                 <a href="../namespaces/interfaces.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
             </div>
-            <div id="namespace-502735773" class="accordion-body collapse ">
+            <div id="namespace-1218178800" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -351,10 +399,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1678523742"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-151266031"></a>
                                 <a href="../namespaces/traits.html" style="margin-left: 30px; padding-left: 0">traits</a>
             </div>
-            <div id="namespace-1678523742" class="accordion-body collapse ">
+            <div id="namespace-151266031" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -381,49 +429,19 @@
     <section class="row-fluid">
         <div class="span10 offset2">
             <div class="row-fluid">
-                <div class="span8 content namespace">
+                <div class="span8 content file">
                     <nav>
-                                                <a href="../namespaces/default.html">\</a>
-                                            </nav>
-                    <h1><small>\</small>classes</h1>
+                                                                    </nav>
 
-                                        <h2>Namespaces</h2>
-                    <table class="table table-hover">
-                                                    <tr>
-                                <td><a href="../namespaces/classes.console.html">console</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.entities.html">entities</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.entitiesCollection.html">entitiesCollection</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.entitiesManager.html">entitiesManager</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.exception.html">exception</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.ini.html">ini</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="../namespaces/classes.logger.html">logger</a></td>
-                            </tr>
-                                            </table>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+                    <h1><small></small>PDOStatementCustom.php</h1>
+                    <p><em>PDOStatement custom class</em></p>
                     
+
                     
                     
                                         <h2>Classes</h2>
                     <table class="table table-hover">
-                                            <tr>
-                            <td><a href="../classes/classes.Benchmark.html">Benchmark</a></td>
-                            <td><em>Benchmark methods by symply put them in an array sent to the constructors</em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="../classes/classes.DataBase.html">DataBase</a></td>
-                            <td><em>Singleton pattern style to handle DB connection using PDO</em></td>
-                        </tr>
                                             <tr>
                             <td><a href="../classes/classes.PDOStatementCustom.html">PDOStatementCustom</a></td>
                             <td><em>PDOStatement custom class to print sql query on demand</em></td>
@@ -433,13 +451,31 @@
 
                 <aside class="span4 detailsbar">
                     <dl>
-                        <dt>Namespace hierarchy</dt>
-                        <dd class="hierarchy">
-                                                                                                                                                                                                                                                                
-                                    <div class="namespace-wrapper"><a href="../namespaces/default.html">\</a></div>
-                                                                                        <div class="namespace-wrapper">\classes</div>
-                        </dd>
+                                                    <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\Default</div></dd>
+                        
+                        
                     </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                                    <tr>
+                                <th>
+                                    category
+                                </th>
+                                <td>
+                                                                            <p>Custom class</p>
+                                                                    </td>
+                            </tr>
+                                                    <tr>
+                                <th>
+                                    author
+                                </th>
+                                <td>
+                                                                            <p>Romain Laneuville <a href="mailto:romain.laneuville@hotmail.fr">romain.laneuville@hotmail.fr</a></p>
+                                                                    </td>
+                            </tr>
+                                            </table>
+
                 </aside>
             </div>
 
@@ -447,6 +483,16 @@
             
         </div>
     </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label"></h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/classes\PDOStatementCustom.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
 
     <footer class="row-fluid">
         <section class="span10 offset2">
