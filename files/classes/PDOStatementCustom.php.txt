@@ -51,7 +51,7 @@ class PDOStatementCustom extends \PDOStatement
     /**
      * Like \PDOStatement->execute() but can print the SQL query before executes it
      *
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function execute($inputParameters = null)
     {
@@ -78,7 +78,7 @@ class PDOStatementCustom extends \PDOStatement
         $query = str_replace('?', '\'%s\'', $this->queryString);
 
         array_unshift($inputParameters, $query);
-        
+
         $query = call_user_func_array('sprintf', $inputParameters);
 
         static::out(PHP_EOL . $query . PHP_EOL);
