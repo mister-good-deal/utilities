@@ -12,6 +12,7 @@ use \classes\exception\ExceptionManager as Exception;
 use \abstracts\designPatterns\Entity as Entity;
 use \abstracts\designPatterns\Collection as Collection;
 use \classes\DataBase as DB;
+use \classes\ini\IniManager as Ini;
 
 /**
  * Abstract EntityManager pattern
@@ -213,9 +214,7 @@ abstract class EntityManager
      */
     private function entityAlreadyExists()
     {
-        $sqlMarks = 'SELECT COUNT(*)
-                     FROM %s
-                     WHERE %s';
+        $sqlMarks = " SELECT COUNT(*)\n FROM %s\n WHERE %s";
 
         $sql = $this->sqlFormater(
             $sqlMarks,
@@ -233,8 +232,7 @@ abstract class EntityManager
      */
     private function saveInDatabase()
     {
-        $sqlMarks = 'INSERT INTO %s
-                     VALUES %s';
+        $sqlMarks = " INSERT INTO %s\n VALUES %s";
 
         $sql = $this->sqlFormater(
             $sqlMarks,
@@ -252,9 +250,7 @@ abstract class EntityManager
      */
     private function updateInDatabase()
     {
-        $sqlMarks = 'UPDATE %s
-                     SET %s
-                     WHERE %s';
+        $sqlMarks = " UPDATE %s\n SET %s\n WHERE %s";
 
         $sql = $this->sqlFormater(
             $sqlMarks,
@@ -273,8 +269,7 @@ abstract class EntityManager
      */
     private function deleteInDatabse()
     {
-        $sqlMarks = 'DELETE FROM %s
-                     WHERE %s';
+        $sqlMarks = " DELETE FROM %s\n WHERE %s";
 
         $sql = $this->sqlFormater(
             $sqlMarks,
@@ -311,7 +306,6 @@ abstract class EntityManager
 
         foreach ($this->entity->getColumnsAttributes() as $columnName => $columnAttributes) {
             $columns[] = $this->createColumnDefinition($columnName, $columnAttributes);
-            array_merge_recursive($constraints, $this->createColumnConstraint($columnName, $columnAttributes));
         }
 
         $sql .= implode(', ', $columns);
@@ -428,47 +422,46 @@ abstract class EntityManager
      * Utility method to set en return the table constraints to put in a SQL create table query
      *
      * @return string The formatted string to put in a SQL create table query
-     * @todo complete the method
      */
     private function createTableConstraints()
     {
         $constraints = $this->entity->getConstraints();
         $sql = '';
 
-        if (count($constraints['primary']) > 0) {
-            $sql .= ',' . PHP_EOL . "\tCONSTRAINT " . $constraints['primary']['name'];
+        if (isset($constraints['primary'])) {
+            $sql .= ',' . PHP_EOL . "\tCONSTRAINT `" . $constraints['primary']['name'] . '`';
             $sql .= ' PRIMARY KEY (' . $constraints['primary']['columns'] . ')';
         }
 
+        if (isset($constraints['unique'])) {
+            $sql .= ',' . PHP_EOL . "\tUNIQUE `" . $this->entity->getTableName() . '_unique_constraint`';
+            $sql .= ' (' . $constraints['unique'] . ')';
+        }
+
+        if (isset($constraints['foreignKey'])) {
+            $names = array_keys($constraints['foreignKey']);
+
+            foreach ($names as $name) {
+                $sql .= ',' . PHP_EOL . "\tCONSTRAINT `" . $name . '`';
+                $sql .= ' FOREIGN KEY (' . $constraints['foreignKey'][$name]['columns'] . ')';
+                $sql .= PHP_EOL . "\t\tREFERENCES `" . $constraints['foreignKey'][$name]['tableRef'] . '`';
+                $sql .= '(' . $constraints['foreignKey'][$name]['columnsRef'] . ')';
+
+                if (isset($constraints['foreignKey'][$name]['match'])) {
+                    $sql .= PHP_EOL . "\t\tMATCH " . $constraints['foreignKey'][$name]['match'];
+                }
+
+                if (isset($constraints['foreignKey'][$name]['onDelete'])) {
+                    $sql .= PHP_EOL . "\t\tON DELETE " . $constraints['foreignKey'][$name]['onDelete'];
+                }
+
+                if (isset($constraints['foreignKey'][$name]['onUpdate'])) {
+                    $sql .= PHP_EOL . "\t\tON UPDATE " . $constraints['foreignKey'][$name]['onUpdate'];
+                }
+            }
+        }
+
         return $sql;
-
-        // todo
-        // if (isset($columnAttributes['unique'])) {
-        //     $constraint[] = ' UNIQUE';
-
-        //     if (isset($columnAttributes['key'])) {
-        //         $col .= ' KEY';
-        //     }
-        // }
-
-
-        // if (isset($columnAttributes['foreignKey'])) {
-        //     $col .= PHP_EOL . 'CONSTRAINT FOREIGN (' . $columnName . ')';
-        //     $col .= ' REFERENCES ' . $columnAttributes['reference']['table'];
-        //     $col .= ' (' . $columnAttributes['reference']['column'] . ')';
-
-        //     if (isset($columnAttributes['reference']['match'])) {
-        //         $col .= ' MATCH ' . $columnAttributes['reference']['match'];
-        //     }
-
-        //     if (isset($columnAttributes['reference']['onDelete'])) {
-        //         $col .= ' ON DELETE ' . $columnAttributes['reference']['onDelete'];
-        //     }
-
-        //     if (isset($columnAttributes['reference']['onUpdate'])) {
-        //         $col .= ' ON UPDATE ' . $columnAttributes['reference']['onUpdate'];
-        //     }
-        // }
     }
 
     /**

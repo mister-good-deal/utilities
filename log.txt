@@ -155,3 +155,13 @@
 2015-07-25 01:23:06		Unknown collation: 'bin'
 2015-07-25 01:23:20		Unknown table 'test.users'
 2015-07-25 01:23:30		Unknown collation: 'utf8'
+2015-07-26 18:28:21		
+2015-07-26 18:51:51		You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '`_unique_constraint` (id)
+) ENGINE = InnoDB, CHARACTER SET = utf8, COLLATE = ut' at line 5
+2015-07-26 18:52:47		Unknown table 'test.users'
+2015-07-26 19:16:58		ERROR::The INI file database/entities/UserStatistics.ini cannot be found
+2015-07-26 19:17:58		You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Users``(`id`)
+) ENGINE = InnoDB, CHARACTER SET = utf8, COLLATE = utf8_bin, COMM' at line 7
+2015-07-26 19:25:32		Cannot delete or update a parent row: a foreign key constraint fails
+2015-07-26 20:16:46		ERROR::The section Console doesn't exist in the ini conf file
+2015-07-26 20:56:26		The attribute `id` is undefined
