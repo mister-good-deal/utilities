@@ -24,7 +24,7 @@
     <script type="text/javascript">
     function loadExternalCodeSnippets() {
         Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
-            var src = pre.getAttribute('data-src');
+            var src = pre.getAttribute('data-src').replace(/\\/g, '/').replace(/%5/g, '/');
             var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
             var language = 'php';
 
@@ -117,12 +117,12 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">4</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">4</span>
                                 </a>
                             </li>
                             <li>
@@ -147,28 +147,28 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2052156008"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-378920307"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-2052156008" class="accordion-body collapse in">
+            <div id="namespace-378920307" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2092792780"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-551801240"></a>
                                 <a href="../namespaces/abstracts.html" style="margin-left: 30px; padding-left: 0">abstracts</a>
             </div>
-            <div id="namespace-2092792780" class="accordion-body collapse ">
+            <div id="namespace-551801240" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-460341967"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1917045709"></a>
                                 <a href="../namespaces/abstracts.designPatterns.html" style="margin-left: 30px; padding-left: 0">designPatterns</a>
             </div>
-            <div id="namespace-460341967" class="accordion-body collapse ">
+            <div id="namespace-1917045709" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -182,27 +182,10 @@
         </div>
     </div>
 
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1588124507"></a>
-                                <a href="../namespaces/abstracts.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
-            </div>
-            <div id="namespace-1588124507" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
                     
                     <ul>
-                                                                                                    <li class="class"><a href="../classes/abstracts.logger.AbstractLogger.html">AbstractLogger</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/abstracts.API.html">API</a></li>
+                                                                                                    <li class="class"><a href="../classes/abstracts.AbstractLogger.html">AbstractLogger</a></li>
+                                                    <li class="class"><a href="../classes/abstracts.API.html">API</a></li>
                                             </ul>
                 </div>
             </div>
@@ -212,19 +195,19 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1864513591"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-123004786"></a>
                                 <a href="../namespaces/classes.html" style="margin-left: 30px; padding-left: 0">classes</a>
             </div>
-            <div id="namespace-1864513591" class="accordion-body collapse ">
+            <div id="namespace-123004786" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-8212899"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-632194052"></a>
                                 <a href="../namespaces/classes.console.html" style="margin-left: 30px; padding-left: 0">console</a>
             </div>
-            <div id="namespace-8212899" class="accordion-body collapse ">
+            <div id="namespace-632194052" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -240,10 +223,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1650666247"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1902115264"></a>
                                 <a href="../namespaces/classes.entities.html" style="margin-left: 30px; padding-left: 0">entities</a>
             </div>
-            <div id="namespace-1650666247" class="accordion-body collapse ">
+            <div id="namespace-1902115264" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -259,10 +242,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-597227273"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-817936226"></a>
                                 <a href="../namespaces/classes.entitiesCollection.html" style="margin-left: 30px; padding-left: 0">entitiesCollection</a>
             </div>
-            <div id="namespace-597227273" class="accordion-body collapse ">
+            <div id="namespace-817936226" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -277,10 +260,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-119396470"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1961299118"></a>
                                 <a href="../namespaces/classes.entitiesManager.html" style="margin-left: 30px; padding-left: 0">entitiesManager</a>
             </div>
-            <div id="namespace-119396470" class="accordion-body collapse ">
+            <div id="namespace-1961299118" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -296,53 +279,16 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-593763008"></a>
-                                <a href="../namespaces/classes.exception.html" style="margin-left: 30px; padding-left: 0">exception</a>
-            </div>
-            <div id="namespace-593763008" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/classes.exception.ExceptionManager.html">ExceptionManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1803187924"></a>
-                                <a href="../namespaces/classes.ini.html" style="margin-left: 30px; padding-left: 0">ini</a>
-            </div>
-            <div id="namespace-1803187924" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="../classes/classes.ini.IniManager.html">IniManager</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1389695127"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-798515325"></a>
                                 <a href="../namespaces/classes.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
             </div>
-            <div id="namespace-1389695127" class="accordion-body collapse ">
+            <div id="namespace-798515325" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
                     <ul>
                                                                                                     <li class="class"><a href="../classes/classes.logger.ConsoleLogger.html">ConsoleLogger</a></li>
                                                     <li class="class"><a href="../classes/classes.logger.FileLogger.html">FileLogger</a></li>
-                                                    <li class="class"><a href="../classes/classes.logger.LoggerManager.html">LoggerManager</a></li>
                                                     <li class="class"><a href="../classes/classes.logger.LogLevel.html">LogLevel</a></li>
                                             </ul>
                 </div>
@@ -354,6 +300,10 @@
                     <ul>
                                                                                                     <li class="class"><a href="../classes/classes.Benchmark.html">Benchmark</a></li>
                                                     <li class="class"><a href="../classes/classes.DataBase.html">DataBase</a></li>
+                                                    <li class="class"><a href="../classes/classes.ExceptionManager.html">ExceptionManager</a></li>
+                                                    <li class="class"><a href="../classes/classes.ImagesManager.html">ImagesManager</a></li>
+                                                    <li class="class"><a href="../classes/classes.IniManager.html">IniManager</a></li>
+                                                    <li class="class"><a href="../classes/classes.LoggerManager.html">LoggerManager</a></li>
                                                     <li class="class"><a href="../classes/classes.PDOStatementCustom.html">PDOStatementCustom</a></li>
                                             </ul>
                 </div>
@@ -364,32 +314,15 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1355697261"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1035284556"></a>
                                 <a href="../namespaces/interfaces.html" style="margin-left: 30px; padding-left: 0">interfaces</a>
             </div>
-            <div id="namespace-1355697261" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-175718440"></a>
-                                <a href="../namespaces/interfaces.logger.html" style="margin-left: 30px; padding-left: 0">logger</a>
-            </div>
-            <div id="namespace-175718440" class="accordion-body collapse ">
+            <div id="namespace-1035284556" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
                     <ul>
-                                                    <li class="interface"><a href="../classes/interfaces.logger.LoggerInterface.html">LoggerInterface</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
+                                                    <li class="interface"><a href="../classes/interfaces.LoggerInterface.html">LoggerInterface</a></li>
                                                                                             </ul>
                 </div>
             </div>
@@ -399,10 +332,10 @@
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-330478625"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-771680873"></a>
                                 <a href="../namespaces/traits.html" style="margin-left: 30px; padding-left: 0">traits</a>
             </div>
-            <div id="namespace-330478625" class="accordion-body collapse ">
+            <div id="namespace-771680873" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -410,6 +343,8 @@
                                                                             <li class="trait"><a href="../classes/traits.BeautifullIndentTrait.html">BeautifullIndentTrait</a></li>
                                                     <li class="trait"><a href="../classes/traits.EchoTrait.html">EchoTrait</a></li>
                                                     <li class="trait"><a href="../classes/traits.FiltersTrait.html">FiltersTrait</a></li>
+                                                    <li class="trait"><a href="../classes/traits.PrettyOutputTrait.html">PrettyOutputTrait</a></li>
+                                                    <li class="trait"><a href="../classes/traits.ShortcutsTrait.html">ShortcutsTrait</a></li>
                                                                     </ul>
                 </div>
             </div>
@@ -1126,7 +1061,7 @@
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on July 27th, 2015 at 00:46.
+                    on July 30th, 2015 at 00:42.
                 </section>
             </section>
         </section>

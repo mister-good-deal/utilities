@@ -12,7 +12,7 @@ namespace classes;
  * PDOStatement custom class to print sql query on demand
  *
  * {@inheritdoc}
- * 
+ *
  * @class PDOStatementCustom
  */
 class PDOStatementCustom extends \PDOStatement

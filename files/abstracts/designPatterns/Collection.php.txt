@@ -8,7 +8,7 @@
 
 namespace abstracts\designPatterns;
 
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 use \abstracts\designPatterns\Entity as Entity;
 
 /**
@@ -18,7 +18,7 @@ use \abstracts\designPatterns\Entity as Entity;
  */
 abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \SeekableIterator
 {
-    use \traits\BeautifullIndentTrait;
+    use \traits\PrettyOutputTrait;
 
     /**
      * @var Entity[] $collection An array of entity object
@@ -27,11 +27,11 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
     /**
      * @var int[]|string[] $indexId An array of entity id key
      */
-    private $indexId    = array();
+    private $indexId = array();
     /**
      * @var integer $current Current position of the pointer in the $collection
      */
-    private $current    = 0;
+    private $current = 0;
 
     /*=====================================
     =            Magic mathods            =
@@ -102,7 +102,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable, \Seeka
         if (!array_key_exists($id, $this->indexId)) {
             throw new Exception(
                 'This entity id(' . implode(', ', $id) . ') is not in the collection',
-                Exception::$WARNING
+                Exception::$PARAMETER
             );
         }
 

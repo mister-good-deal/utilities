@@ -8,8 +8,8 @@
 
 namespace abstracts\designPatterns;
 
-use \classes\exception\ExceptionManager as Exception;
-use \classes\ini\IniManager as Ini;
+use \classes\ExceptionManager as Exception;
+use \classes\IniManager as Ini;
 use \classes\DataBase as DB;
 
 /**
@@ -19,7 +19,8 @@ use \classes\DataBase as DB;
  */
 abstract class Entity
 {
-    use \traits\BeautifullIndentTrait;
+    use \traits\PrettyOutputTrait;
+    use \traits\ShortcutsTrait;
 
     /**
      * @const ENTITIES_CONF_PATH The path where the entities ini conf file are stored
@@ -394,21 +395,10 @@ abstract class Entity
                 $this->tableName  = $columnAttributes['name'];
                 $this->engine     = $columnAttributes['engine'];
 
-                if (isset($columnAttributes['charSet'])) {
-                    $this->charset = $columnAttributes['charSet'];
-                }
-
-                if (isset($columnAttributes['collate'])) {
-                    $this->collation = $columnAttributes['collate'];
-                }
-
-                if (isset($columnAttributes['comment'])) {
-                    $this->comment = $columnAttributes['comment'];
-                }
-
-                if (isset($columnAttributes['unique'])) {
-                    $constraints['unique'] = $columnAttributes['unique'];
-                }
+                static::setIfIsSet($this->charset, $columnAttributes['charSet']);
+                static::setIfIsSet($this->collation, $columnAttributes['collate']);
+                static::setIfIsSet($this->comment, $columnAttributes['comment']);
+                static::setIfIsSet($constraints['unique'], $columnAttributes['unique']);
 
                 if (isset($columnAttributes['primary'])) {
                     $constraints['primary']            = array();
@@ -433,7 +423,7 @@ abstract class Entity
                 }
             }
         }
-
+        
         if (isset($constraints['primary'])) {
             $this->idKey = explode(', ', trim($constraints['primary']['columns'], '`'));
         } else {

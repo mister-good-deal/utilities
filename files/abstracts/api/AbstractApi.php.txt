@@ -8,7 +8,7 @@
 
 namespace abstracts;
 
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 
 /**
  * Abstract API pattern
