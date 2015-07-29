@@ -11,7 +11,7 @@ namespace classes\logger;
 use \classes\logger\LogLevel as LogLevel;
 use \classes\IniManager as Ini;
 use \interfaces\LoggerInterface as LoggerInterface;
-use \abstracts\logger\AbstractLogger as AbstractLogger;
+use \abstracts\AbstractLogger as AbstractLogger;
 
 /**
  * File logger to log  exceptions in a file

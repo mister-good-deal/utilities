@@ -6,7 +6,7 @@
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
  */
 
-namespace abstracts\logger;
+namespace abstracts;
 
 use \classes\logger\LogLevel as LogLevel;
 use \interfaces\LoggerInterface as LoggerInterface;

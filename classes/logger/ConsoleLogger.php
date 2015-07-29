@@ -12,7 +12,7 @@ use \classes\logger\LogLevel as LogLevel;
 use \classes\console\ConsoleColors as ConsoleColors;
 use \classes\IniManager as Ini;
 use \interfaces\LoggerInterface as LoggerInterface;
-use \abstracts\logger\AbstractLogger as AbstractLogger;
+use \abstracts\AbstractLogger as AbstractLogger;
 
 /**
  * A logger which writes the log in the console
