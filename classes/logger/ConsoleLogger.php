@@ -10,8 +10,8 @@ namespace classes\logger;
 
 use \classes\logger\LogLevel as LogLevel;
 use \classes\console\ConsoleColors as ConsoleColors;
-use \classes\ini\IniManager as Ini;
-use \interfaces\logger\LoggerInterface as LoggerInterface;
+use \classes\IniManager as Ini;
+use \interfaces\LoggerInterface as LoggerInterface;
 use \abstracts\logger\AbstractLogger as AbstractLogger;
 
 /**
@@ -21,7 +21,7 @@ use \abstracts\logger\AbstractLogger as AbstractLogger;
  */
 class ConsoleLogger extends AbstractLogger implements LoggerInterface
 {
-    use \traits\BeautifullIndentTrait;
+    use \traits\PrettyOutputTrait;
     use \traits\EchoTrait;
 
     /**

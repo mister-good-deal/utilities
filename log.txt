@@ -165,3 +165,6 @@
 2015-07-26 19:25:32		Cannot delete or update a parent row: a foreign key constraint fails
 2015-07-26 20:16:46		ERROR::The section Console doesn't exist in the ini conf file
 2015-07-26 20:56:26		The attribute `id` is undefined
+2015-07-29 22:48:09		There is no image at this path : "./test.png"
+2015-07-29 22:48:44		There is no image at this path : "C:\prog\utilities\devTests/test.png"
+2015-07-29 23:11:09		There is no image at this path : "C:\prog\utilities\devTests\test.png"

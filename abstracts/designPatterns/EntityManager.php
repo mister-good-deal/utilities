@@ -8,11 +8,11 @@
 
 namespace abstracts\designPatterns;
 
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 use \abstracts\designPatterns\Entity as Entity;
 use \abstracts\designPatterns\Collection as Collection;
 use \classes\DataBase as DB;
-use \classes\ini\IniManager as Ini;
+use \classes\IniManager as Ini;
 
 /**
  * Abstract EntityManager pattern
@@ -22,11 +22,11 @@ use \classes\ini\IniManager as Ini;
 abstract class EntityManager
 {
     /**
-     * @var Entity $entity An entity object
+     * @var Entity $entity An Entity object
      */
     private $entity;
     /**
-     * @var Collection $entityCollection An entityCollection object
+     * @var Collection $entityCollection An EntityCollection object
      */
     private $entityCollection;
 
@@ -37,8 +37,8 @@ abstract class EntityManager
     /**
      * Constructor that can take an Entity as first parameter and a Collection as second parameter
      *
-     * @param Entity     $entity           An entity object
-     * @param Collection $entityCollection A colection oject
+     * @param Entity     $entity           An entity object DEFAULT null
+     * @param Collection $entityCollection A colection oject DEFAULT null
      */
     public function __construct($entity = null, $entityCollection = null)
     {

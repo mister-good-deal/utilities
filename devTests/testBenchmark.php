@@ -7,7 +7,7 @@
  */
 
 use \classes\Benchmark as Benchmark;
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 
 include_once '../autoloader.php';
 

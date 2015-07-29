@@ -12,7 +12,7 @@ use \classes\entitiesManager\UserEntityManager as UserEntityManager;
 use \classes\entitiesManager\UserStatisticsEntityManager as UserStatisticsEntityManager;
 use \classes\entitiesCollection\UserCollection as Collection;
 use \classes\DataBase as DB;
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 
 include_once '../autoloader.php';
 

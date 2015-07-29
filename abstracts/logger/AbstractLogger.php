@@ -9,7 +9,7 @@
 namespace abstracts\logger;
 
 use \classes\logger\LogLevel as LogLevel;
-use \interfaces\logger\LoggerInterface as LoggerInterface;
+use \interfaces\LoggerInterface as LoggerInterface;
 
 /**
  * This is a simple Logger implementation that other Loggers can inherit from.

@@ -2,7 +2,7 @@
 <phpdoc>
   <title>Utilities</title>
   <parser>
-    <target>./phpDoc</target>
+    <target>./.phpDoc</target>
     <markers>
         <item>TODO</item>
         <item>FIXME</item>

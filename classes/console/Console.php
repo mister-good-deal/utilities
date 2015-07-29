@@ -9,7 +9,7 @@
 namespace classes\console;
 
 use \classes\DataBase as DB;
-use \classes\ini\IniManager as Ini;
+use \classes\IniManager as Ini;
 use \classes\console\ConsoleColors as ConsoleColors;
 
 /**
@@ -19,7 +19,7 @@ use \classes\console\ConsoleColors as ConsoleColors;
  */
 class Console
 {
-    use \traits\BeautifullIndentTrait;
+    use \traits\PrettyOutputTrait;
     use \traits\FiltersTrait;
     use \traits\EchoTrait;
 

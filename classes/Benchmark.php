@@ -8,7 +8,7 @@
 
 namespace classes;
 
-use \classes\exception\ExceptionManager as Exception;
+use \classes\ExceptionManager as Exception;
 
 /**
  * Benchmark methods by symply put them in an array sent to the constructors

@@ -4,13 +4,13 @@
  *
  * @category Singleton
  * @author   Romain Laneuville <romain.laneuville@hotmail.fr>
- * @example /utilities/examples/dataBase.php                Basic use of this singleton
+ * @example /utilities/examples/dataBase.php                  Basic use of this singleton
  */
 
 namespace classes;
 
-use \classes\exception\ExceptionManager as Exception;
-use \classes\ini\IniManager as Ini;
+use \classes\ExceptionManager as Exception;
+use \classes\IniManager as Ini;
 // WARNING if you change the path below, change it in the initialize method in the setAttribute call
 use \classes\PDOStatementCustom as PDOStatementCustom;
 
