@@ -13,8 +13,6 @@ use \abstracts\designPatterns\Entity as Entity;
 /**
  * User entity that extends the Entity abstact class
  *
- * show off @property
- *
  * @property integer $id The user id
  * @property string  $name The user name
  * @property string  $email The user email
