@@ -34,17 +34,29 @@ class ImagesManager
      * @var integer[] $MOST_USE_HEIGHTS  Most use height
      */
     public static $MOST_USE_HEIGHTS = array(1080, 1050, 1024, 900, 800, 768);
+    /**
+     * @var integer $EXTRA_TEXT_BORDER  A padding size to add to text added in an image
+     */
+    public static $EXTRA_TEXT_PADDING = 10;
 
     /**
      * @var \Imagick $image \Imagick instance DEFAULT null
      */
     private $image = null;
     /**
-     * @var string $imageName The image name
+     * @var string $imagePath The original image path
+     */
+    private $imagePath;
+     /**
+     * @var string $imageSavePath The new image path
+     */
+    private $imageSavePath;
+    /**
+     * @var string $imageName The original image name
      */
     private $imageName;
     /**
-     * @var string $imageExtension The image extension
+     * @var string $imageExtension The original image extension
      */
     private $imageExtension;
 
@@ -73,12 +85,10 @@ class ImagesManager
             $this->image->destroy();
         }
     }
-    
-    /*-----  End of Magic methods  ------*/
 
-    /*======================================
-    =            Public methods            =
-    ======================================*/
+    /*=========================================
+    =            Setters / getters            =
+    =========================================*/
     
     /**
      * Instantiate a new \Imagick object and destroyed the last if exists
@@ -97,6 +107,8 @@ class ImagesManager
 
         try {
             $this->image          = new \Imagick($imagePath);
+            $this->imagePath      = $imagePath;
+            $this->imageSavePath  = pathinfo($imagePath, PATHINFO_DIRNAME);
             $this->imageName      = pathinfo($imagePath, PATHINFO_FILENAME);
             $this->imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
         } catch (\Exception $e) {
@@ -105,18 +117,39 @@ class ImagesManager
     }
 
     /**
+     * Set the image save path and create the repositories if the new path doesn't exist (must be an absolute path)
+     *
+     * @param string $path The new save path
+     */
+    public function setImageSavePath($path)
+    {
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        $this->imageSavePath = $path;
+    }
+    
+    /*-----  End of Setters / getters  ------*/
+    
+    
+    
+    /*-----  End of Magic methods  ------*/
+
+    /*======================================
+    =            Public methods            =
+    ======================================*/
+
+    /**
      * Generate and save scales images with specified widths
      *
      * @param integer[] $widths The widths to resize the image with
      *                          DEFAULT [1920, 1600, 1440, 1366, 1280, 1024, 768, 480]
-     * @param string    $path   OPTIONAL the absolute path where images has to be saved DEFAULT ""
      */
-    public function generateResizedImagesByWidth(
-        $widths = array(1920, 1600, 1440, 1366, 1280, 1024, 768, 480),
-        $path = ''
-    ) {
+    public function generateResizedImagesByWidth($widths = array(1920, 1600, 1440, 1366, 1280, 1024, 768, 480))
+    {
         foreach ($widths as $width) {
-            $this->generateResizedImages($width, 0, $path);
+            $this->generateResizedImages($width, 0);
         }
     }
 
@@ -125,13 +158,79 @@ class ImagesManager
      *
      * @param integer[] $heights The heights to resize the image with
      *                           DEFAULT [1080, 1050, 1024, 900, 800, 768]
-     * @param string    $path    OPTIONAL the absolute path where images has to be saved DEFAULT ""
      */
-    public function generateResizedImagesByHeight($heights = array(1080, 1050, 1024, 900, 800, 768), $path = '')
+    public function generateResizedImagesByHeight($heights = array(1080, 1050, 1024, 900, 800, 768))
     {
         foreach ($heights as $height) {
-            $this->generateResizedImages(0, $height, $path);
+            $this->generateResizedImages(0, $height);
         }
+    }
+
+    /**
+     * Generate and save the image with a copyright text at the bottom right corner
+     *
+     * @param string  $text     The copyright text
+     * @param integer $fontSize OPTIONAL the copyright font size DEFAULT 22
+     * @param string  $font     OPTIONAL the copyright font DEFAULT "Verdana"
+     * @param string  $position OPTIONAL the position to put copyright text DEFAULT "bottom-right"
+     *                          Possibles Values ("bottom-right", "bottom-left", "top-right", "top-left")
+     */
+    public function copyrightImage($text, $fontSize = 22, $font = 'Verdana', $position = 'bottom-right')
+    {
+        $draw  = new \ImagickDraw();
+
+        $draw->setFontSize($fontSize);
+        $draw->setFont($font);
+        $draw->setFillColor('#ffffff');
+        $draw->setTextUnderColor('#00000088');
+        
+        $textMetrics = $this->image->queryFontMetrics($draw, $text);
+
+        switch ($position) {
+            case 'bottom-right':
+                $width  = $this->image->getImageWidth()
+                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
+                $height = $this->image->getImageHeight();
+                $width  -= static::$EXTRA_TEXT_PADDING;
+                $height -= static::$EXTRA_TEXT_PADDING;
+                break;
+
+            case 'bottom-left':
+                $width  = 0;
+                $height = $this->image->getImageHeight();
+                $width  += static::$EXTRA_TEXT_PADDING;
+                $height -= static::$EXTRA_TEXT_PADDING;
+                break;
+
+            case 'top-right':
+                $width  = $this->image->getImageWidth()
+                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
+                $height = $textMetrics['textHeight'] + $textMetrics['descender'];
+                $width  -= static::$EXTRA_TEXT_PADDING;
+                $height += static::$EXTRA_TEXT_PADDING;
+                break;
+
+            case 'top-left':
+                $width  = 0;
+                $height = $textMetrics['textHeight'] + $textMetrics['descender'];
+                $width  += static::$EXTRA_TEXT_PADDING;
+                $height += static::$EXTRA_TEXT_PADDING;
+                break;
+            
+            default:
+                $width  = $this->image->getImageWidth()
+                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
+                $height = $this->image->getImageHeight();
+                $width  -= static::$EXTRA_TEXT_PADDING;
+                $height -= static::$EXTRA_TEXT_PADDING;
+                break;
+        }
+
+        $this->image->annotateImage($draw, $width, $height, 0, $text);
+        $this->image->writeImage(
+            $this->imageSavePath . DIRECTORY_SEPARATOR . $this->imageName . '_copyright' . '.' . $this->imageExtension
+        );
+
     }
     
     /*-----  End of Public methods  ------*/
@@ -145,14 +244,9 @@ class ImagesManager
      *
      * @param integer $width  The width to resize the image with
      * @param integer $height The height to resize the image with
-     * @param string  $path   OPTIONAL the absolute path where images has to be saved DEFAULT ""
      */
-    private function generateResizedImages($width, $height, $path = '')
+    private function generateResizedImages($width, $height)
     {
-        if ($path !== '' && !is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-
         $this->image->scaleImage($width, $height);
 
         if ($width === 0) {
@@ -163,7 +257,10 @@ class ImagesManager
             $height = $this->image->getImageHeight();
         }
 
-        $this->image->writeImage($path . $this->imageName . '_' . $width . 'x' . $height . '.' . $this->imageExtension);
+        $this->image->writeImage(
+            $this->imageSavePath . DIRECTORY_SEPARATOR . $this->imageName
+            . '_' . $width . 'x' . $height . '.' . $this->imageExtension
+        );
     }
     
     /*-----  End of Private methods  ------*/
