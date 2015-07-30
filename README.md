@@ -39,6 +39,9 @@ Ini::setParamComment('my ini section', 'my param', 'my comment'); // set the par
 *code example:*
 
 ```php
+use \classes\entities\User as UserEntity;
+use \classes\entitiesManager\UserEntityManager as UserEntityManager;
+
 $user            = new UserEntity();
 $userManager     = new UserEntityManager($user);
 $user->id        = 1;
@@ -58,6 +61,8 @@ $userManager->saveEntity();
 *code example:*
 
 ```php
+use \classes\DataBase as DB;
+
 DB::exec('DROP TABLE toto;');
 DB::query('SELECT * FROM toto;')->fetch();
 ```
@@ -80,6 +85,8 @@ This class is based on Imagick class
 *code example:*
 
 ```php
+use \classes\ImagesManager as Images;
+
 $image = new Images(__DIR__ . '/test.jpeg');
 $image->setImageSavePath(__DIR__ . '/testResized');
 // This line will create a testResized directory and add all the new scaled images with commons 16/9 resolution
