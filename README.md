@@ -1,8 +1,8 @@
-# utilities
+# PHP utilities
 
-###This repository contains the followings features
+##This repository contains the followings features / classes
 
-IniFileManager class which can:
+###IniFileManager class
 
 * parse ini conf file
 * get parameter from ini file
@@ -13,23 +13,52 @@ IniFileManager class which can:
 
 ***
 
-File and console logger class to log thrown exception in a file or/and in a console with pretty output (colors etc).
+###File and console logger class
+
+* to log text in a file or/and in a console with pretty output (colors etc)
 
 ***
 
-Entity / Manager design pattern abstract classes merged with a DataBase class which is a nice PDO singleton to easily handle and manage entites fro ma database
+###Entity / Manager design pattern abstract class
+
+* simply create entities based on INI conf files
+* support foreign keys set up with onDelete, onUpdate clauses
+* simply manage entities with basic SELECT / DELETE / UPDATE
+* simply CREATE / DROP tables based on entities INI conf files
+* support multiple DB system (ORACLE, MySQL, ...)
 
 ***
 
-ORM console mode based on the DataBase class to perform basic database manipulation with pretty console output.
+###DataBase class
+
+* singleton pattern using PDO PHP class with __staticCall magic method
+* use database action anywhere in you code by calling DB::PDOmethod statically without initialize or set-up anything
 
 ***
 
-Benchmark class (uncomplete) to test class method performance.
+###ORM console class
+
+* console mode based on the DataBase class to perform basic database manipulation with pretty console output.
+
+***
+
+###ImagesManager class
+
+This class is based on Imagick class
+
+* simply create multiple resized picture with defined width or height and conserve scalling in one cal
+* simply add copyright to an image
+
+***
+
+###Benchmark class (uncomplete)
+
+* test method performance
 
 ***
 
 All those classes respect PHP PSR-2 standard and are 100% php documented.
+All the source code is inspected by Sonar to respect and control good practises.
 The code uses advanced strucure like Traits to avoid code replication.
 
 ***
