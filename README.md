@@ -13,7 +13,7 @@ This repository contains the followings features / classes
 
 *code example:*
 
-```
+```php
 Ini::getSectionParams('my ini section'); // return an array containing all the sections params
 Ini::getParam('my ini section', 'my param'); // return the param
 Ini::setParam('my ini section', 'my param', 'my value'); // set the param in the ini file
@@ -38,12 +38,13 @@ Ini::setParamComment('my ini section', 'my param', 'my comment'); // set the par
 
 *code example:*
 
-```
+```php
 $user            = new UserEntity();
-$userManager     = new UserEntityManager();
+$userManager     = new UserEntityManager($user);
+$user->id        = 1;
 $user->firstName = 'Toto';
 $user->lastName  = 'Tata';
-$userManager->setEntity($user);
+// Will save the entity in the database with an Update if the ID already exist
 $userManager->saveEntity();
 ```
 
@@ -56,7 +57,7 @@ $userManager->saveEntity();
 
 *code example:*
 
-```
+```php
 DB::exec('DROP TABLE toto;');
 DB::query('SELECT * FROM toto;')->fetch();
 ```
@@ -78,7 +79,7 @@ This class is based on Imagick class
 
 *code example:*
 
-```
+```php
 $image = new Images(__DIR__ . '/test.jpeg');
 $image->setImageSavePath(__DIR__ . '/testResized');
 // This line will create a testResized directory and add all the new scaled images with commons 16/9 resolution
