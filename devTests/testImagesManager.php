@@ -13,10 +13,10 @@ include_once '../autoloader.php';
 
 try {
     $image = new Images(__DIR__ . '\test.jpeg');
-    // $image->generateResizedImagesByWidth();
-    // $image->generateResizedImagesByWidth(Images::$WIDTHS_16_9);
-    $image->setImageSavePath(__DIR__ . '/test');
-    $image->copyrightImage('©Rom1', 40, 'Verdana', 'top-left');
+    $image->setImageSavePath(__DIR__ . '/testResizes');
+    $image->generateResizedImagesByWidth(Images::$WIDTHS_16_9);
+    $image->setImageSavePath(__DIR__ . '/testCopyright');
+    $image->copyrightImage('©Copyright', 40, 'Verdana', 'top-left');
 
 } catch (Exception $e) {
 } finally {
