@@ -85,7 +85,7 @@ class ImagesManager
             $this->image->destroy();
         }
     }
-    
+
     /*-----  End of Magic methods  ------*/
 
     /*=========================================
@@ -182,43 +182,43 @@ class ImagesManager
         $draw->setFillColor('#ffffff');
         $draw->setTextUnderColor('#00000088');
         
-        $textMetrics = $this->image->queryFontMetrics($draw, $text);
+        $textMetrics     = $this->image->queryFontMetrics($draw, $text);
+        $textWidth       = $textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1'];
+        $extraTextHeight = $textMetrics['descender'];
+        $textHeight      = $textMetrics['textHeight'] + $extraTextHeight;
 
         switch ($position) {
             case 'bottom-right':
-                $width  = $this->image->getImageWidth()
-                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
-                $height = $this->image->getImageHeight();
+                $width  = $this->image->getImageWidth() - $textWidth;
+                $height = $this->image->getImageHeight() + $extraTextHeight;
                 $width  -= static::$EXTRA_TEXT_PADDING;
                 $height -= static::$EXTRA_TEXT_PADDING;
                 break;
 
             case 'bottom-left':
                 $width  = 0;
-                $height = $this->image->getImageHeight();
+                $height = $this->image->getImageHeight() + $extraTextHeight;
                 $width  += static::$EXTRA_TEXT_PADDING;
                 $height -= static::$EXTRA_TEXT_PADDING;
                 break;
 
             case 'top-right':
-                $width  = $this->image->getImageWidth()
-                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
-                $height = $textMetrics['textHeight'] + $textMetrics['descender'];
+                $width  = $this->image->getImageWidth() - $textWidth;
+                $height = $textHeight;
                 $width  -= static::$EXTRA_TEXT_PADDING;
                 $height += static::$EXTRA_TEXT_PADDING;
                 break;
 
             case 'top-left':
                 $width  = 0;
-                $height = $textMetrics['textHeight'] + $textMetrics['descender'];
+                $height = $textHeight;
                 $width  += static::$EXTRA_TEXT_PADDING;
                 $height += static::$EXTRA_TEXT_PADDING;
                 break;
             
             default:
-                $width  = $this->image->getImageWidth()
-                    - ($textMetrics['textWidth'] + 2 * $textMetrics['boundingBox']['x1']);
-                $height = $this->image->getImageHeight();
+                $width  = $this->image->getImageWidth() - $textWidth;
+                $height = $this->image->getImageHeight() + $extraTextHeight;
                 $width  -= static::$EXTRA_TEXT_PADDING;
                 $height -= static::$EXTRA_TEXT_PADDING;
                 break;

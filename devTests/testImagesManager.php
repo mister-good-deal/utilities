@@ -16,7 +16,7 @@ try {
     $image->setImageSavePath(__DIR__ . '/testResizes');
     $image->generateResizedImagesByWidth(Images::$WIDTHS_16_9);
     $image->setImageSavePath(__DIR__ . '/testCopyright');
-    $image->copyrightImage('©Copyright', 40, 'Verdana', 'top-left');
+    $image->copyrightImage('©Copyright', 40, 'Verdana', 'bottom-right');
 
 } catch (Exception $e) {
 } finally {
