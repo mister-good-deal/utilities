@@ -1,6 +1,6 @@
 # PHP utilities
 
-##This repository contains the followings features / classes
+This repository contains the followings features / classes
 
 ###IniFileManager class
 
@@ -10,6 +10,15 @@
 * set section comment to a ini file
 * set param comment to a ini file
 * regenerate ini file with pretty indent / align
+
+*code example:*
+
+```
+Ini::getSectionParams('my ini section'); // return an array containing all the sections params
+Ini::getParam('my ini section', 'my param'); // return the param
+Ini::setParam('my ini section', 'my param', 'my value'); // set the param in the ini file
+Ini::setParamComment('my ini section', 'my param', 'my comment'); // set the param comment in the ini file
+```
 
 ***
 
@@ -27,12 +36,30 @@
 * simply CREATE / DROP tables based on entities INI conf files
 * support multiple DB system (ORACLE, MySQL, ...)
 
+*code example:*
+
+```
+$user            = new UserEntity();
+$userManager     = new UserEntityManager();
+$user->firstName = 'Toto';
+$user->lastName  = 'Tata';
+$userManager->setEntity($user);
+$userManager->saveEntity();
+```
+
 ***
 
 ###DataBase class
 
-* singleton pattern using PDO PHP class with __staticCall magic method
-* use database action anywhere in you code by calling DB::PDOmethod statically without initialize or set-up anything
+* singleton pattern using PDO PHP class with `__staticCall` magic method
+* use database action anywhere in you code by calling `DB::PDOmethod(params);` statically without initialize or set-up anything
+
+*code example:*
+
+```
+DB::exec('DROP TABLE toto;');
+DB::query('SELECT * FROM toto;')->fetch();
+```
 
 ***
 
@@ -48,6 +75,19 @@ This class is based on Imagick class
 
 * simply create multiple resized picture with defined width or height and conserve scalling in one cal
 * simply add copyright to an image
+
+*code example:*
+
+```
+$image = new Images(__DIR__ . '/test.jpeg');
+$image->setImageSavePath(__DIR__ . '/testResized');
+// This line will create a testResized directory and add all the new scaled images with commons 16/9 resolution
+$image->generateResizedImagesByWidth(Images::$WIDTHS_16_9);
+// This line will create a testCopyright directory and add the image with a ©Copyright text in a Verdana 40px font in a
+// top left corner, the text is white with a black smooth alpha channel
+$image->setImageSavePath(__DIR__ . '/testCopyright');
+$image->copyrightImage('©Copyright', 40, 'Verdana', 'top-left');
+```
 
 ***
 

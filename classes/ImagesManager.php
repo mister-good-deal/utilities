@@ -85,6 +85,8 @@ class ImagesManager
             $this->image->destroy();
         }
     }
+    
+    /*-----  End of Magic methods  ------*/
 
     /*=========================================
     =            Setters / getters            =
@@ -131,10 +133,6 @@ class ImagesManager
     }
     
     /*-----  End of Setters / getters  ------*/
-    
-    
-    
-    /*-----  End of Magic methods  ------*/
 
     /*======================================
     =            Public methods            =
