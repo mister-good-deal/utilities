@@ -24,6 +24,37 @@ Ini::setParam('my ini section', 'my param', 'my value');
 Ini::setParamComment('my ini section', 'my param', 'my comment');
 ```
 
+***
+
+###File and console logger class
+
+* to log text in a file or/and in a console with pretty output (colors etc)
+
+***
+
+###Entity / Manager design pattern abstract class
+
+* simply create entities based on INI conf files
+* support foreign keys set up with onDelete, onUpdate clauses
+* simply manage entities with basic SELECT / DELETE / UPDATE
+* simply CREATE / DROP tables based on entities INI conf files
+* support multiple DB system (ORACLE, MySQL, ...)
+
+*code example:*
+
+```php
+use \classes\entities\User as UserEntity;
+use \classes\entitiesManager\UserEntityManager as UserEntityManager;
+
+$user            = new UserEntity();
+$userManager     = new UserEntityManager($user);
+$user->id        = 1;
+$user->firstName = 'Toto';
+$user->lastName  = 'Tata';
+// Will save the entity in the database with an Update if the ID already exist
+$userManager->saveEntity();
+```
+
 ```ini
 ; Ini file structure format
 ; -------------------------
@@ -78,7 +109,12 @@ type   = "INT"
 size   = 6
 isNull = false
 
-[name]
+[firstName]
+type   = "VARCHAR"
+size   = 64
+isNull = false
+
+[lastName]
 type   = "VARCHAR"
 size   = 64
 isNull = false
@@ -87,37 +123,6 @@ isNull = false
 type   = "VARCHAR"
 size   = 128
 isNull = false
-```
-
-***
-
-###File and console logger class
-
-* to log text in a file or/and in a console with pretty output (colors etc)
-
-***
-
-###Entity / Manager design pattern abstract class
-
-* simply create entities based on INI conf files
-* support foreign keys set up with onDelete, onUpdate clauses
-* simply manage entities with basic SELECT / DELETE / UPDATE
-* simply CREATE / DROP tables based on entities INI conf files
-* support multiple DB system (ORACLE, MySQL, ...)
-
-*code example:*
-
-```php
-use \classes\entities\User as UserEntity;
-use \classes\entitiesManager\UserEntityManager as UserEntityManager;
-
-$user            = new UserEntity();
-$userManager     = new UserEntityManager($user);
-$user->id        = 1;
-$user->firstName = 'Toto';
-$user->lastName  = 'Tata';
-// Will save the entity in the database with an Update if the ID already exist
-$userManager->saveEntity();
 ```
 
 ***
