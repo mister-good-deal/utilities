@@ -18,7 +18,7 @@ use \abstracts\AbstractLogger as AbstractLogger;
  *
  * @class FileLogger
  */
-class FileLogger extends AbstractLogger implements LoggerInterface
+class FileLogger extends AbstractLogger
 {
     /**
      * @var string $filePath The file path to write the log in (can be the file name if the rep is in the include path)

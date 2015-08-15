@@ -7,6 +7,8 @@
  */
 namespace interfaces\http;
 
+use \interfaces\http\RequestInterface as RequestInterface;
+
 /**
  * Representation of an incoming, server-side HTTP request.
  *

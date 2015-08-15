@@ -19,7 +19,7 @@ use \abstracts\AbstractLogger as AbstractLogger;
  *
  * @class ConsoleLogger
  */
-class ConsoleLogger extends AbstractLogger implements LoggerInterface
+class ConsoleLogger extends AbstractLogger
 {
     use \traits\PrettyOutputTrait;
     use \traits\EchoTrait;

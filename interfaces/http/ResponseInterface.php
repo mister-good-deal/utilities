@@ -7,6 +7,8 @@
  */
 namespace interfaces\http;
 
+use \interfaces\http\MessageInterface as MessageInterface;
+
 /**
  * Representation of an outgoing, server-side response.
  *
