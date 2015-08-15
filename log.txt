@@ -168,3 +168,4 @@
 2015-07-29 22:48:09		There is no image at this path : "./test.png"
 2015-07-29 22:48:44		There is no image at this path : "C:\prog\utilities\devTests/test.png"
 2015-07-29 23:11:09		There is no image at this path : "C:\prog\utilities\devTests\test.png"
+2015-08-15 14:02:55		Error 0::php_network_getaddresses: getaddrinfo failed: Hôte inconnu. 
